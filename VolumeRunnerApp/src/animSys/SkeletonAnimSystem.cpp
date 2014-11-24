@@ -45,13 +45,20 @@ bool SkeletonAnimSystem::addBVHFile( const std::string & name, const std::string
     if(!skel)
     {
         skel = bvh.createSkeleton();
-        skelAnim = new SkeletonAnimLayer(skel->getNumBones());
+        skelAnim = new SkeletonAnimLayer(skel->getNumJoints());
         skel->update();
+        
+        // flag the bones that are active, flag the invalid ones as not.
+        activeJointFlags.clear();
+        for( int i = 0; i < skel->getNumJoints(); i++ )
+        {
+            activeJointFlags.push_back(skel->getJoint(i)->isJointOk);
+        }
     }
     else
     {
         Skeleton * s = bvh.createSkeleton();
-        if(s->getNumBones() != skel->getNumBones())
+        if(s->getNumJoints() != skel->getNumJoints())
         {
             assert(0);
             return false;
@@ -92,53 +99,71 @@ void SkeletonAnimSystem::update( float msecs )
     skel->update();
 }
 
-
-std::vector<M44> SkeletonAnimSystem::getBoneMatrices() const
+std::vector<std::string> SkeletonAnimSystem::getJointNames() const
+{
+    std::vector<std::string> N;
+    for( int i = 0; i < skel->getNumJoints(); i++ )
+    {
+        Joint * b = skel->getJoint(i);
+        if( b->isJointOk )
+            N.push_back(b->name);
+    }
+    return N;
+}
+    
+std::vector<M44> SkeletonAnimSystem::getJointMatrices() const
 {
     Pose * pose = skel->pose;
     
     std::vector<M44> M;
-    for( int i = 0; i < pose->nTransforms; i++ )
+    for( int i = 0; i < skel->getNumJoints(); i++ )
     {
-        M44 m = skel->getBone(i)->getBoneMatrix();
-        M.push_back(m);//skel->getBone(i)->getBoneMatrix());
+        Joint * b = skel->getJoint(i);
+        if(b->isJointOk)
+        {
+            M44 m = skel->getJoint(i)->getJointMatrix();
+            M.push_back(m);//skel->getJoint(i)->getJointMatrix());
+        }
         //node->setNodeMatrix(m);
     }
     return M;
 }
 
-std::vector<float> SkeletonAnimSystem::getBoneLengths() const
+std::vector<float> SkeletonAnimSystem::getJointLengths() const
 {
     std::vector<float> L;
-    for( int i = 0; i < skel->getNumBones(); i++ )
+    for( int i = 0; i < skel->getNumJoints(); i++ )
     {
-        Bone * b = skel->getBone(i);
-        if( b->parent )
-            L.push_back(b->parent->length);
-        else
-            L.push_back(b->length);
+        Joint * b = skel->getJoint(i);
+        if( b->isJointOk )
+        {
+            if( b->parent )
+                L.push_back(b->parent->length);
+            else
+                L.push_back(b->length);
+        }
     }
     return L;
 }
     
-Bone * SkeletonAnimSystem::getBone(int index)
+Joint * SkeletonAnimSystem::getJoint(int index)
 {
-    return skel->getBone(index);
+    return skel->getJoint(index);
 }
     
-int SkeletonAnimSystem::getNumBones() const
+int SkeletonAnimSystem::getNumJoints() const
 {
-    return skel->getNumBones();
+    return skel->getNumJoints();
 }
 
 Vec3 SkeletonAnimSystem::getOffset()
 {
     Vec3 vel(0,0,0);
     float low = 10000.0;
-    for( int i = 0; i < skel->getNumBones(); i++ )
+    for( int i = 0; i < skel->getNumJoints(); i++ )
     {
-        Bone * b = skel->getBone(i);
-        M44 m = b->getBoneMatrix();
+        Joint * b = skel->getJoint(i);
+        M44 m = b->getJointMatrix();
         Vec3 p = m.trans();
         if(p.y<low)
         {

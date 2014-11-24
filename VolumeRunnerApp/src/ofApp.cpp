@@ -3,7 +3,7 @@
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
 
-#define kNumBones   10
+#define kNumJoints   21
 
 
 cm::FileWatcher * reloader;
@@ -116,25 +116,28 @@ void ofApp::draw(){
     // read bones from animation
     animSys.update(20);
 
-    std::vector<M44> boneMats = animSys.getBoneMatrices();//[kNumBones];
-    std::vector<M44> originalBones = animSys.getBoneMatrices();
-
-    std::vector<float> boneLengths = animSys.getBoneLengths();
-    int boneCount = min(boneMats.size(), kNumBones);
+    std::vector<M44> boneMats = animSys.getJointMatrices();//[kNumJoints];
+    std::vector<M44> originalJoints = animSys.getJointMatrices();
+    
+    std::vector<float> boneLengths = animSys.getJointLengths();
+    int boneCount = min(boneMats.size(), kNumJoints);
     for( int i = 0; i < boneCount; i++ )
     {
         boneMats[i].scale(1,1,boneLengths[i]);
+        //if(boneMats[i].hasNans())
+        //    assert(false);
+        
         boneMats[i].invert();
-        for(int j=0; j<16; j++) if(isnan(boneMats[i].m[j])) boneMats[i].identity();
+        //for(int j=0; j<16; j++) if(isnan(boneMats[i].m[j])) boneMats[i].identity();
     }
     
     
     // multiple random test bones
     if(params["Display.Random bones"]) {
         boneMats.clear();
-        boneMats.resize(kNumBones);
-        originalBones.resize(kNumBones);
-        for(int i=0; i<kNumBones; i++) {
+        boneMats.resize(kNumJoints);
+        originalJoints.resize(kNumJoints);
+        for(int i=0; i<kNumJoints; i++) {
             M44 &m = boneMats[i];
             m.identity();
             m.translate(ofSignedNoise(i + 615.1276) * 10 + (float)params["Shader.Test box.posx"], ofSignedNoise(i + 57.137) * 10 + (float)params["Shader.Test box.posy"], ofSignedNoise(i + 12874.5) * 10 + (float)params["Shader.Test box.posz"]);
@@ -142,7 +145,7 @@ void ofApp::draw(){
             m.rotateY(radians(ofSignedNoise(i + 572.31) * 360));
             m.rotateZ(radians(ofSignedNoise(i + 1767.1417) * 360));
             m.scale(ofNoise(i + 7162.41) * 10, ofNoise(i + 81632.41) * 10, ofNoise(i + 17626.3123) * 10);
-            originalBones[i] = m;
+            originalJoints[i] = m;
             m.invert();
         }
     }
@@ -163,7 +166,7 @@ void ofApp::draw(){
     shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
     
     //    shaderRayTracer.setUniformMatrix4f("box_mat", ofMatrix4x4((float*)boxMat).getInverse());
-    shaderRayTracer.setUniformMatrix4f("box_mats", (ofMatrix4x4&) boneMats[0], kNumBones);//
+    shaderRayTracer.setUniformMatrix4f("box_mats", (ofMatrix4x4&) boneMats[0], kNumJoints);//
     
     shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
     shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
@@ -181,7 +184,7 @@ void ofApp::draw(){
     gfx::setModelViewMatrix(wv);
     
     if(params["Display.Debug skeleton"]) {
-        debugDrawSkeleton(originalBones,animSys.getBoneLengths());
+        debugDrawSkeleton(originalJoints,animSys.getJointLengths());
     }
     
     ofSetupScreen();

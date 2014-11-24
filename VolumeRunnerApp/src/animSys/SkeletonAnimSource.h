@@ -26,7 +26,7 @@ namespace cm {
 	
 	public:
 		
-		SkeletonAnimSource( int nBones, const char * name ) : _numBones(nBones),name(name)
+		SkeletonAnimSource( int nJoints, const char * name ) : _numJoints(nJoints),name(name)
 		{
 		}
 		
@@ -35,11 +35,11 @@ namespace cm {
 		}
 		
 		std::string 	name;
-		int		getNumBones() { return _numBones; }
+		int		getNumJoints() { return _numJoints; }
 		
 		virtual SkeletonAnimInstance * createInstance() = 0;
 	protected:
-		int _numBones;
+		int _numJoints;
 		
 	};
 	
@@ -47,7 +47,7 @@ namespace cm {
 	class SkeletonKeyAnimSource : public SkeletonAnimSource
 	{
 		public:
-			SkeletonKeyAnimSource( int nBones, const char * name ) : SkeletonAnimSource(nBones,name)
+			SkeletonKeyAnimSource( int nJoints, const char * name ) : SkeletonAnimSource(nJoints,name)
 			{
 			}
 			

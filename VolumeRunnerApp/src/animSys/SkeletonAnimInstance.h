@@ -35,7 +35,7 @@ namespace cm {
 		virtual void		rewind() {}
 		
 		/// gets transform for a given bone
-		virtual cm::Transform 	 getTransformForBone( int index ) const = 0;
+		virtual cm::Transform 	 getTransformForJoint( int index ) const = 0;
 		
 		virtual bool hasEnded() { return false; }
 		virtual bool isLooping() { return true; }
@@ -43,7 +43,7 @@ namespace cm {
 		virtual float getCurrentTime() const { return 0; }
 		virtual float getTimeTillEnd() const { return 1000; }
 		
-		int		getNumBones() const;
+		int		getNumJoints() const;
 		
 		SkeletonAnimSource * source;
 		
@@ -67,7 +67,7 @@ namespace cm {
 		float getCurrentTime() const { return _cursor.position; }
 		float getTimeTillEnd() const;
 		
-		cm::Transform getTransformForBone( int i ) const;
+		cm::Transform getTransformForJoint( int i ) const;
 		
 		bool	hasEnded() { return _cursor.ended; }
 		bool	isLooping() { return _cursor.loop; }

@@ -47,6 +47,7 @@ namespace cm {
 		{
 			endNode = false;
 			bindPoseMatrix.identity();
+            boneCorrupted = false;
 		}
 		
 		~BVHNode()
@@ -77,9 +78,11 @@ namespace cm {
 		cm::Vec3	direction;
 		cm::Vec3	parentDirection;
 		float	parentLength;
-		
+
 		float	length;
-		
+
+        bool    boneCorrupted;
+        
 		cm::M44		bindPoseMatrix;
 		BVHNode * parent;
 		
@@ -123,7 +126,7 @@ namespace cm {
 			bool			parseMotionLine( Buffer & buf );
 			bool			parseMotionChannel( BVHNode * node, Buffer & buf );
 			
-			Bone *			createBone( BVHNode * node );
+			Joint *			createJoint( BVHNode * node );
 			
 			BVHNode * 				_root;
 			std::vector<BVHNode*>			_linearNodes;

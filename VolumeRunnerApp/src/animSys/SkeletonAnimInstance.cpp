@@ -33,9 +33,9 @@ SkeletonAnimInstance::~SkeletonAnimInstance()
 		
 /////////////////////////////////////////////////////////////////
 
-int		SkeletonAnimInstance::getNumBones() const
+int		SkeletonAnimInstance::getNumJoints() const
 {
-	return source->getNumBones();
+	return source->getNumJoints();
 }
 
 
@@ -81,7 +81,7 @@ float SkeletonKeyAnimInstance::getTimeTillEnd() const
 
 /////////////////////////////////////////////////////////////////
 
-cm::Transform SkeletonKeyAnimInstance::getTransformForBone( int i ) const
+cm::Transform SkeletonKeyAnimInstance::getTransformForJoint( int i ) const
 {
 	SkeletonKeyAnimSource * src = (SkeletonKeyAnimSource*)source;
 	

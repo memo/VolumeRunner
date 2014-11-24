@@ -13,7 +13,7 @@ public:
     
     void	update( float msecs );
     
-    cm::Transform getTransformForBone( int i ) const;
+    cm::Transform getTransformForJoint( int i ) const;
     
     bool	hasEnded() { return false; }
     bool	isLooping() { return true; }

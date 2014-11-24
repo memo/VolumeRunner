@@ -80,11 +80,20 @@ void ofApp::draw(){
         wv.rotateY(radians(params["Shader.View.roty"]));
         mof = ofMatrix4x4((float*)wv);
     }
+    
+    M44 testmat;
+    testmat.identity();
+    testmat.translate(params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);//radians(params["Shader.Test box.roty"]));
+    testmat.rotateX(radians(params["Shader.Test box.rotx"]));
+    testmat.rotateY(radians(params["Shader.Test box.roty"]));
+    testmat.rotateZ(radians(params["Shader.Test box.rotz"]));
+
     shaderRayTracer.begin();
     shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
     shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
-    shaderRayTracer.setUniform3f("testpos", ofDegToRad(params["Shader.Test box.posx"]), ofDegToRad(params["Shader.Test box.posy"]), ofDegToRad(params["Shader.Test box.posz"]));
+    shaderRayTracer.setUniform3f("testpos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
     shaderRayTracer.setUniform3f("testrot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
+    shaderRayTracer.setUniformMatrix4f("testmat", ofMatrix4x4((float*)testmat).getInverse());//
     shaderRayTracer.setUniformMatrix4f("invViewMatrix", mof.getInverse());//camera.getModelViewMatrix());
     shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()))/2);
     ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());

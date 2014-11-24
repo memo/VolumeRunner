@@ -5,7 +5,7 @@ uniform float time; // current time
 uniform vec2 mouse; // mouse position (screen space)
 
 uniform vec3 testpos, testrot;
-
+uniform mat4 testmat;
 uniform mat4 invViewMatrix;
 uniform float tanHalfFov; // tan(fov)/2
 
@@ -135,9 +135,10 @@ vec3 rotate_z(in vec3 p, float theta)
   return res;
 }
 
-vec3 transform(in vec3 p, in mat4 mat)
+/// We actually pass in the inverse transformation here because it would be slow to do it in the shader.
+vec3 transform(in vec3 p, in mat4 inv_mat)
 {
-  return (mat*vec4(p,1.0)).xyz;
+  return (inv_mat*vec4(p,1.0)).xyz;
 }
 
 vec3 scale(in vec3 p, in vec3 scale) {
@@ -166,12 +167,12 @@ float compute_scene( in vec3 p, out int mtl )
 
   // test box
   samplepos = p;
-  samplepos = translate(samplepos, testpos);
-  samplepos = rotate_y(samplepos, testrot.y);
-  samplepos = rotate_x(samplepos, testrot.x);
-  samplepos = rotate_z(samplepos, testrot.z);
-  samplepos = scale(samplepos, vec3(2, 2, 2));
-
+  //samplepos = translate(samplepos, testpos);
+  //samplepos = rotate_y(samplepos, testrot.y);
+  //samplepos = rotate_x(samplepos, testrot.x);
+  //samplepos = rotate_z(samplepos, testrot.z);
+  //samplepos = scale(samplepos, vec3(2, 2, 2));
+  samplepos = transform(samplepos, testmat);
   float d3 = obj_round_box(samplepos, vec3(10.0, 20.0, 30.0), 0.0);
   /*
   if( d1 < d2 )
@@ -215,7 +216,7 @@ float compute_scene( in vec3 p, out int mtl )
 vec3 calc_normal ( in vec3 p )
 {
   vec3 n = vec3(0.0);
-  vec3 delta = vec3( EPSILON, 0.0, 0.0 );
+  vec3 delta = vec3( 0.0001, 0.0, 0.0 );
   int mtl;
   n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
   n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );

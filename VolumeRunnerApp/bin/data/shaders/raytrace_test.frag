@@ -1,3 +1,5 @@
+#version 120
+
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time
 uniform vec2 mouse; // mouse position (screen space)
@@ -163,7 +165,7 @@ float ambient_occlusion( in vec3 p, in vec3 n )
   
   for ( int i = 1; i < 6; ++i )
   {
-    float delta = i*i*EPSILON *12.0f;
+    float delta = i*i*EPSILON *12.0;
     ao += weigth * (delta-compute_scene(p+n*delta, mtl));
     weigth *= 0.5;
   }

@@ -12,6 +12,8 @@ public:
     msa::controlfreak::ParameterGroup params;
     msa::controlfreak::gui::Gui gui;
     
+    ofShader shaderRayTracer;
+    ofEasyCam camera;
     
     void setup();
     void update();

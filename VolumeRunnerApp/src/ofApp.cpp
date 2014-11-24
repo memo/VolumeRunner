@@ -2,17 +2,29 @@
 #include "colormotor.h"
 
 
+ofBoxPrimitive box;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofBackground(0, 0, 0);
+    ofSetLogLevel(OF_LOG_VERBOSE);
     
     params.addFloat("TESTER");
+    params.startGroup("Shader");
+    params.addFloat("rotamt").setRange(-180, 180).setIncrement(1.0);
+    params.endGroup();
     
+    params.loadXmlValues();
+
     gui.addPage(params);
     gui.setDefaultKeys(true);
     gui.show();
     
-    params.loadXmlValues();
+    
+    
+    shaderRayTracer.load("shaders/quad.vert", "shaders/raytrace_test.frag");
+    
+//    box.
 }
 
 //--------------------------------------------------------------
@@ -22,7 +34,18 @@ void ofApp::update(){
 
 //--------------------------------------------------------------
 void ofApp::draw(){
-
+    camera.begin();
+    box.draw();
+    camera.end();
+    
+    shaderRayTracer.begin();
+    shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+    shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
+    shaderRayTracer.setUniform1f("rotamt", ofDegToRad(params["Shader.rotamt"]));
+    shaderRayTracer.setUniformMatrix4f("invViewMatrix", camera.getModelViewMatrix().getInverse());
+    shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(camera.getFov()))/2);
+    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    shaderRayTracer.end();
 }
 
 //--------------------------------------------------------------

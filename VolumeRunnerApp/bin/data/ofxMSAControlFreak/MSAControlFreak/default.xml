@@ -1,5 +1,8 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
         <Parameter type="N3msa12controlfreak14ParameterFloatE" name="TESTER" value="0.000000000"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Shader">
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotamt" value="-33.750000000"></Parameter>
+        </Parameter>
     </Parameter>
 </ofxMSAControlFreak>

@@ -1,6 +1,6 @@
 #version 120
 
-#define kNumBones   10
+#define kNumJoints   21
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time
@@ -8,7 +8,7 @@ uniform vec2 mouse; // mouse position (screen space)
 
 uniform vec3 box_pos, box_rot, box_scale;  // for testing individual transforms
 uniform mat4 box_mat;    // for testing whole transform
-uniform mat4 box_mats[kNumBones];
+uniform mat4 box_mats[kNumJoints];
 
 uniform mat4 invViewMatrix;
 uniform float tanHalfFov; // tan(fov/2)
@@ -176,8 +176,8 @@ float compute_scene( in vec3 p, out int mtl )
     //d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
     
     
-    for(int i=0; i<kNumBones; i++) {
-       d = sdf_union(d, sdf_round_box(sdf_transform(p, box_mats[i]), vec3(1.0, 1.0, 1.0), 0.0) );
+    for(int i=0; i<kNumJoints; i++) {
+       d = sdf_union(d, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 1.0, 1.0), 0.0) );
     }
     
     mtl = 1;

@@ -215,6 +215,7 @@
 		BBF9C4591A2356A400209F8B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BBF9C45B1A2356A400209F8B /* ofxMSAInteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMSAInteractiveObject.cpp; sourceTree = "<group>"; };
 		BBF9C45C1A2356A400209F8B /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMSAInteractiveObject.h; sourceTree = "<group>"; };
+		BBF9C4611A23748800209F8B /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = bin/data/shaders; sourceTree = "<group>"; };
 		D6CEAD361A23596400FFC56A /* cmCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmCore.h; sourceTree = "<group>"; };
 		D6CEAD371A23596400FFC56A /* cmMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmMath.h; sourceTree = "<group>"; };
 		D6CEAD381A23596400FFC56A /* colormotor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = colormotor.h; sourceTree = "<group>"; };
@@ -717,6 +718,7 @@
 			children = (
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
+				BBF9C4611A23748800209F8B /* shaders */,
 				BBF9C3821A23516E00209F8B /* addons */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,

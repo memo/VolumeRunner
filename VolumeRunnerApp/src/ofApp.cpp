@@ -69,7 +69,6 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    animSys.update(20);
 }
 
 //--------------------------------------------------------------
@@ -115,6 +114,8 @@ void ofApp::draw(){
     
     
     // read bones from animation
+    animSys.update(20);
+
     std::vector<M44> boneMats = animSys.getBoneMatrices();//[kNumBones];
     std::vector<M44> originalBones = animSys.getBoneMatrices();
 
@@ -122,8 +123,9 @@ void ofApp::draw(){
     int boneCount = min(boneMats.size(), kNumBones);
     for( int i = 0; i < boneCount; i++ )
     {
-        boneMats[i].scale(0.0000000001, 0.000000001, 0.00000001);//1,1,boneLengths[i]);
+        boneMats[i].scale(1,1,boneLengths[i]);
         boneMats[i].invert();
+        for(int j=0; j<16; j++) if(isnan(boneMats[i].m[j])) boneMats[i].identity();
     }
     
     

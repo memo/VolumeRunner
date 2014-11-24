@@ -155,7 +155,7 @@ float compute_scene( in vec3 p, out int mtl )
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, sdf_xz_plane(p,0.0) );
+    d = sdf_union(d, sdf_xz_plane(p, -50.0) );
 
     vec3 samplepos;
     
@@ -163,7 +163,7 @@ float compute_scene( in vec3 p, out int mtl )
     samplepos = p;
     samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
     samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
-    d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
+    //d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
     
     // test box
     samplepos = p;

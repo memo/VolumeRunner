@@ -83,7 +83,7 @@ local.properties
 ._*
 
 # IGNORING BVH FILES FOR NOW
-*.bvh
+# *.bvh
 
 # Windows
 # Windows image file caches

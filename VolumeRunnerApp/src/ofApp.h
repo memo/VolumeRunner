@@ -13,7 +13,7 @@ public:
     msa::controlfreak::gui::Gui gui;
     
     ofShader shaderRayTracer;
-    ofEasyCam camera;
+    ofCamera *cam;
     
     void setup();
     void update();

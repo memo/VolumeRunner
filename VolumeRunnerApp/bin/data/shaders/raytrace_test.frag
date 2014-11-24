@@ -4,7 +4,7 @@ uniform vec2 resolution; // screen resolution
 uniform float time; // current time
 uniform vec2 mouse; // mouse position (screen space)
 
-uniform float rotamt;
+uniform vec3 testpos, testrot;
 
 uniform mat4 invViewMatrix;
 uniform float tanHalfFov; // tan(fov)/2
@@ -45,39 +45,20 @@ float attenuation( in float distance, in float atten )
 }
 
 
-vec3 rotate_y(in vec3 p, float theta)
-{
-  float c = cos(theta);
-  float s = sin(theta);
-  vec3 res;
-  res.x = p.x * c - p.z * s;
-  res.y = p.y;
-  res.z = p.x * s + p.z * c;
-  return res;
-}
-
-vec3 rotate_x(in vec3 p, float theta)
-{
-  float c = cos(theta);
-  float s = sin(theta);
-  vec3 res;
-  res.y = p.z * c - p.y * s;
-  res.x = p.x;
-  res.z = p.z * s + p.y * c;
-  return res;
-}
-
 /*************************************/
 /* Objects                           */
+// p: sample position
+// assumes object is at 0, 0, 0
+
 
 float obj_xz_plane(in vec3 p, float y)
 {
-    return p.y + y;
+    return p.y - y;
 }
 
 float obj_round_box(in vec3 p, in vec3 size, float smoothness )
 {
-  return length(max(abs(p)-size,0.0))-smoothness;
+  return length(max(abs(p)-size*0.5,0.0))-smoothness;
 }
 
 float obj_sphere(in vec3 p, in float radius)
@@ -111,8 +92,56 @@ float op_blend(vec3 p, float a, float b)
 
 vec3 repeat( in vec3 p, in vec3 rep)
 {
-  vec3 q = mod(p,rep)-0.5*rep;
+  vec3 q = mod(p, rep) - 0.5*rep;
   return q;
+}
+
+vec3 translate( in vec3 p, in vec3 offset )
+{
+  return p-offset;
+}
+
+
+vec3 rotate_y(in vec3 p, float theta)
+{
+  float c = cos(theta);
+  float s = sin(theta);
+  vec3 res;
+  res.x = p.x * c - p.z * s;
+  res.y = p.y;
+  res.z = p.x * s + p.z * c;
+  return res;
+}
+
+vec3 rotate_x(in vec3 p, float theta)
+{
+  float c = cos(theta);
+  float s = sin(theta);
+  vec3 res;
+  res.x = p.x;
+  res.y = p.y * c - p.z * s;
+  res.z = p.y * s + p.z * c;
+  return res;
+}
+
+vec3 rotate_z(in vec3 p, float theta)
+{
+  float c = cos(theta);
+  float s = sin(theta);
+  vec3 res;
+  res.x = p.x * c - p.y * s;
+  res.y = p.x * s + p.y * c;
+  res.z = p.z;
+  return res;
+}
+
+vec3 transform(in vec3 p, in mat4 mat)
+{
+  return (mat*vec4(p,1.0)).xyz;
+}
+
+vec3 scale(in vec3 p, in vec3 scale) {
+  return p / scale;
 }
 
 /**************************************/
@@ -120,6 +149,43 @@ vec3 repeat( in vec3 p, in vec3 rep)
 
 float compute_scene( in vec3 p, out int mtl )
 {
+  mtl = 0;
+  float d1 = obj_xz_plane(p,0.0);
+  //float d2 = obj_round_box(repeat(translate(p,vec3(0.0,7.0,0.0)),
+  //                                vec3(22.0,0.0,22.0)),vec3(5.0,5.0,5.0),1.0);//obj_sphere(p+vec3(0,2.0,0.0),2.0);
+  //return d1;
+  //return d1;
+
+  vec3 samplepos;
+
+  // repeated box
+  samplepos = p;
+  //samplepos = repeat(p, vec3(13.5, 0.0, 13.5));
+  samplepos = translate(samplepos, vec3(0.0, 5.0, 0.0));
+  float d2 = obj_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0);
+
+  // test box
+  samplepos = p;
+  samplepos = translate(samplepos, testpos);
+  samplepos = rotate_y(samplepos, testrot.y);
+  samplepos = rotate_x(samplepos, testrot.x);
+  samplepos = rotate_z(samplepos, testrot.z);
+  samplepos = scale(samplepos, vec3(2, 2, 2));
+
+  float d3 = obj_round_box(samplepos, vec3(10.0, 20.0, 30.0), 0.0);
+  /*
+  if( d1 < d2 )
+  {
+   // mtl = 0;
+  }
+  else
+  {
+    //mtl = 1;
+  }
+  */
+  mtl = 1;
+  return min(op_union(d1, d2), d3);
+  /*
   mtl = 0;
   float d1,d2;
   d1 = obj_xz_plane(p,3.0);
@@ -139,7 +205,7 @@ float compute_scene( in vec3 p, out int mtl )
     mtl = 2;
   }
 
-  return d1;//op_union(d1,d2);
+  return d1;//op_union(d1,d2);*/
 }
 
 
@@ -173,21 +239,6 @@ float ambient_occlusion( in vec3 p, in vec3 n )
   return 1.0-saturate(ao);
 }
 
-float ambient_occlusion2( in vec3 p, in vec3 n )
-{
-  float k = 0.0008;
-  float ao = 0.0;
-  int mtl;
-  for( int i = 1 ; i <= 5; i++ )
-  {
-    float decay = 1.0/pow(2.0,i);
-    //float d = march(scp+n*delta*i,prp).d.x;
-    ao += decay * compute_scene(p+n*EPSILON*i,mtl);
-  }
-  return saturate(ao);//*k;
-}
-
-
 
 vec3 rounded_squares_texture(in vec3 p)
 {
@@ -204,13 +255,15 @@ vec3 rounded_squares_texture(in vec3 p)
 vec3 compute_color( in vec3 p, in float distance, in int mtl )
 {
   vec3 n = calc_normal(p);
+  //return normal_color(n); // use this to debug normals
+
   vec3 light = normalize(light1);
   float nl = max(0.3,dot(n,light));
   float fake = luminosity(normal_color(n))*1.4;
   vec3 clr = vec3(1.0);//,0.9,0.9);
   if(mtl==0)
   {
-    clr = vec3(1.0,0.2,0.1);//rounded_squares_texture(p);
+    clr = vec3(0.0,0.3,1.0);//rounded_squares_texture(p);
   }
   float l = nl*fake*ambient_occlusion(p,n);
   //l = expose(l,0.8);
@@ -252,7 +305,6 @@ vec3 trace_ray(in vec3 p, in vec3 w, inout float distance)
 
 void main(void)
 {
-  vec2 uv = gl_TexCoord[0].xy;
   vec2 xy = gl_FragCoord.xy;
   // Primary ray origin
   vec3 p = invViewMatrix[3].xyz;

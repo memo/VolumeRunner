@@ -10,6 +10,8 @@ void ofApp::setup(){
     gui.addPage(params);
     gui.setDefaultKeys(true);
     gui.show();
+    
+    params.loadXmlValues();
 }
 
 //--------------------------------------------------------------
@@ -24,6 +26,12 @@ void ofApp::draw(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    switch(key) {
+        case 's': params.saveXmlValues();
+        case 'l': params.loadXmlValues();
+//        case 'S': params.saveXmlSchema();
+//        case 'L': params.loadXmlSchema();
+    }
 
 }
 

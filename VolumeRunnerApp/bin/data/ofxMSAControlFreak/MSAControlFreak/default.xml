@@ -1,0 +1,5 @@
+<ofxMSAControlFreak version="1.000000000" bFullSchema="0">
+    <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="TESTER" value="0.000000000"></Parameter>
+    </Parameter>
+</ofxMSAControlFreak>

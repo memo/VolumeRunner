@@ -1,6 +1,6 @@
 #version 120
 
-#define kNumBones   6
+#define kNumBones   10
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time

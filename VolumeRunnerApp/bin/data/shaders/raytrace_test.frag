@@ -8,15 +8,12 @@ uniform vec2 mouse; // mouse position (screen space)
 
 uniform vec3 box_pos, box_rot, box_scale;  // for testing individual transforms
 uniform mat4 box_mat;    // for testing whole transform
-
-//uniform mat4 box_mat[kNumBones];
+uniform mat4 box_mats[kNumBones];
 
 uniform mat4 invViewMatrix;
-uniform float tanHalfFov; // tan(fov)/2
+uniform float tanHalfFov; // tan(fov/2)
 
-//uniform vec2 resolution;
 
-//uniform vec2 mouse;
 const float EPSILON = 0.01;
 const float PI = 3.1415926535;
 const float PI2 = PI*2.0;
@@ -176,12 +173,12 @@ float compute_scene( in vec3 p, out int mtl )
     //samplepos = sdf_rotate_z(samplepos, box_rot.z);
     //samplepos = sdf_scale(samplepos, box_scale);
     samplepos = sdf_transform(samplepos, box_mat);
-    d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
+    //d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
     
     
-    //for(int i=0; i<kNumBones; i++) {
-//        d = sdf_union(d, sdf_round_box(transform(p, box_mat[i]), vec3(10.0, 20.0, 30.0), 0.0) );
-    //}
+    for(int i=0; i<kNumBones; i++) {
+       d = sdf_union(d, sdf_round_box(sdf_transform(p, box_mats[i]), vec3(1.0, 1.0, 1.0), 0.0) );
+    }
     
     mtl = 1;
     return d;

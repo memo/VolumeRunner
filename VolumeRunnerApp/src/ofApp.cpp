@@ -1,6 +1,9 @@
 #include "ofApp.h"
 #include "colormotor.h"
 
+#define kNumBones   6
+
+
 cm::FileWatcher * reloader;
 
 ofBoxPrimitive box;
@@ -94,6 +97,20 @@ void ofApp::draw(){
     boxMat.rotateZ(radians(params["Shader.Test box.rotz"]));
     boxMat.scale(params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
 
+    M44 boxMats[kNumBones];
+    for(int i=0; i<kNumBones; i++) {
+        M44 &m = boxMats[i];
+        m.identity();
+        m.translate(ofSignedNoise(i + 615.1276) * 10, ofSignedNoise(i + 57.137) * 10, ofSignedNoise(i + 12874.5) * 10);
+        m.rotateX(radians(ofSignedNoise(i + 114.1) * 360));
+        m.rotateY(radians(ofSignedNoise(i + 572.31) * 360));
+        m.rotateZ(radians(ofSignedNoise(i + 1767.1417) * 360));
+        m.scale(ofNoise(i + 7162.41) * 10, ofNoise(i + 81632.41) * 10, ofNoise(i + 17626.3123) * 10);
+        m.invert();
+    }
+    
+    
+
     
     
     shaderRayTracer.begin();
@@ -104,8 +121,10 @@ void ofApp::draw(){
     shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
 
     shaderRayTracer.setUniformMatrix4f("box_mat", ofMatrix4x4((float*)boxMat).getInverse());//
+    shaderRayTracer.setUniformMatrix4f("box_mats", (ofMatrix4x4&) boxMats[0], kNumBones);//
+
     shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
-    shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()))/2);
+    shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
     ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     shaderRayTracer.end();
     /*

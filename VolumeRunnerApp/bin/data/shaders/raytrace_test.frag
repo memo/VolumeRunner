@@ -148,7 +148,33 @@ vec3 scale(in vec3 p, in vec3 scale) {
 /**************************************/
 /* Scene description here..           */
 
+float compute_scene_rec( in vec3 p, in float d, in int depth )
+{
+  if(depth>1)
+    return d;
+
+  for( int i = 1; i < 6; i++ )
+  {
+      float fi=float(i);
+      vec3 pt = p;
+      pt = rotate_y(pt,1.2*fi);
+      //pt = scale(p,vec3(fi*0.3));
+      pt = translate(pt,vec3(12,3.0,13.0));
+      d = min(d,obj_round_box(pt,vec3(13.0),1.0));
+      return min(d,compute_scene_rec(pt,d,depth+1));
+  }
+
+  return d;
+}
+
 float compute_scene( in vec3 p, out int mtl )
+{
+  mtl = 1;
+  float d = compute_scene_rec(p,1000.0,0);
+  return min(d,obj_xz_plane(p,0.0));
+}
+
+float compute_scene2( in vec3 p, out int mtl )
 {
   mtl = 0;
   float d1 = obj_xz_plane(p,0.0);
@@ -163,8 +189,16 @@ float compute_scene( in vec3 p, out int mtl )
   samplepos = p;
   //samplepos = repeat(p, vec3(13.5, 0.0, 13.5));
   samplepos = translate(samplepos, vec3(0.0, 5.0, 0.0));
-  float d2 = obj_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0);
+  float d2 = 10000.0;
+  const float sz = 4.0;
+  for( int i = 0; i < 31; i++ )
+  {
+    float fi = float(i);
+    d2 = min(d2,obj_round_box(translate(p,vec3(-50.0+5.0*fi,4.0,0.0)), vec3(sz), 0.0));
+  }
 
+  //return d2;
+/*
   // test box
   samplepos = p;
   //samplepos = translate(samplepos, testpos);
@@ -172,7 +206,7 @@ float compute_scene( in vec3 p, out int mtl )
   //samplepos = rotate_x(samplepos, testrot.x);
   //samplepos = rotate_z(samplepos, testrot.z);
   //samplepos = scale(samplepos, vec3(2, 2, 2));
-  samplepos = transform(samplepos, testmat);
+  samplepos = transform(samplepos, testmat);*/
   float d3 = obj_round_box(samplepos, vec3(10.0, 20.0, 30.0), 0.0);
   /*
   if( d1 < d2 )
@@ -278,7 +312,7 @@ vec3 compute_color( in vec3 p, in float distance, in int mtl )
 vec3 trace_ray(in vec3 p, in vec3 w, inout float distance) 
 {
   const float maxDistance = 1e10;
-  const int maxIterations = 128;
+  const int maxIterations = 70;
   const float closeEnough = EPSILON; //1e-2;
   vec3 rp;
   int mtl;
@@ -291,6 +325,8 @@ vec3 trace_ray(in vec3 p, in vec3 w, inout float distance)
     if (d < closeEnough) 
     {
       distance = t;
+      // use this to debug number of ray casts
+      //return vec3(float(i)/128.0);
       return compute_color(rp,t,mtl);
     }
     else if(t > distance)

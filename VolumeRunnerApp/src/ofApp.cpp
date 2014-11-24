@@ -1,9 +1,13 @@
 #include "ofApp.h"
 #include "colormotor.h"
+#include "AnimSys.h"
+#include "RunningSkeleton.h"
 
 cm::FileWatcher * reloader;
 
 ofBoxPrimitive box;
+SkeletonAnimSystem animSys;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -44,6 +48,10 @@ void ofApp::setup(){
     shaderRayTracer.load("", "shaders/raytrace_test.frag");
     
     cam = new ofCamera();
+    
+    //
+    animSys.addBVHFile("1",ofToDataPath("mocap/test.bvh"));
+    animSys.play("1");
 //    cam = new ofEasyCam();
 }
 
@@ -66,13 +74,15 @@ void ofApp::draw(){
     }
     
     ofMatrix4x4 mof;
+    M44 wv;
+    
     if(params["Shader.View.use OF matrix"]) {
         mof.translate(0,0,(float)params["Shader.View.z"]);//-10.0);//getf('y'),-getf('z'))
         mof.rotate((params["Shader.View.rotx"]), 1, 0, 0);
         mof.rotate((params["Shader.View.rotz"]), 0, 0, 1);
         mof.rotate((params["Shader.View.roty"]), 0, 1, 0);
     } else {
-        M44 wv;
+
         wv.identity();
         wv.translate(0,0,-(float)(params["Shader.View.z"]));//-10.0);//getf('y'),-getf('z'))
         wv.rotateX(radians(params["Shader.View.rotx"]));
@@ -87,7 +97,10 @@ void ofApp::draw(){
     testmat.rotateX(radians(params["Shader.Test box.rotx"]));
     testmat.rotateY(radians(params["Shader.Test box.roty"]));
     testmat.rotateZ(radians(params["Shader.Test box.rotz"]));
-
+    
+    gfx::enableDepthBuffer(false);
+    gfx::setIdentityTransform();
+    
     shaderRayTracer.begin();
     shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
     shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
@@ -96,15 +109,21 @@ void ofApp::draw(){
     shaderRayTracer.setUniformMatrix4f("testmat", ofMatrix4x4((float*)testmat).getInverse());//
     shaderRayTracer.setUniformMatrix4f("invViewMatrix", mof.getInverse());//camera.getModelViewMatrix());
     shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()))/2);
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    drawUVQuad();
     shaderRayTracer.end();
     /*
      cam.setTransformMatrix(mof);
      cam.begin();
      box.draw();
      cam.end();*/
+    gfx::setPerspectiveProjection(cam->getFov(),(float)ofGetWidth()/ofGetHeight(),0.1,1000.0);
+    gfx::setModelViewMatrix(wv);
     
+    //ofDrawRectangle(0, 0, ofGetWi
+    animSys.update(20);
+    debugDrawSkeleton(animSys.getBoneMatrices(),animSys.getBoneLengths());
     
+    ofSetupScreen();
     ofSetColor(255, 255, 255);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
 }

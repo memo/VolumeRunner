@@ -287,6 +287,8 @@ vec3 trace_ray(in vec3 p, in vec3 w, inout float distance)
         if (d < closeEnough)
         {
             distance = t;
+            // use this to debug number of ray casts
+            //return vec3(float(i)/128.0);
             return compute_color(rp,t,mtl);
         }
         else if(t > distance)

@@ -13,10 +13,4 @@
 
 #pragma once
 
-#include "cmCore.h"
-#include "cmMath.h"
-#include "cmGfx.h"
-
-#ifndef CM_DONT_AUTOUSE_NAMESPACE
-using namespace cm;
-#endif
+#include "gfx/CMGfxUtils.h"

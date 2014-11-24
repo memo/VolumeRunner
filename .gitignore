@@ -82,6 +82,9 @@ local.properties
 # Thumbnails
 ._*
 
+# IGNORING BVH FILES FOR NOW
+*.bvh
+
 # Windows
 # Windows image file caches
 Thumbs.db

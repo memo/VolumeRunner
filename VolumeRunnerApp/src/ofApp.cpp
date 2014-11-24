@@ -1,5 +1,7 @@
 #include "ofApp.h"
 #include "colormotor.h"
+#include "AnimSys.h"
+#include "RunningSkeleton.h"
 
 #define kNumBones   6
 
@@ -7,6 +9,8 @@
 cm::FileWatcher * reloader;
 
 ofBoxPrimitive box;
+SkeletonAnimSystem animSys;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -50,6 +54,10 @@ void ofApp::setup(){
     shaderRayTracer.load("", "shaders/raytrace_test.frag");
     
     cam = new ofCamera();
+    
+    //
+    animSys.addBVHFile("1",ofToDataPath("mocap/test.bvh"));
+    animSys.play("1");
 //    cam = new ofEasyCam();
 }
 
@@ -73,13 +81,15 @@ void ofApp::draw(){
     
     // view transform
     ofMatrix4x4 viewMat;
+    M44 wv;
+    
     if(params["Shader.View.use OF matrix"]) {
         viewMat.translate(0,0,(float)params["Shader.View.z"]);//-10.0);//getf('y'),-getf('z'))
         viewMat.rotate((params["Shader.View.rotx"]), 1, 0, 0);
         viewMat.rotate((params["Shader.View.rotz"]), 0, 0, 1);
         viewMat.rotate((params["Shader.View.roty"]), 0, 1, 0);
     } else {
-        M44 wv;
+
         wv.identity();
         wv.translate(0,0,-(float)(params["Shader.View.z"]));//-10.0);//getf('y'),-getf('z'))
         wv.rotateX(radians(params["Shader.View.rotx"]));
@@ -113,9 +123,13 @@ void ofApp::draw(){
 
     
     
+    gfx::enableDepthBuffer(false);
+    gfx::setIdentityTransform();
+    
     shaderRayTracer.begin();
     shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
     shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
+
     shaderRayTracer.setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
     shaderRayTracer.setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
     shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
@@ -125,7 +139,8 @@ void ofApp::draw(){
 
     shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
     shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
-    ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    //ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
+    drawUVQuad();
     shaderRayTracer.end();
     /*
      cam.setTransformMatrix(viewMat);
@@ -134,6 +149,13 @@ void ofApp::draw(){
      cam.end();*/
     
     
+    gfx::setPerspectiveProjection(cam->getFov(),(float)ofGetWidth()/ofGetHeight(),0.1,1000.0);
+    gfx::setModelViewMatrix(wv);
+    
+    animSys.update(20);
+    debugDrawSkeleton(animSys.getBoneMatrices(),animSys.getBoneLengths());
+    
+    ofSetupScreen();
     ofSetColor(255, 255, 255);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
 }

@@ -1,8 +1,15 @@
 #include "ofApp.h"
 
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
-
+    
+    params.addFloat("TESTER");
+    
+    gui.addPage(params);
+    gui.setDefaultKeys(true);
+    gui.show();
 }
 
 //--------------------------------------------------------------

@@ -73,6 +73,8 @@ struct  TVec3
 		return *this;
 	}
 	
+    bool hasNans() const { if(isnan(x) || isnan(y) || isnan(z)) return true; return false; }
+    
 	void set(T x_, T y_, T z_) { x = x_; y = y_; z = z_; }
 	
 	void set( const TVec3<T> & v ) { x = v.x; y = v.y; z = v.z;  }

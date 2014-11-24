@@ -150,6 +150,8 @@ template <typename T> struct TMatrix4x4
 	/// Get Transpose matrix
 	TMatrix4x4<T>		transposed() const;
 	
+    bool hasNans() const { for( int i = 0; i < 16; i++ ) if(isnan(m[i])) return true; return false; }
+    
 	/// Get determinant
 	T	determinant() const ;
 	

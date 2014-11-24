@@ -26,6 +26,12 @@ void ofApp::draw(){
 }
 
 //--------------------------------------------------------------
+void ofApp::exit(){
+    params.saveXmlValues();
+}
+
+
+//--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch(key) {
         case 's': params.saveXmlValues();

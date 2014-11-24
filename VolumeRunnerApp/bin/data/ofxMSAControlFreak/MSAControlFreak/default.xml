@@ -1,20 +1,23 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="59.238243103"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="42.093334198"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Shader">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Test box">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="posx" value="9.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="posy" value="27.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="posz" value="0.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="39.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="58.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotz" value="79.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="posx" value="20.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="posy" value="14.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="posz" value="22.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="23.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="-122.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotz" value="-32.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="scalex" value="0.800000012"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="scaley" value="4.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="scalez" value="2.500000000"></Parameter>
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="View">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="z" value="91.964286804"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="28.928573608"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="33.750000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotz" value="1.607131958"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="z" value="86.160766602"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="25.714294434"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="-35.357147217"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotz" value="-3.214279175"></Parameter>
                 <Parameter type="N3msa12controlfreak13ParameterBoolE" name="use OF matrix" value="0"></Parameter>
             </Parameter>
         </Parameter>

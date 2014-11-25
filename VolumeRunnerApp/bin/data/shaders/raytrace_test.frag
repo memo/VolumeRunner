@@ -1,6 +1,6 @@
 #version 120
 
-#define kNumJoints   4
+#define kNumJoints   5
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time
@@ -13,12 +13,15 @@ uniform mat4 box_mats[kNumJoints];
 uniform mat4 invViewMatrix;
 uniform float tanHalfFov; // tan(fov/2)
 
+uniform float blend_k;
 
 const float EPSILON = 0.01;
 const float PI = 3.1415926535;
 const float PI2 = PI*2.0;
 
 const vec3 light1  = vec3(0.5,1.0,0.3);
+
+const vec3 fog_clr = vec3(1.0,1.0,1.0);
 
 float saturate( in float v )
 {
@@ -46,6 +49,27 @@ float attenuation( in float distance, in float atten )
     return min( 1.0/(atten*distance*distance), 1.0 );
 }
 
+//// Smooth blend functions
+////  http://www.iquilezles.org/www/articles/smin/smin.htm
+float smin_exp( float a, float b, float k )
+{
+    float res = exp( -k*a ) + exp( -k*b );
+    return -log( res )/k;
+}
+
+float smin_poly( float a, float b, float k )
+{
+    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
+    return mix( b, a, h ) - k*h*(1.0-h);
+}
+
+    
+// power smooth min (k = 8);
+float smin_power( float a, float b, float k )
+{
+    a = pow( a, k ); b = pow( b, k );
+    return pow( (a*b)/(a+b), 1.0/k );
+}
 
 /*************************************/
 /* Objects                           */
@@ -74,6 +98,12 @@ float sdf_torus(in vec3 p, in float radius, in float thickness )
     return length(q)-thickness;
 }
 
+float sdf_prism( in vec3 p, in vec2 h )
+{
+    vec3 q = abs(p);
+    return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
+}
+
 
 
 /*************************************/
@@ -84,13 +114,23 @@ float sdf_union( in float d1, in float d2  )
     return min(d1,d2);
 }
 
+float sdf_blend_exp( in float d1, in float d2, in float k )
+{
+    return smin_poly(d1,d2,k);
+}
+
+float sdf_blend_poly( in float d1, in float d2, in float k )
+{
+    return smin_poly(d1,d2,k);
+}
+/*
 float sdf_blend(vec3 p, float a, float b)
 {
     float s = smoothstep(length(p), 0.0, 1.0);
     float d = mix(a, b, s);
     return d;
 }
-
+*/
 
 vec3 sdf_repeat( in vec3 p, in vec3 rep)
 {
@@ -150,6 +190,44 @@ vec3 sdf_scale(in vec3 p, in vec3 scale) {
 /**************************************/
 /* Scene description here..           */
 
+vec3 guy_transform_inner( in vec3 p )
+{
+    return  sdf_repeat(p,vec3(0.0,0.0,0.0));
+}
+
+vec3 guy_transform_outer( in vec3 p )
+{
+    return sdf_repeat(p,vec3(0.0,0.0,0.0));
+}
+
+float guy_primitive( in vec3 p )
+{
+    //return sdf_round_box(p, vec3(1.0, 2.0, 1.0), 0.1);
+    return sdf_prism(p,vec2(2.0,0.5));//sdf_round_box(p, vec3(4.0, 3.0, 1.0), 0.1);
+    float d = sdf_round_box(p, vec3(0.3, 1.0, 1.0), 0.1);
+    d = sdf_union(d,sdf_round_box(sdf_translate(p,vec3(1.3,1.5,0.1)), vec3(2.0, 3.0, 1.0), 0.1));
+    return d;
+}
+
+float sdf_guy( in vec3 p )
+{
+    float d = 1000.0;
+    for(int i=0; i<kNumJoints; i++) {
+       //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+        d = sdf_blend_poly(d,    guy_primitive(
+                                guy_transform_inner(
+                                    sdf_translate(
+                                        sdf_transform(p, box_mats[i]),
+                                        vec3(0.0,0.0,0.5)
+                                    )
+                                )
+                            )
+                      , blend_k);
+    }
+
+    return d;
+}
+
 float compute_scene( in vec3 p, out int mtl )
 {
     mtl = 0;
@@ -177,7 +255,8 @@ float compute_scene( in vec3 p, out int mtl )
     
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
-       dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 1.0, 1.0), 0.0) );
+       //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+        dguy = sdf_union(dguy, sdf_guy(guy_transform_outer(p))); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
     }
     
     if(dguy<d)
@@ -218,7 +297,7 @@ float compute_scene( in vec3 p, out int mtl )
 vec3 calc_normal ( in vec3 p )
 {
     vec3 n = vec3(0.0);
-    vec3 delta = vec3( 0.0001, 0.0, 0.0 );
+    vec3 delta = vec3( 0.005, 0.0, 0.0 );
     int mtl;
     n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
     n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );
@@ -228,14 +307,15 @@ vec3 calc_normal ( in vec3 p )
 
 float ambient_occlusion( in vec3 p, in vec3 n )
 {
+    //n = vec3(0.0,1.0,1.0);
     float ao = 0.0;
-    float weigth = 0.7;
+    float weigth = 0.5;
     int mtl;
     
     for ( int i = 1; i < 6; ++i )
     {
         float delta = i*i*EPSILON *12.0;
-        ao += weigth * (delta-compute_scene(p+n*delta, mtl));
+        ao += weigth * (delta-compute_scene(p+n*(0.0+delta), mtl));
         weigth *= 0.5;
     }
     
@@ -243,13 +323,13 @@ float ambient_occlusion( in vec3 p, in vec3 n )
 }
 
 
-vec3 rounded_squares_texture(in vec3 p)
+float rounded_squares_texture(in vec3 p)
 {
     float div = 0.1;
     float v = 1.0;
     v = (fract(p.x*div)-0.5)*(fract(p.z*div)-0.5);
-    v = saturate(pow(v*60,0.7));
-    return vec3(max(0.3,v),v,0);//,v,0.0);//,v*0.5,0.0);
+    v = saturate(pow(v*220,1.9));
+    return max(0.9,v);
 }
 
 /*************************************/
@@ -263,15 +343,17 @@ vec3 compute_color( in vec3 p, in float distance, in int mtl )
     vec3 light = normalize(light1);
     float nl = max(0.3,dot(n,light));
     float fake = luminosity(normal_color(n))*1.4;
-    vec3 clr = vec3(1.0);//,0.9,0.9);
+    vec3 clr = vec3(2.0);//,0.9,0.9);
     if(mtl==0)
     {
-        clr = rounded_squares_texture(p);
+        clr = vec3(0.8,0.9,1.0)*rounded_squares_texture(p);
     }
     float l = nl*fake*ambient_occlusion(p,n);
     //l = expose(l,0.8);
-    l *= attenuation(distance,0.0001);
-    return clr*l;
+    float fog = attenuation(distance,0.0001);
+    
+    //l *= 
+    return mix(clr*l,fog_clr,1.0-fog);
 }
 
 /*************************************/
@@ -299,13 +381,13 @@ vec3 trace_ray(in vec3 p, in vec3 w, inout float distance)
         }
         else if(t > distance)
         {
-            return vec3(0.0);
+            return fog_clr;//vec3(0.0);
         }
         
         
     }
     
-    return vec3(0.0); // return skybox here
+    return fog_clr;//vec3(0.0); // return skybox here
 }
 
 void main(void)

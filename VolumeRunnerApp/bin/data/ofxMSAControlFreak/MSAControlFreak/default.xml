@@ -1,8 +1,8 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="48.677288055"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="52.396820068"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Display">
-            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Debug skeleton" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Debug skeleton" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Random bones" value="0"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Shader">
@@ -19,8 +19,19 @@
             </Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="View">
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="distance" value="45.089286804"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="-17.678573608"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="-48.214279175"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="-48.214279175"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="-57.857147217"></Parameter>
+            </Parameter>
+        </Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Dude">
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="15.133928299"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="hip rotation" value="-10.000000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Legs">
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="startAngHigh" value="-22.098213196"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="endAngHigh" value="65.892852783"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="startAngLow" value="6.964285374"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="endAngLow" value="95.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="legPhase" value="0.856925547"></Parameter>
             </Parameter>
         </Parameter>
     </Parameter>

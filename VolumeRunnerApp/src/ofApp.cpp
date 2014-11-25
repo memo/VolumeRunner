@@ -78,10 +78,6 @@ void ofApp::update(){
 //--------------------------------------------------------------
 void ofApp::draw(){
     params["FPS"] = ofGetFrameRate();
-    /*camera.begin();
-     box.draw();
-     camera.end();
-     */
     
     if( reloader->hasFileChanged() )
     {
@@ -103,19 +99,9 @@ void ofApp::draw(){
     dude.updateRenderer(shaderRayTracer);
     camera.updateRenderer(shaderRayTracer);
     
-    //shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
-    //shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
-    //ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     drawUVQuad();
     shaderRayTracer.end();
-     
-     
-    /*
-     cam.setTransformMatrix(viewMat);
-     cam.begin();
-     box.draw();
-     cam.end();*/
-    
+
     camera.apply();
 
     
@@ -125,7 +111,7 @@ void ofApp::draw(){
     }
     
     ofSetupScreen();
-    ofSetColor(255, 255, 255);
+    ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
 }
 

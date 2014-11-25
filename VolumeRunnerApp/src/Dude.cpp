@@ -9,6 +9,8 @@
 #include "Dude.h"
 
 Dude::Dude()
+:
+blend_k(1.0)
 {
 
 }
@@ -22,7 +24,7 @@ Dude::~Dude()
 bool Dude::init()
 {
     animSys.addBVHFile("1",ofToDataPath("mocap/test.bvh"));
-    animSys.play("1");
+    //animSys.play("1");
 
     // Walking
     walkingAnim = new SkeletonWalkAnimSource(animSys.getSkeleton(),"walk");
@@ -36,6 +38,14 @@ bool Dude::init()
     // Right Leg
     animSys.addBone("RightUpLeg","RightLeg");
     animSys.addBone("RightLeg","RightFoot");
+    // Body
+    M44 bodym;
+    bodym.identity();
+    //bodym.rotateZ(radians(30));
+    bodym.translate(0,2.0,0.0);
+    bodym.scale(2.9,1.3,1.3);
+    
+    animSys.addBone("Head","LowerBack",bodym);
 }
 
 void Dude::addParams( msa::controlfreak::ParameterGroup &params )
@@ -62,7 +72,7 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
     params.startGroup("Dude"); {
         params.addFloat("speed").setRange(0.0,30.0).set(walkingAnim->speed);
         params.addFloat("hip rotation").setRange(-40,40).set(walkingAnim->rothip);
-        
+        params.addFloat("blend k").setRange(0.1,10.0).set(blend_k);
         params.startGroup("Legs"); {
             params.addFloat("startAngHigh").setRange(-50,0).setIncrement(1.0).set(walkingAnim->startAngHigh);
             params.addFloat("endAngHigh").setRange(30,90).setIncrement(1.0).set(walkingAnim->endAngHigh);
@@ -83,6 +93,8 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     walkingAnim->startAngLow = params["Dude.Legs.startAngLow"];
     walkingAnim->endAngLow = params["Dude.Legs.endAngLow"];
     walkingAnim->legPhase = params["Dude.Legs.legPhase"];
+    
+    blend_k = params["Dude.blend k"];
 }
 
 void Dude::update()
@@ -113,6 +125,7 @@ void Dude::updateRenderer( ofShader & shader )
     }
     
     // set them
+    shader.setUniform1f("blend_k",blend_k);
     shader.setUniformMatrix4f("box_mats", (ofMatrix4x4&) renderMats[0], renderMats.size());//
 }
 

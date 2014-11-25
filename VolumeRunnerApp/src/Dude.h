@@ -26,7 +26,8 @@ public:
     
     void debugDraw();
     
-
+    float blend_k;
+    
     Vec3 position;
     
     SkeletonAnimSystem animSys;

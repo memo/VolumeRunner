@@ -60,6 +60,7 @@ public:
     /// Adds a bone to animate
     /// The bone is defined between two joints
     Bone * addBone( const std::string & joint1, const std::string & joint2 );
+    Bone * getBone( int index ) const { return bones[index]; }
     
     std::vector<M44> getBoneMatrices() const;
     std::vector<float> getBoneLengths() const;
@@ -69,7 +70,6 @@ public:
     int getNumJoints() const;
     
     Skeleton * getSkeleton() { return skel; }
-    Vec3 getOffset();
 private:
     std::vector<Bone*> bones;
     

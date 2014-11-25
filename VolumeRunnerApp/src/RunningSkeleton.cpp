@@ -133,7 +133,7 @@ skeleton(skeleton)
     startAngForeArm = 0;
     endAngForeArm = 90;
     armAngle = 70;
-    speed = 1.0;
+    speed = 3.0;
     backAngle = 0.0;
     
     pose = new Pose(skeleton->getNumJoints());

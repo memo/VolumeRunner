@@ -184,27 +184,6 @@ SkeletonAnimSystem::Bone *SkeletonAnimSystem::addBone( const std::string & joint
     return ab;
 }
 
-Vec3 SkeletonAnimSystem::getOffset()
-{
-    assert(0);
-    return Vec3(0.0);
-    /*
-    Vec3 vel(0,0,0);
-    float low = 10000.0;
-    for( int i = 0; i < skel->getNumJoints(); i++ )
-    {
-        Joint * b = skel->getJoint(i);
-        M44 m = b->getJointMatrix();
-        Vec3 p = m.trans();
-        if(p.y<low)
-        {
-            vel.x=b->velocity.x;
-            vel.z=b->velocity.z;
-            low = p.y;
-            vel.y = low;
-        }
-    }
-    return vel;*/
-}
+
 
 }

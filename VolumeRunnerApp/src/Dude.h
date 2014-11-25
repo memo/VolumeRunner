@@ -17,10 +17,14 @@ public:
     
     void updateRenderer( ofShader & shader );
     
+    Vec3 getOffset() const;
+    void playAnimation( const std::string & name );
+    
     void debugDraw();
     
-    SkeletonAnimSystem animSys;
+    Vec3 position;
     
+    SkeletonAnimSystem animSys;
     std::vector<M44> renderMats;
     
 };

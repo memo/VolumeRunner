@@ -155,7 +155,7 @@ float compute_scene( in vec3 p, out int mtl )
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, sdf_xz_plane(p, -50.0) );
+    d = sdf_union(d, sdf_xz_plane(p, -0.0) );
 
     vec3 samplepos;
     

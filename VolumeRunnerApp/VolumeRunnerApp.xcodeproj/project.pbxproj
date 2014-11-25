@@ -50,6 +50,7 @@
 		BBF9C45E1A2356A400209F8B /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = BBF9C4591A2356A400209F8B /* README.md */; };
 		BBF9C45F1A2356A400209F8B /* ofxMSAInteractiveObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF9C45B1A2356A400209F8B /* ofxMSAInteractiveObject.cpp */; };
 		D69964B31A24CE16000F51F8 /* Dude.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D69964B11A24CE16000F51F8 /* Dude.cpp */; };
+		D69964B61A24EAB1000F51F8 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D69964B41A24EAB1000F51F8 /* Camera.cpp */; };
 		D6CEAD7B1A23596400FFC56A /* cmBuffer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6CEAD3B1A23596400FFC56A /* cmBuffer.cpp */; };
 		D6CEAD7C1A23596400FFC56A /* cmFileUtils.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6CEAD3E1A23596400FFC56A /* cmFileUtils.cpp */; };
 		D6CEAD7D1A23596400FFC56A /* cmFileWatcher.cpp in Sources */ = {isa = PBXBuildFile; fileRef = D6CEAD401A23596400FFC56A /* cmFileWatcher.cpp */; };
@@ -227,6 +228,8 @@
 		BBF9C4611A23748800209F8B /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = bin/data/shaders; sourceTree = "<group>"; };
 		D69964B11A24CE16000F51F8 /* Dude.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dude.cpp; sourceTree = "<group>"; };
 		D69964B21A24CE16000F51F8 /* Dude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dude.h; sourceTree = "<group>"; };
+		D69964B41A24EAB1000F51F8 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
+		D69964B51A24EAB1000F51F8 /* Camera.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Camera.h; sourceTree = "<group>"; };
 		D6CEAD361A23596400FFC56A /* cmCore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmCore.h; sourceTree = "<group>"; };
 		D6CEAD371A23596400FFC56A /* cmMath.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = cmMath.h; sourceTree = "<group>"; };
 		D6CEAD381A23596400FFC56A /* colormotor.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = colormotor.h; sourceTree = "<group>"; };
@@ -801,6 +804,8 @@
 				D6CEADA91A239D4B00FFC56A /* RunningSkeleton.h */,
 				D69964B11A24CE16000F51F8 /* Dude.cpp */,
 				D69964B21A24CE16000F51F8 /* Dude.h */,
+				D69964B41A24EAB1000F51F8 /* Camera.cpp */,
+				D69964B51A24EAB1000F51F8 /* Camera.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -947,6 +952,7 @@
 				BBF9C41E1A2355D300209F8B /* license.md in Sources */,
 				BBF9C4281A2355D300209F8B /* license.md in Sources */,
 				BBF9C4271A2355D300209F8B /* Utils.cpp in Sources */,
+				D69964B61A24EAB1000F51F8 /* Camera.cpp in Sources */,
 				E4B69E200A3A1BDC003C02F2 /* main.cpp in Sources */,
 				D6CEAD861A23596400FFC56A /* CMOSX.mm in Sources */,
 				D6CEAD811A23596400FFC56A /* cmResource.cpp in Sources */,

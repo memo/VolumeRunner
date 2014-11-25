@@ -36,11 +36,9 @@ void ofApp::setup(){
         
         
         params.startGroup("View"); {
-            params.addFloat("z").setRange(0, 100).setIncrement(1.0);
+            params.addFloat("distance").setRange(0, 100).setIncrement(1.0);
             params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0);
             params.addFloat("roty").setRange(-180, 180).setIncrement(1.0);
-            params.addFloat("rotz").setRange(-180, 180).setIncrement(1.0);
-            params.addBool("use OF matrix");
         } params.endGroup();
         
     } params.endGroup();
@@ -63,6 +61,13 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    
+    dude.update();
+    
+    camera.rotx = params["Shader.View.rotx"];
+    camera.roty = params["Shader.View.roty"];
+    camera.distance = params["Shader.View.distance"];
+    camera.update(dude.position,0.1);//Vec3(0,0,0));
 }
 
 //--------------------------------------------------------------
@@ -78,58 +83,6 @@ void ofApp::draw(){
         shaderRayTracer.load("", "shaders/raytrace_test.frag");
     }
     
-    // view transform
-    ofMatrix4x4 viewMat;
-    M44 wv;
-    
-    if(params["Shader.View.use OF matrix"]) {
-        viewMat.translate(0,0,(float)params["Shader.View.z"]);//-10.0);//getf('y'),-getf('z'))
-        viewMat.rotate((params["Shader.View.rotx"]), 1, 0, 0);
-        viewMat.rotate((params["Shader.View.rotz"]), 0, 0, 1);
-        viewMat.rotate((params["Shader.View.roty"]), 0, 1, 0);
-    } else {
-        
-        wv.identity();
-        wv.translate(0,0,-(float)(params["Shader.View.z"]));//-10.0);//getf('y'),-getf('z'))
-        wv.rotateX(radians(params["Shader.View.rotx"]));
-        wv.rotateZ(radians(params["Shader.View.rotz"]));
-        wv.rotateY(radians(params["Shader.View.roty"]));
-        viewMat = ofMatrix4x4((float*)wv);
-    }
-    
-    // set test box transformation
-//    M44 boxMat;
-//    boxMat.identity();
-//    boxMat.translate(params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);//radians(params["Shader.Test box.roty"]));
-//    boxMat.rotateX(radians(params["Shader.Test box.rotx"]));
-//    boxMat.rotateY(radians(params["Shader.Test box.roty"]));
-//    boxMat.rotateZ(radians(params["Shader.Test box.rotz"]));
-//    boxMat.scale(params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
-    
-    
-    
-    
-    /*
-    // multiple random test bones
-    if(params["Display.Random bones"]) {
-        boneMats.clear();
-        boneMats.resize(kNumJoints);
-        originalJoints.resize(kNumJoints);
-        for(int i=0; i<kNumJoints; i++) {
-            M44 &m = boneMats[i];
-            m.identity();
-            m.translate(ofSignedNoise(i + 615.1276) * 10 + (float)params["Shader.Test box.posx"], ofSignedNoise(i + 57.137) * 10 + (float)params["Shader.Test box.posy"], ofSignedNoise(i + 12874.5) * 10 + (float)params["Shader.Test box.posz"]);
-            m.rotateX(radians(ofSignedNoise(i + 114.1) * 360));
-            m.rotateY(radians(ofSignedNoise(i + 572.31) * 360));
-            m.rotateZ(radians(ofSignedNoise(i + 1767.1417) * 360));
-            m.scale(ofNoise(i + 7162.41) * 10, ofNoise(i + 81632.41) * 10, ofNoise(i + 17626.3123) * 10);
-            originalJoints[i] = m;
-            m.invert();
-        }
-    }
-     */
-    
-    dude.update();
     
     gfx::enableDepthBuffer(false);
     gfx::setIdentityTransform();
@@ -143,24 +96,27 @@ void ofApp::draw(){
     shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
     
     dude.updateRenderer(shaderRayTracer);
+    camera.updateRenderer(shaderRayTracer);
     
-    shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
-    shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
+    //shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
+    //shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
     //ofDrawRectangle(0, 0, ofGetWidth(), ofGetHeight());
     drawUVQuad();
     shaderRayTracer.end();
+     
+     
     /*
      cam.setTransformMatrix(viewMat);
      cam.begin();
      box.draw();
      cam.end();*/
     
-    gfx::setPerspectiveProjection(cam->getFov(),(float)ofGetWidth()/ofGetHeight(),0.1,1000.0);
-    gfx::setModelViewMatrix(wv);
+    camera.apply();
 
     
     if(params["Display.Debug skeleton"]) {
-        //dude.debugDraw();
+        dude.debugDraw();
+        gfx::drawAxis(M44::identityMatrix(),3.0);
     }
     
     ofSetupScreen();

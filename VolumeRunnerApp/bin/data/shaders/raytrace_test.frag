@@ -1,6 +1,6 @@
 #version 120
 
-#define kNumJoints   21
+#define kNumJoints   4
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time

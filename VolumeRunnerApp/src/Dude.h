@@ -1,5 +1,6 @@
 #pragma once
 #include "ofMain.h"
+#include "ofxMSAControlFreak.h"
 #include "colormotor.h"
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
@@ -13,6 +14,9 @@ public:
     virtual ~Dude();
     
     bool init();
+    void addParams( msa::controlfreak::ParameterGroup &params );
+    void updateParams( msa::controlfreak::ParameterGroup &params );
+    
     void update();
     
     void updateRenderer( ofShader & shader );
@@ -22,9 +26,12 @@ public:
     
     void debugDraw();
     
+
     Vec3 position;
     
     SkeletonAnimSystem animSys;
+    SkeletonWalkAnimSource * walkingAnim;
+    
     std::vector<M44> renderMats;
     
 };

@@ -10,7 +10,7 @@
 
 Dude::Dude()
 {
-    
+
 }
 
 Dude::~Dude()
@@ -23,8 +23,10 @@ bool Dude::init()
 {
     animSys.addBVHFile("1",ofToDataPath("mocap/test.bvh"));
     animSys.play("1");
-    
-    animSys.addAnimSource("run", new SkeletonWalkAnimSource(animSys.getSkeleton(),"walk"));
+
+    // Walking
+    walkingAnim = new SkeletonWalkAnimSource(animSys.getSkeleton(),"walk");
+    animSys.addAnimSource("run", walkingAnim );
     animSys.play("run");
     
     
@@ -34,6 +36,53 @@ bool Dude::init()
     // Right Leg
     animSys.addBone("RightUpLeg","RightLeg");
     animSys.addBone("RightLeg","RightFoot");
+}
+
+void Dude::addParams( msa::controlfreak::ParameterGroup &params )
+{
+    /*
+     this->params.addSeparator();
+     this->params.addFloat("startAngHigh",startAngHigh,-50,0);
+     this->params.addFloat("endAngHigh",&endAngHigh,30,90);// = 45;
+     this->params.addFloat("startAngLow",&startAngLow,0,30);// = -20;
+     this->params.addFloat("endAngLow",&endAngLow,40,120);// = -20;
+     this->params.addFloat("legPhase",&legPhase,PI/10,PI);// = -20;
+     this->params.addSeparator();
+     
+     this->params.addFloat("startAngArm",&startAngArm,-90,0);
+     this->params.addFloat("endAngArm",&endAngArm,10,90);
+     this->params.addFloat("startAngForeArm",&startAngForeArm,-30,10);
+     this->params.addFloat("endAngForeArm",&endAngForeArm,50,150);
+     this->params.addFloat("armAngle",&armAngle,10,90);
+     
+     */
+    
+//    params.addFloat("posx").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+    
+    params.startGroup("Dude"); {
+        params.addFloat("speed").setRange(0.0,30.0).set(walkingAnim->speed);
+        params.addFloat("hip rotation").setRange(-40,40).set(walkingAnim->rothip);
+        
+        params.startGroup("Legs"); {
+            params.addFloat("startAngHigh").setRange(-50,0).setIncrement(1.0).set(walkingAnim->startAngHigh);
+            params.addFloat("endAngHigh").setRange(30,90).setIncrement(1.0).set(walkingAnim->endAngHigh);
+            params.addFloat("startAngLow").setRange(0,30).setIncrement(1.0).set(walkingAnim->startAngLow);
+            params.addFloat("endAngLow").setRange(40,120).setIncrement(1.0).set(walkingAnim->endAngLow);
+            params.addFloat("legPhase").setRange(PI/10,PI).set(walkingAnim->legPhase);
+        }
+    } params.endGroup();
+}
+
+void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
+{
+    walkingAnim->speed = params["Dude.speed"];
+    walkingAnim->rothip = params["Dude.hip rotation"];
+    
+    walkingAnim->startAngHigh = params["Dude.Legs.startAngHigh"];
+    walkingAnim->endAngHigh = params["Dude.Legs.endAngHigh"];
+    walkingAnim->startAngLow = params["Dude.Legs.startAngLow"];
+    walkingAnim->endAngLow = params["Dude.Legs.endAngLow"];
+    walkingAnim->legPhase = params["Dude.Legs.legPhase"];
 }
 
 void Dude::update()

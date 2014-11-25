@@ -175,12 +175,18 @@ float compute_scene( in vec3 p, out int mtl )
     samplepos = sdf_transform(samplepos, box_mat);
     //d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
     
-    
+    float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
-       d = sdf_union(d, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 1.0, 1.0), 0.0) );
+       dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 1.0, 1.0), 0.0) );
     }
     
-    mtl = 1;
+    if(dguy<d)
+    {
+        mtl = 1;
+    }
+    
+    d = sdf_union(d,dguy);
+
     return d;
     /*
      mtl = 0;
@@ -260,7 +266,7 @@ vec3 compute_color( in vec3 p, in float distance, in int mtl )
     vec3 clr = vec3(1.0);//,0.9,0.9);
     if(mtl==0)
     {
-        clr = vec3(0.0,0.3,1.0);//rounded_squares_texture(p);
+        clr = rounded_squares_texture(p);
     }
     float l = nl*fake*ambient_occlusion(p,n);
     //l = expose(l,0.8);

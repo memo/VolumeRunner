@@ -14,6 +14,10 @@ void ofApp::setup(){
     ofBackground(0, 0, 0);
     ofSetLogLevel(OF_LOG_VERBOSE);
     
+    // initialize the dude before hand because of the parameters in the walking animation
+    dude.init();
+    
+    
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Display"); {
         params.addBool("Debug skeleton");
@@ -43,6 +47,7 @@ void ofApp::setup(){
         
     } params.endGroup();
     
+    dude.addParams(params);
     params.loadXmlValues();
     
     gui.addPage(params);
@@ -56,12 +61,12 @@ void ofApp::setup(){
     
     cam = new ofCamera();
     
-    dude.init();
+    
 }
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    
+    dude.updateParams(params);
     dude.update();
     
     camera.rotx = params["Shader.View.rotx"];

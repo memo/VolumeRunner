@@ -21,7 +21,7 @@ namespace msa {
         class ParameterInt : public Parameter {
         public:
             ParameterInt(string name, ParameterGroup *parent = NULL)
-            : Parameter(name, parent, new ParameterNumberValueT<int>()) { setRange(0, 100); setIncrement(1); }
+            : Parameter(name, parent, new ParameterNumberValueT<int>()) { setRange(0, 100); set(0); setIncrement(1); }
             
             template <typename T> T operator=(const T & v) { set(v); }
 			template <typename T> operator T() const { return value(); }

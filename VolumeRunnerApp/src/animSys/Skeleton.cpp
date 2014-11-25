@@ -16,6 +16,11 @@
 namespace cm
 {
 
+void Skeleton::init()
+{
+    initTPose(root,M44::identityMatrix());
+}
+    
 int 	Skeleton::getJointIndex( const std::string & name ) const
 {
 	for( int i = 0; i < getNumJoints(); i++ )
@@ -26,23 +31,6 @@ int 	Skeleton::getJointIndex( const std::string & name ) const
     }
 	return -1;
 }
-
-int 	Skeleton::getValidJointIndex( const std::string & name ) const
-{
-    int c = 0;
-    for( int i = 0; i < getNumJoints(); i++ )
-    {
-        Joint * b = getJoint(i);
-        if(b->isJointOk)
-        {
-            if(b->name == name)
-                return c;
-            c++;
-        }
-    }
-    return -1;
-}
-
     
 void	Skeleton::update()
 {
@@ -64,8 +52,6 @@ bool	Skeleton::setJoints( Joint * rootJoint )
 	
 	_finalized = true;
 	matrixPalette = new cm::M44[getNumJoints()];
-
-	// could initialize pose to bone matrices?
 	
 	return true;
 }
@@ -82,18 +68,17 @@ void	Skeleton::parseJoint( Joint * b )
 
 ///////////////////////////////////////////////////
 
-void	Skeleton::update( const cm::M44 & parentMatrix, Joint * bone)
+void	Skeleton::update( const cm::M44 & parentMatrix, Joint * joint)
 {
-	// \todo exclude _objtm?
 	cm::M44 transM;
-	transM.translation(bone->offset);
+	transM.translation(joint->offset);
 	
-	cm::Vec3 oldPos = bone->worldMatrix.trans();
-	bone->worldMatrix = parentMatrix * transM * (cm::M44)pose->transforms[bone->id].rotation;// * transM * parentMatrix;
-	bone->velocity = bone->worldMatrix.trans()-oldPos;
+	cm::Vec3 oldPos = joint->worldMatrix.trans();
+	joint->worldMatrix = parentMatrix * transM * (cm::M44)pose->transforms[joint->id].rotation;
+	joint->velocity = joint->worldMatrix.trans()-oldPos;
 	
-	for( int i = 0 ; i < bone->getNumChildren(); i++ )
-		update( bone->worldMatrix, bone->getChild(i) );
+	for( int i = 0 ; i < joint->getNumChildren(); i++ )
+		update( joint->worldMatrix, joint->getChild(i) );
 }
 
 ///////////////////////////////////////////////////
@@ -115,6 +100,16 @@ void	slerp( Pose * out, Pose * a, Pose * b, float t )
 	{
 		out->transforms[i] = cm::slerp(a->getTransform(i),b->getTransform(i),t,0.001f);
 	}
+}
+    
+void Skeleton::initTPose( Joint * joint, const M44 & parentMatrix )
+{
+    joint->worldMatrix = parentMatrix * M44::translationMatrix(joint->offset);
+    joint->bindPoseMatrix = joint->worldMatrix;
+    joint->invBindPoseMatrix = joint->bindPoseMatrix.inverse();
+    
+    for( int i = 0 ; i < joint->getNumChildren(); i++ )
+        initTPose( joint->getChild(i), joint->worldMatrix );
 }
 
 }

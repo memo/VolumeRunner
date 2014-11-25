@@ -46,8 +46,6 @@ namespace cm {
 		BVHNode()
 		{
 			endNode = false;
-			bindPoseMatrix.identity();
-            boneCorrupted = false;
 		}
 		
 		~BVHNode()
@@ -66,24 +64,9 @@ namespace cm {
 		
 		int 	getNumChildren() const { return children.size(); }
 		
-		void	computeBindPoseMatrix( BVHNode * parent )
-		{
-			bindPoseMatrix.translation(offset);
-			bindPoseMatrix *= parent->bindPoseMatrix;	
-		}
-		
 		std::string 	name;
 		cm::Vec3	offset;
 		
-		cm::Vec3	direction;
-		cm::Vec3	parentDirection;
-		float	parentLength;
-
-		float	length;
-
-        bool    boneCorrupted;
-        
-		cm::M44		bindPoseMatrix;
 		BVHNode * parent;
 		
 		std::vector <cm::Transform> 	keys;

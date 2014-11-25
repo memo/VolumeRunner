@@ -133,25 +133,25 @@ skeleton(skeleton)
     startAngForeArm = 0;
     endAngForeArm = 90;
     armAngle = 70;
-    speed = 1.0;
+    speed = 3.0;
     backAngle = 0.0;
     
     pose = new Pose(skeleton->getNumJoints());
     pose->copy(skeleton->pose);
     
-    ARM_LEFT = skeleton->getValidJointIndex("LeftArm");
-    FOREARM_LEFT = skeleton->getValidJointIndex("LeftForeArm");
-    HIP_LEFT = skeleton->getValidJointIndex("LHipJoint");
-    LEG_TOP_LEFT = skeleton->getValidJointIndex("LeftUpLeg");
-    LEG_MID_LEFT = skeleton->getValidJointIndex("LeftLeg");
+    ARM_LEFT = skeleton->getJointIndex("LeftArm");
+    FOREARM_LEFT = skeleton->getJointIndex("LeftForeArm");
+    HIP_LEFT = skeleton->getJointIndex("LHipJoint");
+    LEG_TOP_LEFT = skeleton->getJointIndex("LeftUpLeg");
+    LEG_MID_LEFT = skeleton->getJointIndex("LeftLeg");
     
-    ARM_RIGHT = skeleton->getValidJointIndex("RightArm");
-    FOREARM_RIGHT = skeleton->getValidJointIndex("RightForeArm");
-    HIP_RIGHT = skeleton->getValidJointIndex("RHipJoint");
-    LEG_TOP_RIGHT = skeleton->getValidJointIndex("RightUpLeg");
-    LEG_MID_RIGHT = skeleton->getValidJointIndex("RightLeg");
+    ARM_RIGHT = skeleton->getJointIndex("RightArm");
+    FOREARM_RIGHT = skeleton->getJointIndex("RightForeArm");
+    HIP_RIGHT = skeleton->getJointIndex("RHipJoint");
+    LEG_TOP_RIGHT = skeleton->getJointIndex("RightUpLeg");
+    LEG_MID_RIGHT = skeleton->getJointIndex("RightLeg");
     
-    LOWER_BACK = skeleton->getValidJointIndex("LowerBack");
+    LOWER_BACK = skeleton->getJointIndex("LowerBack");
     
 }
 

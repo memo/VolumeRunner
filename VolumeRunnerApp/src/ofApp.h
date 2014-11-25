@@ -5,6 +5,8 @@
 
 #include "ofxMSAControlFreak.h"
 #include "ofxMSAControlFreakGui.h"
+#include "Dude.h"
+#include "Camera.h"
 
 class ofApp : public ofBaseApp{
 public:
@@ -14,6 +16,9 @@ public:
     
     ofShader shaderRayTracer;
     ofCamera *cam;
+    
+    Dude dude;
+    Camera camera;
     
     void setup();
     void update();

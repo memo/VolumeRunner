@@ -21,13 +21,29 @@
 
 namespace cm
 {
-    
+
 class SkeletonAnimSystem
 {
 public:
-    struct
+    struct Bone
     {
+        Bone( Joint * a, Joint * b )
+        :
+        a(a),
+        b(b)
+        {
+            matrix.identity();
+        }
         
+        Vec3 getEndPos() const;
+        Vec3 getStartPos() const;
+        float getLength() const;
+        
+        void update();
+        
+        M44 matrix;
+        Joint * a;
+        Joint * b;
     };
     
     SkeletonAnimSystem();
@@ -41,17 +57,21 @@ public:
     
     void update( float msecs );
     
-    std::vector<M44> getJointMatrices() const;
-    std::vector<float> getJointLengths() const;
-    std::vector<std::string> getJointNames() const;
+    /// Adds a bone to animate
+    /// The bone is defined between two joints
+    Bone * addBone( const std::string & joint1, const std::string & joint2 );
+    Bone * getBone( int index ) const { return bones[index]; }
+    
+    std::vector<M44> getBoneMatrices() const;
+    std::vector<float> getBoneLengths() const;
+    int getNumBones() const { return bones.size(); }
     
     Joint * getJoint(int index);
     int getNumJoints() const;
     
     Skeleton * getSkeleton() { return skel; }
-    Vec3 getOffset();
 private:
-    std::vector<int> activeJointFlags;
+    std::vector<Bone*> bones;
     
     Skeleton * skel;
     typedef std::map<std::string,SkeletonAnimSource*> AnimMap;

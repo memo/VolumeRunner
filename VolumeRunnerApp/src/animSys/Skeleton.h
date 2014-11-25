@@ -28,7 +28,6 @@ namespace cm
 			invBindPoseMatrix.identity();
 			velocity(0,0,0);
 			parent = 0;
-            isJointOk = true;
 		}
 		
 		~Joint()
@@ -39,13 +38,6 @@ namespace cm
 		int			id;
 		
 		Joint*		parent;
-		
-		float		length;
-		cm::Vec3		direction;
-		cm::Vec3		parentDirection;
-		float		parentLength;
-		
-		
 		std::string name;
 		cm::Transform	transform;
 		
@@ -55,9 +47,12 @@ namespace cm
 		
 		cm::M44			worldMatrix;
 		cm::M44			invBindPoseMatrix;
-		
-        bool isJointOk;
+        cm::M44         bindPoseMatrix;
         
+        const cm::Vec3 & getRestPosition() const { return bindPoseMatrix.trans(); }
+        const cm::Vec3 & getPosition() const { return worldMatrix.trans(); }
+    
+        /*
 		// hacky shit...
 		M44		getJointMatrix() 
 		{
@@ -75,7 +70,8 @@ namespace cm
             
 			return dirm;
 		}
-		
+		*/
+        
 		Joint*		getChild( int i ) { return _children[i]; }
 		void		addChild( Joint * b ) { _children.push_back(b); b->parent = this; }
 		int			getNumChildren() const { return _children.size(); }
@@ -137,10 +133,11 @@ namespace cm
 				SAFE_DELETE(pose);
 			}
 			
+            void            init();
+        
 			int				getNumJoints() const { return joints.size(); }
 			Joint*			getJoint( int i) const { return joints[i]; }
 			int 			getJointIndex( const std::string & name ) const;
-            int 			getValidJointIndex( const std::string & name ) const;
         
 			void			update();
 			
@@ -157,7 +154,9 @@ namespace cm
 		protected:
 			void			parseJoint( Joint * b );
 			
-			void			update(const cm::M44 & parentMatrix, Joint * bone);
+			void			update(const cm::M44 & parentMatrix, Joint * joint);
+            void            initTPose( Joint * joint, const M44 & parentMatrix );
+        
 			bool			_finalized;
 			
 	};

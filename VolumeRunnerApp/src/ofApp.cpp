@@ -4,7 +4,7 @@
 #include "RunningSkeleton.h"
 
 
-ofBoxPrimitive box;
+//ofBoxPrimitive box;
 
 
 
@@ -25,17 +25,17 @@ void ofApp::setup(){
     
     
     params.startGroup("Shader"); {
-        params.startGroup("Test box"); {
-            params.addFloat("posx").setRange(-100, 100).setIncrement(1.0).setSnap(true);
-            params.addFloat("posy").setRange(-100, 100).setIncrement(1.0).setSnap(true);
-            params.addFloat("posz").setRange(-100, 100).setIncrement(1.0).setSnap(true);
-            params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0).setSnap(true);
-            params.addFloat("roty").setRange(-180, 180).setIncrement(1.0).setSnap(true);
-            params.addFloat("rotz").setRange(-180, 180).setIncrement(1.0).setSnap(true);
-            params.addFloat("scalex").setRange(0, 50).setIncrement(0.1).setSnap(true);
-            params.addFloat("scaley").setRange(0, 50).setIncrement(0.1).setSnap(true);
-            params.addFloat("scalez").setRange(0, 50).setIncrement(0.1).setSnap(true);
-        } params.endGroup();
+//        params.startGroup("Test box"); {
+//            params.addFloat("posx").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+//            params.addFloat("posy").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+//            params.addFloat("posz").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+//            params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0).setSnap(true);
+//            params.addFloat("roty").setRange(-180, 180).setIncrement(1.0).setSnap(true);
+//            params.addFloat("rotz").setRange(-180, 180).setIncrement(1.0).setSnap(true);
+//            params.addFloat("scalex").setRange(0, 50).setIncrement(0.1).setSnap(true);
+//            params.addFloat("scaley").setRange(0, 50).setIncrement(0.1).setSnap(true);
+//            params.addFloat("scalez").setRange(0, 50).setIncrement(0.1).setSnap(true);
+//        } params.endGroup();
         
         
         params.startGroup("View"); {
@@ -95,9 +95,9 @@ void ofApp::draw(){
     shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
     shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
     
-    shaderRayTracer.setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
-    shaderRayTracer.setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
-    shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
+//    shaderRayTracer.setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
+//    shaderRayTracer.setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
+//    shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
     
     dude.updateRenderer(shaderRayTracer);
     camera.updateRenderer(shaderRayTracer);

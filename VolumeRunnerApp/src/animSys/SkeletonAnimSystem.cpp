@@ -41,8 +41,11 @@ void SkeletonAnimSystem::Bone::update()
     d.normalize();
     
     matrix.identity();
-    matrix.pointAt(Vec3(0,0,0),d);
+    Quat qd;
+    qd.direction(-d);
+    matrix = (M44)qd;//.pointAt(Vec3(0,0,0),d);//,a->worldMatrix.y());
     matrix = a->worldMatrix*matrix;
+    matrix *= transform;
     
     /*
     gfx::color(1,0,1);
@@ -158,7 +161,7 @@ int SkeletonAnimSystem::getNumJoints() const
     return skel->getNumJoints();
 }
     
-SkeletonAnimSystem::Bone *SkeletonAnimSystem::addBone( const std::string & joint1, const std::string & joint2 )
+SkeletonAnimSystem::Bone *SkeletonAnimSystem::addBone( const std::string & joint1, const std::string & joint2, const M44 & transform )
 {
     int i;
     i = skel->getJointIndex(joint1);
@@ -179,7 +182,7 @@ SkeletonAnimSystem::Bone *SkeletonAnimSystem::addBone( const std::string & joint
     Joint * b = skel->getJoint(i);
     
 
-    SkeletonAnimSystem::Bone * ab = new SkeletonAnimSystem::Bone(a,b);
+    SkeletonAnimSystem::Bone * ab = new SkeletonAnimSystem::Bone(a,b,transform);
     bones.push_back( ab );
     return ab;
 }

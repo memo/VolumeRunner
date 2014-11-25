@@ -27,10 +27,11 @@ class SkeletonAnimSystem
 public:
     struct Bone
     {
-        Bone( Joint * a, Joint * b )
+        Bone( Joint * a, Joint * b, const M44 & transform = M44::identityMatrix() )
         :
         a(a),
-        b(b)
+        b(b),
+        transform(transform)
         {
             matrix.identity();
         }
@@ -40,6 +41,8 @@ public:
         float getLength() const;
         
         void update();
+        
+        M44 transform;
         
         M44 matrix;
         Joint * a;
@@ -59,7 +62,7 @@ public:
     
     /// Adds a bone to animate
     /// The bone is defined between two joints
-    Bone * addBone( const std::string & joint1, const std::string & joint2 );
+    Bone * addBone( const std::string & joint1, const std::string & joint2, const M44 & transform = M44::identityMatrix() );
     Bone * getBone( int index ) const { return bones[index]; }
     
     std::vector<M44> getBoneMatrices() const;

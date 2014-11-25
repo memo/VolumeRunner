@@ -7,6 +7,8 @@
 #include "ofxMSAControlFreakGui.h"
 #include "Dude.h"
 #include "Camera.h"
+#include "Volume.h"
+
 
 class ofApp : public ofBaseApp{
 public:
@@ -15,10 +17,14 @@ public:
     msa::controlfreak::gui::Gui gui;
     
     ofShader shaderRayTracer;
+    cm::FileWatcher *shaderRayTracerWatcher;
+
     ofCamera *cam;
     
     Dude dude;
     Camera camera;
+
+    Volume volume;
     
     void setup();
     void update();

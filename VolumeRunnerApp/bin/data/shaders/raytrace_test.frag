@@ -6,8 +6,8 @@ uniform vec2 resolution; // screen resolution
 uniform float time; // current time
 uniform vec2 mouse; // mouse position (screen space)
 
-uniform vec3 box_pos, box_rot, box_scale;  // for testing individual transforms
-uniform mat4 box_mat;    // for testing whole transform
+// uniform vec3 box_pos, box_rot, box_scale;  // for testing individual transforms
+// uniform mat4 box_mat;    // for testing whole transform
 uniform mat4 box_mats[kNumJoints];
 
 uniform mat4 invViewMatrix;
@@ -235,22 +235,22 @@ float compute_scene( in vec3 p, out int mtl )
     
     d = sdf_union(d, sdf_xz_plane(p, -0.0) );
 
-    vec3 samplepos;
+    //vec3 samplepos;
     
     // repeated box
-    samplepos = p;
-    samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
-    samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
+    //samplepos = p;
+    //samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
+    //samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
     //d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
     
     // test box
-    samplepos = p;
+    // samplepos = p;
     //samplepos = sdf_translate(samplepos, box_pos);
     //samplepos = sdf_rotate_y(samplepos, box_rot.y);
     //samplepos = sdf_rotate_x(samplepos, box_rot.x);
     //samplepos = sdf_rotate_z(samplepos, box_rot.z);
     //samplepos = sdf_scale(samplepos, box_scale);
-    samplepos = sdf_transform(samplepos, box_mat);
+    // samplepos = sdf_transform(samplepos, box_mat);
     //d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
     
     float dguy = 100000.0;

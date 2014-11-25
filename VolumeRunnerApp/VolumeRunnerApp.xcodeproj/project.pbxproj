@@ -11,6 +11,9 @@
 		6474CBF719BCE019003C94E2 /* CoreMedia.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6474CBF119BCE00B003C94E2 /* CoreMedia.framework */; };
 		6474CBF819BCE019003C94E2 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6474CBF219BCE00B003C94E2 /* QuartzCore.framework */; };
 		BBAB23CB13894F3D00AA2426 /* GLUT.framework in CopyFiles */ = {isa = PBXBuildFile; fileRef = BBAB23BE13894E4700AA2426 /* GLUT.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
+		BBD918BF1A2503B1008267A4 /* ofxTexture3d.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBD918B71A2503B1008267A4 /* ofxTexture3d.cpp */; };
+		BBD918C01A2503B1008267A4 /* ofxVolumetrics.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBD918B91A2503B1008267A4 /* ofxVolumetrics.cpp */; };
+		BBD918C31A250611008267A4 /* Volume.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBD918C11A250611008267A4 /* Volume.cpp */; };
 		BBF9C41E1A2355D300209F8B /* license.md in Sources */ = {isa = PBXBuildFile; fileRef = BBF9C3CC1A2355D300209F8B /* license.md */; };
 		BBF9C41F1A2355D300209F8B /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = BBF9C3CD1A2355D300209F8B /* README.md */; };
 		BBF9C4201A2355D300209F8B /* ControllerBase.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BBF9C3D01A2355D300209F8B /* ControllerBase.cpp */; };
@@ -131,6 +134,13 @@
 		6474CBF119BCE00B003C94E2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		6474CBF219BCE00B003C94E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
+		BBD918B61A2503B1008267A4 /* ofxImageSequencePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxImageSequencePlayer.h; sourceTree = "<group>"; };
+		BBD918B71A2503B1008267A4 /* ofxTexture3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTexture3d.cpp; sourceTree = "<group>"; };
+		BBD918B81A2503B1008267A4 /* ofxTexture3d.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxTexture3d.h; sourceTree = "<group>"; };
+		BBD918B91A2503B1008267A4 /* ofxVolumetrics.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxVolumetrics.cpp; sourceTree = "<group>"; };
+		BBD918BA1A2503B1008267A4 /* ofxVolumetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVolumetrics.h; sourceTree = "<group>"; };
+		BBD918C11A250611008267A4 /* Volume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Volume.cpp; sourceTree = "<group>"; };
+		BBD918C21A250611008267A4 /* Volume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Volume.h; sourceTree = "<group>"; };
 		BBF9C3CC1A2355D300209F8B /* license.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = license.md; sourceTree = "<group>"; };
 		BBF9C3CD1A2355D300209F8B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BBF9C3CF1A2355D300209F8B /* AnyValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnyValue.h; sourceTree = "<group>"; };
@@ -365,13 +375,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BB4B014C10F69532006C3DED /* addons */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			name = addons;
-			sourceTree = "<group>";
-		};
 		BBAB23C913894ECA00AA2426 /* system frameworks */ = {
 			isa = PBXGroup;
 			children = (
@@ -404,9 +407,30 @@
 			name = "3rd party frameworks";
 			sourceTree = "<group>";
 		};
+		BBD918441A2503B1008267A4 /* ofxVolumetrics */ = {
+			isa = PBXGroup;
+			children = (
+				BBD918B51A2503B1008267A4 /* src */,
+			);
+			path = ofxVolumetrics;
+			sourceTree = "<group>";
+		};
+		BBD918B51A2503B1008267A4 /* src */ = {
+			isa = PBXGroup;
+			children = (
+				BBD918B61A2503B1008267A4 /* ofxImageSequencePlayer.h */,
+				BBD918B71A2503B1008267A4 /* ofxTexture3d.cpp */,
+				BBD918B81A2503B1008267A4 /* ofxTexture3d.h */,
+				BBD918B91A2503B1008267A4 /* ofxVolumetrics.cpp */,
+				BBD918BA1A2503B1008267A4 /* ofxVolumetrics.h */,
+			);
+			path = src;
+			sourceTree = "<group>";
+		};
 		BBF9C3821A23516E00209F8B /* addons */ = {
 			isa = PBXGroup;
 			children = (
+				BBD918441A2503B1008267A4 /* ofxVolumetrics */,
 				D6CEAD351A23596400FFC56A /* colormotor */,
 				BBF9C4571A2356A400209F8B /* ofxMSAInteractiveObject */,
 				BBF9C44A1A23566300209F8B /* ofxXmlSettings */,
@@ -787,7 +811,6 @@
 				BBF9C3821A23516E00209F8B /* addons */,
 				E4B69E1C0A3A1BDC003C02F2 /* src */,
 				E4EEC9E9138DF44700A80321 /* openFrameworks */,
-				BB4B014C10F69532006C3DED /* addons */,
 				E45BE5980E8CC70C009D7055 /* frameworks */,
 				E4B69B5B0A3A1756003C02F2 /* VolumeRunnerAppDebug.app */,
 			);
@@ -806,6 +829,8 @@
 				D69964B21A24CE16000F51F8 /* Dude.h */,
 				D69964B41A24EAB1000F51F8 /* Camera.cpp */,
 				D69964B51A24EAB1000F51F8 /* Camera.h */,
+				BBD918C11A250611008267A4 /* Volume.cpp */,
+				BBD918C21A250611008267A4 /* Volume.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;
@@ -936,8 +961,11 @@
 				BBF9C4491A23563F00209F8B /* MSACoreGL.cpp in Sources */,
 				BBF9C4261A2355D300209F8B /* ParameterVec3f.cpp in Sources */,
 				BBF9C4331A2355D300209F8B /* GuiControls.cpp in Sources */,
+				BBD918BF1A2503B1008267A4 /* ofxTexture3d.cpp in Sources */,
 				BBF9C43A1A2355D300209F8B /* README.md in Sources */,
 				BBF9C4241A2355D300209F8B /* ParameterGroup.cpp in Sources */,
+				BBD918C31A250611008267A4 /* Volume.cpp in Sources */,
+				BBD918C01A2503B1008267A4 /* ofxVolumetrics.cpp in Sources */,
 				BBF9C4481A23563F00209F8B /* README.md in Sources */,
 				D6CEAD7C1A23596400FFC56A /* cmFileUtils.cpp in Sources */,
 				BBF9C45E1A2356A400209F8B /* README.md in Sources */,

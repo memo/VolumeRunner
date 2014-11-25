@@ -79,7 +79,7 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
             params.addFloat("startAngLow").setRange(0,30).setIncrement(1.0).set(walkingAnim->startAngLow);
             params.addFloat("endAngLow").setRange(40,120).setIncrement(1.0).set(walkingAnim->endAngLow);
             params.addFloat("legPhase").setRange(PI/10,PI).set(walkingAnim->legPhase);
-        }
+        } params.endGroup();
     } params.endGroup();
 }
 

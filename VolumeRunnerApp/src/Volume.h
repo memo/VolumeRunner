@@ -6,14 +6,15 @@
 
 class Volume {
 public:
-    ofxVolumetrics myVolume;
-    unsigned char * volumeData;
+    ofxVolumetrics volumeData;
     int volWidth, volHeight, volDepth;
-    ofxImageSequencePlayer imageSequence;
     
     msa::controlfreak::ParameterGroup params;
     
     void init() {
+        unsigned char * volumeDataRaw;
+        ofxImageSequencePlayer imageSequence;
+
         imageSequence.init("volumes/head/cthead-8bit",3,".tif", 1);
         volWidth = imageSequence.getWidth();
         volHeight = imageSequence.getHeight();
@@ -21,7 +22,7 @@ public:
         
         cout << "setting up volume data buffer at " << volWidth << "x" << volHeight << "x" << volDepth <<"\n";
         
-        volumeData = new unsigned char[volWidth*volHeight*volDepth*4];
+        volumeDataRaw = new unsigned char[volWidth*volHeight*volDepth*4];
         
         for(int z=0; z<volDepth; z++)
         {
@@ -36,17 +37,19 @@ public:
                     ofColor c;
                     c.setHsb(sample, 255-sample, sample);
                     
-                    volumeData[i4] = c.r;
-                    volumeData[i4+1] = c.g;
-                    volumeData[i4+2] = c.b;
-                    volumeData[i4+3] = sample;
+                    volumeDataRaw[i4] = c.r;
+                    volumeDataRaw[i4+1] = c.g;
+                    volumeDataRaw[i4+2] = c.b;
+                    volumeDataRaw[i4+3] = sample;
                 }
             }
         }
         
-        myVolume.setup(volWidth, volHeight, volDepth, ofVec3f(1,1,2),true);
-        myVolume.updateVolumeData(volumeData,volWidth,volHeight,volDepth,0,0,0);
-//        myVolume.setRenderSettings(1.0, 1.0, 0.75, 0.1);
+        volumeData.setup(volWidth, volHeight, volDepth, ofVec3f(1,1,2),true);
+        volumeData.updateVolumeData(volumeDataRaw,volWidth,volHeight,volDepth,0,0,0);
+//        volumeData.setRenderSettings(1.0, 1.0, 0.75, 0.1);
+        
+        delete[] volumeDataRaw;
         
         params.setName("Volume");
         params.addFloat("Threshold");
@@ -68,15 +71,15 @@ public:
     }
     
     void draw(ofVec3f pos) {
-        if(params["Threshold"].hasChanged()) myVolume.setThreshold(params["Threshold"]);
-        if(params["Density"].hasChanged()) myVolume.setDensity(params["Density"]);
-        if(params["XY Quality"].hasChanged()) myVolume.setXyQuality(params["XY Quality"]);
-        if(params["Z Quality"].hasChanged()) myVolume.setZQuality(params["Z Quality"]);
-        if(params["Filtering"].hasChanged()) myVolume.setVolumeTextureFilterMode(params["Filtering"].value() == 0 ? GL_LINEAR : GL_NEAREST);
+        if(params["Threshold"].hasChanged()) volumeData.setThreshold(params["Threshold"]);
+        if(params["Density"].hasChanged()) volumeData.setDensity(params["Density"]);
+        if(params["XY Quality"].hasChanged()) volumeData.setXyQuality(params["XY Quality"]);
+        if(params["Z Quality"].hasChanged()) volumeData.setZQuality(params["Z Quality"]);
+        if(params["Filtering"].hasChanged()) volumeData.setVolumeTextureFilterMode(params["Filtering"].value() == 0 ? GL_LINEAR : GL_NEAREST);
         
         pos += ofVec3f(params["Offset.x"], params["Offset.y"], params["Offset.z"]);
         
-        myVolume.drawVolume(pos.x, pos.y, pos.z, params["Size"], params["zTexOffset"]);
+        volumeData.drawVolume(pos.x, pos.y, pos.z, params["Size"], params["zTexOffset"]);
     }
     
 };

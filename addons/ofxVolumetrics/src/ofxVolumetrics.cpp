@@ -290,6 +290,7 @@ void ofxVolumetrics::drawVolume(float x, float y, float z, float w, float h, flo
     glLoadMatrixf(modl);
 
     ofTranslate(x-cubeSize.x/2, y-cubeSize.y/2, z-cubeSize.z/2);
+    ofRotateX(90);
     ofScale(cubeSize.x,cubeSize.y,cubeSize.z);
 
     //pass variables to the shader

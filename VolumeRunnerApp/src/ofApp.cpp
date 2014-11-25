@@ -142,6 +142,9 @@ void ofApp::keyPressed(int key){
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
+        case OF_KEY_LEFT: break;    // steer left
+        case OF_KEY_RIGHT: break;   // steer right
+            
             //        case 'S': params.saveXmlSchema();
             //        case 'L': params.loadXmlSchema();
     }

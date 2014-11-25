@@ -263,7 +263,18 @@ BVHNode *BVHParser::parseNode( Buffer & buf, BVHNode * parent )
 	{
 		node->parentDirection = node->offset;
 		node->parentLength = length(node->parentDirection);
+        if(node->parentLength == 0)
+        {
+            // hack.
+            node->parentDirection(0,0,1);
+            node->parentLength = 1.0;
+            node->boneCorrupted = true;
+            //assert(false);
+            //node->parentLength = 1.0;
+        }
 		node->parentDirection /= node->parentLength;//normalize();
+        assert(!node->parentDirection.hasNans());
+
 	}
 	
 	return node;
@@ -288,9 +299,6 @@ bool			BVHParser::parseMotionChannel(  BVHNode * node, Buffer & buf )
 		float v;
 		if( buf.readFloat(&v) == -1 )
 			return false;
-			
-		//axisAngle( const cm::Vec3 & v, float angle )
-
 		
 		switch(chan)
 		{
@@ -301,7 +309,7 @@ bool			BVHParser::parseMotionChannel(  BVHNode * node, Buffer & buf )
 					v-=360;
 					
 				qaxis.axisAngle(cm::Vec3(1,0,0),radians(v));
-				//qaxis.normalize();
+
 				qrot = qrot*qaxis;
 				rot.x = radians(v);
 				m.rotateX(radians(v));
@@ -313,9 +321,8 @@ bool			BVHParser::parseMotionChannel(  BVHNode * node, Buffer & buf )
 				if(v>360)
 					v-=360;
 					
-					
 				qaxis.axisAngle(cm::Vec3(0,1,0),radians(v));
-				//qaxis.normalize();
+                
 				qrot = qrot*qaxis;
 				rot.y = radians(v);
 				m.rotateY(radians(v));
@@ -328,25 +335,20 @@ bool			BVHParser::parseMotionChannel(  BVHNode * node, Buffer & buf )
 					v-=360;
 					
 				qaxis.axisAngle(cm::Vec3(0,0,1),radians(v));
-				//qaxis.normalize();
 				qrot = qrot*qaxis;
 				rot.z = radians(v);
-				//m.postRotateZ(TORAD(v));
 				break;
 				
 			case XPOS:
 				pos.x = v;
-				//m.postTranslate(v,0,0);
 				break;
 				
 			case YPOS:
 				pos.y = v;
-				//m.postTranslate(0,v,0);
 				break;
 				
 			case ZPOS:
 				pos.z = v;
-				//m.postTranslate(0,0,v);
 				break;
 				
 			default:
@@ -358,14 +360,10 @@ bool			BVHParser::parseMotionChannel(  BVHNode * node, Buffer & buf )
 	qrot.normalize();
 	
 	cm::Transform tm;
-	tm.position = node->offset+pos; //pos
-	tm.rotation = qrot;//cm::Quat(rot.x,rot.y,rot.z);//qrot;
+	tm.position = node->offset+pos;
+	tm.rotation = qrot;
 	
-//	m.rotate(rot);
- 	//m.setTrans(node->offset+pos);
-//	m.postTranslate(node->offset.x, node->offset.y, node->offset.z);
-	
-	node->keys.push_back(tm);//Transform(m));
+	node->keys.push_back(tm);
 	
 	return true;
 }
@@ -413,28 +411,24 @@ bool	BVHParser::parseMotion( Buffer & buf )
 
 //////////////////////////////////////////////////////
 
-Bone *	BVHParser::createBone( BVHNode * node )
+Joint *	BVHParser::createJoint( BVHNode * node )
 {
-	Bone * b = new Bone();
+	Joint * b = new Joint();
 	b->length = node->length;
 	b->name = node->name;
 	b->direction = node->direction;
 	b->parentDirection = node->parentDirection;
 	b->parentLength = node->parentLength;
-	
+
+    b->isJointOk = !node->boneCorrupted;
+
 	b->offset = node->offset;
 	b->invBindPoseMatrix = node->bindPoseMatrix.inverted();
-	
-	/*for( u32 i = 0; i < node->keys.size(); i++ )
-	{
-		b->addKeyFrame(frameTime*i,node->keys[i]);
-	}
-		
-	*/
-	for( int i = 0; i < node->children.size(); i++ )
+
+    for( int i = 0; i < node->children.size(); i++ )
 	{
 		if(!node->children[i]->endNode)
-			b->addChild( createBone( node->children[i] ) );
+			b->addChild( createJoint( node->children[i] ) );
 	}
 	
 	return b;
@@ -449,21 +443,20 @@ Skeleton * BVHParser::createSkeleton()
 	Skeleton * s = new Skeleton();
 	
 	// set default pose...
-	
-	Bone * b = createBone(_root);
-	if( !s->setBones(b) )
+	Joint * b = createJoint(_root);
+	if( !s->setJoints(b) )
 	{
 		delete s;
 		return 0;
 	}
 	
-	Pose * pose = new Pose(s->getNumBones());
+	Pose * pose = new Pose(s->getNumJoints());
 	
 	for(int i = 0; i < _linearNodes.size(); i++ )
 	{
 		BVHNode * n = _linearNodes[i];
 		pose->transforms[i].rotation.identity();
-		pose->transforms[i].position(0,0,0);// = n->offset;//.rotation.identity();// = n->keys[0];
+		pose->transforms[i].position(0,0,0);
 	}
 	
 	s->pose = pose;

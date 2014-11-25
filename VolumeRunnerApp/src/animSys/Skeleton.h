@@ -19,25 +19,26 @@ namespace cm
 {
 	/////////////////////////////////////////////////
 	
-	class Bone
+	class Joint
 	{
 	public:
-		Bone() 
+		Joint()
 		{
 			worldMatrix.identity();
 			invBindPoseMatrix.identity();
 			velocity(0,0,0);
 			parent = 0;
+            isJointOk = true;
 		}
 		
-		~Bone()
+		~Joint()
 		{
 			
 		}
 		
 		int			id;
 		
-		Bone*		parent;
+		Joint*		parent;
 		
 		float		length;
 		cm::Vec3		direction;
@@ -55,8 +56,10 @@ namespace cm
 		cm::M44			worldMatrix;
 		cm::M44			invBindPoseMatrix;
 		
+        bool isJointOk;
+        
 		// hacky shit...
-		M44		getBoneMatrix() 
+		M44		getJointMatrix() 
 		{
 			M44 m;
 			m.identity();
@@ -67,13 +70,14 @@ namespace cm
 			Quat parentdir;
 			parentdir.direction(-parentDirection);
 			M44 dirm = (M44)parentdir;
-			
+            
 			dirm = parent->worldMatrix*dirm;
+            
 			return dirm;
 		}
 		
-		Bone*		getChild( int i ) { return _children[i]; }
-		void		addChild( Bone * b ) { _children.push_back(b); b->parent = this; }
+		Joint*		getChild( int i ) { return _children[i]; }
+		void		addChild( Joint * b ) { _children.push_back(b); b->parent = this; }
 		int			getNumChildren() const { return _children.size(); }
 	protected:
 	
@@ -81,7 +85,7 @@ namespace cm
 		
 		
 		
-		std::vector <Bone*> _children;
+		std::vector <Joint*> _children;
 	};
 	
 	/////////////////////////////////////////////////
@@ -114,25 +118,6 @@ namespace cm
 	};
 	
 	void	slerp( Pose * out, Pose * a, Pose * b, float t );
-	
-	/////////////////////////////////////////////////
-	
-	// an animation can be connected to different bones..
-	// animations are simply a number of repetitions of each 'Pose' of the skeleton for each keyframe
-	
-
-	/*
-		s = new Skeleton();
-		s->addBone( b, s->root );
-		s->addBone( b2, b );
-		s->finalize(); 
-		
-	*/
-	
-	
-//	ld: duplicate symbol CM::distanceToSegment(CM::cm::Vec2 const&, CM::cm::Vec2 const&, CM::cm::Vec2 const&)in ../../cm/libs/colormotor/bin/libcolormotorD10_4.a(cmVector.o) and ../../cm/libs/colormotor/bin/libcolormotorD10_4.a(cmMathUtils.o)
-
-
 
 	class Skeleton
 	{
@@ -142,47 +127,37 @@ namespace cm
 				_finalized = false;
 				matrixPalette = 0;
 				pose = 0;
-				bones.clear();
+				joints.clear();
 			}
 			
 			~Skeleton()
 			{
-				DELETE_VECTOR(bones);
+				DELETE_VECTOR(joints);
 				SAFE_DELETE_ARRAY(matrixPalette);
 				SAFE_DELETE(pose);
 			}
 			
-			int				getNumBones() const { return bones.size(); }
-			Bone*			getBone( int i) const { return bones[i]; }
-			int 			getBoneIndex( const std::string & name ) const;
-
+			int				getNumJoints() const { return joints.size(); }
+			Joint*			getJoint( int i) const { return joints[i]; }
+			int 			getJointIndex( const std::string & name ) const;
+            int 			getValidJointIndex( const std::string & name ) const;
+        
 			void			update();
 			
-			#ifdef DODEBUGRENDER
-			void			debugDraw( DebugDraw * ddraw, float axisSize = 1.0f );
-			#endif
-			
-			bool			setBones( Bone * rootBone );
-			
+			bool			setJoints( Joint * rootJoint );
 			void			copyPose( Pose * pose );
-			
-			//void			addChild( Bone * b, Bone * parent );
-			/// create 
-			//bool			finalize();
-			
-			
-	
-			Bone*			root;
-			std::vector<Bone*>	bones;
+        
+			Joint*			root;
+			std::vector<Joint*>	joints;
 			
 			Pose*			pose;
 			
 			cm::M44*			matrixPalette;
 			
 		protected:
-			void			parseBone( Bone * b );
+			void			parseJoint( Joint * b );
 			
-			void			update(const cm::M44 & parentMatrix, Bone * bone);
+			void			update(const cm::M44 & parentMatrix, Joint * bone);
 			bool			_finalized;
 			
 	};

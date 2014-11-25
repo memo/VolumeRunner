@@ -52,9 +52,9 @@ void		   SkeletonAnimLayer::update( float msecs )
 		else
 		{
 			// update pose 
-			for( int i = 0; i < getNumBones(); i++ )
+			for( int i = 0; i < getNumJoints(); i++ )
 			{
-				pose->transforms[i] = curAnim->getTransformForBone(i);
+				pose->transforms[i] = curAnim->getTransformForJoint(i);
 			}
 		}
 		
@@ -83,9 +83,9 @@ void			 SkeletonAnimLayer::handleTransition( float t )
 	
 	SkeletonAnimInstance * next = curAnim->next;
 	
-	for( int i = 0; i < getNumBones(); i++ )
+	for( int i = 0; i < getNumJoints(); i++ )
 	{
-		pose->transforms[i] = slerp( curAnim->getTransformForBone(i), next->getTransformForBone(i), t, 0.001f );
+		pose->transforms[i] = slerp( curAnim->getTransformForJoint(i), next->getTransformForJoint(i), t, 0.001f );
 	}
 }
 

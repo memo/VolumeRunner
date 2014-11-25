@@ -56,6 +56,7 @@ namespace cm {
 		{
 		}
 		
+        bool hasNans() const { if(isnan(x) || isnan(y) || isnan(z) || isnan(w)) return true; return false; }
 		
 		TQuat<T>& operator () (T x_, T y_, T z_, T w_) {
 			x = x_; y = y_; z = z_; w = w_;
@@ -151,6 +152,7 @@ namespace cm {
 				*this = TQuat<T>( 0, 1, 0, 0 ); // If we can't normalize it, just set it
 			} else {
 				normalize();
+                assert(!hasNans());
 			}
 		}
 		
@@ -261,11 +263,13 @@ namespace cm {
 		void	normalize() 
 		{
 			T len = x*x + y*y + z*z + w*w;
-			T rs = 1.0f/sqrt(len);
+            len = sqrt(len);
+			T rs = 1.0f/len;
 			x*=rs;
 			y*=rs;
 			z*=rs;
 			w*=rs;
+            assert(!hasNans());
 		}
 		
 		TQuat<T>	getUnit() const { TQuat<T> q=*this; q.normalize(); return q; }

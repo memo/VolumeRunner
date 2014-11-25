@@ -24,7 +24,7 @@ SkeletonAnimInstance * SkeletonKeyAnimSource::createInstance()
 			
 void	SkeletonKeyAnimSource::addKeyFrame( Pose * pose, double time )
 {
-	if( pose->nTransforms != this->getNumBones() )
+	if( pose->nTransforms != this->getNumJoints() )
 	{
 		debugPrint("SkeletonKeyAnimSource::addKeyFrame pose doesn't have same number of bones");
 		return;

@@ -23,10 +23,10 @@ namespace cm {
 	class SkeletonAnimLayer
 	{
 		public:
-			SkeletonAnimLayer( int nBones )
+			SkeletonAnimLayer( int nJoints )
 			{
 				transition = false;
-				pose = new Pose(nBones);
+				pose = new Pose(nJoints);
 				transitionTime = 0.5f;
 				timeScale = 1.0f;
 				_forcePlay = false;
@@ -50,7 +50,7 @@ namespace cm {
 			float transitionTime;
 			float t;
 			
-			int				getNumBones() const { return pose->nTransforms; }
+			int				getNumJoints() const { return pose->nTransforms; }
 			
 			Pose					*pose;
 			

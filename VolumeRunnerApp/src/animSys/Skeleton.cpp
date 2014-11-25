@@ -16,14 +16,34 @@
 namespace cm
 {
 
-int 	Skeleton::getBoneIndex( const std::string & name ) const
+int 	Skeleton::getJointIndex( const std::string & name ) const
 {
-	for( int i = 0; i < getNumBones(); i++ )
-		if(getBone(i)->name == name)
+	for( int i = 0; i < getNumJoints(); i++ )
+    {
+        Joint * b = getJoint(i);
+		if(b->name == name)
 			return i;
+    }
 	return -1;
 }
 
+int 	Skeleton::getValidJointIndex( const std::string & name ) const
+{
+    int c = 0;
+    for( int i = 0; i < getNumJoints(); i++ )
+    {
+        Joint * b = getJoint(i);
+        if(b->isJointOk)
+        {
+            if(b->name == name)
+                return c;
+            c++;
+        }
+    }
+    return -1;
+}
+
+    
 void	Skeleton::update()
 {
 	update(cm::M44::identityMatrix(),root);
@@ -31,51 +51,7 @@ void	Skeleton::update()
 
 ///////////////////////////////////////////////////
 
-#ifdef DODEBUGRENDER
-
-void	Skeleton::debugDraw( DebugDraw * ddraw, float axisSize  )
-{
-	for( int i = 0; i < getNumBones(); i++ )
-	{
-		Bone * b = bones[i];
-		ddraw->drawAxis(b->worldMatrix,axisSize,false);
-		
-		//cm::M44 m = b->invBindPoseMatrix*b->worldMatrix;//*b->invBindPoseMatrix;
-		cm::M44 m = b->worldMatrix;
-		m.setTrans(cm::Vec3(0,0,0));
-		
-		//pose->transforms[b->id].rotation.getM44(&m);
-		cm::Vec3 dir = mul( b->direction, m );// pose->transforms[b->id].rotation * b->direction;//mul( b->direction, b->worldMatrix );
-		
-		
-		
-		ddraw->setColor(cm::Color::grey());
-		if(b->parent)
-		{
-			cm::Quat parentdir;
-			parentdir.direction(b->parentDirection);
-			cm::M44 dirm = (cm::M44)parentdir;
-			
-			dirm *= b->parent->worldMatrix;
-			ddraw->drawLine(dirm.trans(),dirm.trans()-dirm.z()*b->parent->length);//(dirm,b->parent->length);
-			/*
-			cm::Vec3 parentPos = b->parent->worldMatrix.trans();
-			cm::Vec3 pos = b->worldMatrix.trans();
-			ddraw->drawLine(parentPos,pos);*/
-		}
-		/*
-		ddraw->setColor(cm::Color::turquoise());
-		cm::Vec3 pos = b->worldMatrix.trans();
-		ddraw->drawLine(pos,pos+dir*b->length);*/
-	}
-}
-
-#endif
-
-
-///////////////////////////////////////////////////
-
-bool	Skeleton::setBones( Bone * rootBone )
+bool	Skeleton::setJoints( Joint * rootJoint )
 {
 	if( _finalized )
 	{
@@ -83,11 +59,11 @@ bool	Skeleton::setBones( Bone * rootBone )
 		return false;
 	}
 	
-	root = rootBone;	
-	parseBone(root);
+	root = rootJoint;	
+	parseJoint(root);
 	
 	_finalized = true;
-	matrixPalette = new cm::M44[getNumBones()];
+	matrixPalette = new cm::M44[getNumJoints()];
 
 	// could initialize pose to bone matrices?
 	
@@ -96,17 +72,17 @@ bool	Skeleton::setBones( Bone * rootBone )
 
 ///////////////////////////////////////////////////
 
-void	Skeleton::parseBone( Bone * b )
+void	Skeleton::parseJoint( Joint * b )
 {
-	b->id = bones.size();
-	bones.push_back(b);
+	b->id = joints.size();
+	joints.push_back(b);
 	for( int i = 0; i < b->getNumChildren(); i++ )
-		parseBone(b->getChild(i));
+		parseJoint(b->getChild(i));
 }
 
 ///////////////////////////////////////////////////
 
-void	Skeleton::update( const cm::M44 & parentMatrix, Bone * bone)
+void	Skeleton::update( const cm::M44 & parentMatrix, Joint * bone)
 {
 	// \todo exclude _objtm?
 	cm::M44 transM;
@@ -124,10 +100,10 @@ void	Skeleton::update( const cm::M44 & parentMatrix, Bone * bone)
 
 void	Skeleton::copyPose( Pose * inPose )
 {
-	if( pose->nTransforms > getNumBones() )
+	if( pose->nTransforms > getNumJoints() )
 		return;
 		
-	for( int i = 0; i < getNumBones(); i++ )
+	for( int i = 0; i < getNumJoints(); i++ )
 		pose->transforms[i] = inPose->transforms[i];
 }
 

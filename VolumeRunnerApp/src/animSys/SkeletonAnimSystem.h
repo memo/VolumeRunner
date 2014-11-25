@@ -33,21 +33,26 @@ public:
     SkeletonAnimSystem();
     ~SkeletonAnimSystem();
     
+    void ignoreJoint( const std::string & name );
+    
     void addAnimSource( const std::string & name, SkeletonAnimSource * src );
     bool addBVHFile( const std::string & name, const std::string & path );
     void play( const std::string & name );
     
     void update( float msecs );
     
-    std::vector<M44> getBoneMatrices() const;
-    std::vector<float> getBoneLengths() const;
-
-    Bone * getBone(int index);
-    int getNumBones() const;
+    std::vector<M44> getJointMatrices() const;
+    std::vector<float> getJointLengths() const;
+    std::vector<std::string> getJointNames() const;
+    
+    Joint * getJoint(int index);
+    int getNumJoints() const;
     
     Skeleton * getSkeleton() { return skel; }
     Vec3 getOffset();
 private:
+    std::vector<int> activeJointFlags;
+    
     Skeleton * skel;
     typedef std::map<std::string,SkeletonAnimSource*> AnimMap;
     AnimMap animMap;

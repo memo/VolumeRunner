@@ -17,14 +17,14 @@ void	debugDrawSkeleton( const std::vector<M44> &M, const std::vector<float> & L 
         gfx::drawLine(m.trans(),m.trans()+m.z()*L[i]);
     }
     
-    cm::debugPrint("%d bones\n",(int)M.size());//animSys.getNumBones());
+    //cm::debugPrint("%d bones\n",(int)M.size());//animSys.getNumJoints());
 }
 
 /////////////////////////////////////////////////////////////////
 
 SkeletonWalkAnimInstance::SkeletonWalkAnimInstance( SkeletonWalkAnimSource * src ) : SkeletonAnimInstance(src)
 {
-    pose = new Pose(src->skeleton->getNumBones());
+    pose = new Pose(src->skeleton->getNumJoints());
     pose->copy(src->skeleton->pose);
 }
 
@@ -107,7 +107,7 @@ void	SkeletonWalkAnimInstance::update( float msecs )
 
 /////////////////////////////////////////////////////////////////
 
-cm::Transform SkeletonWalkAnimInstance::getTransformForBone( int i ) const
+cm::Transform SkeletonWalkAnimInstance::getTransformForJoint( int i ) const
 {
     SkeletonWalkAnimSource * src = (SkeletonWalkAnimSource*)source;
     
@@ -117,7 +117,7 @@ cm::Transform SkeletonWalkAnimInstance::getTransformForBone( int i ) const
 
 SkeletonWalkAnimSource::SkeletonWalkAnimSource( Skeleton * skeleton, const char * name )
 :
-SkeletonAnimSource(skeleton->getNumBones(),name),
+SkeletonAnimSource(skeleton->getNumJoints(),name),
 skeleton(skeleton)
 {
     /// base params
@@ -136,22 +136,22 @@ skeleton(skeleton)
     speed = 1.0;
     backAngle = 0.0;
     
-    pose = new Pose(skeleton->getNumBones());
+    pose = new Pose(skeleton->getNumJoints());
     pose->copy(skeleton->pose);
     
-    ARM_LEFT = skeleton->getBoneIndex("LeftArm");
-    FOREARM_LEFT = skeleton->getBoneIndex("LeftForeArm");
-    HIP_LEFT = skeleton->getBoneIndex("LHipJoint");
-    LEG_TOP_LEFT = skeleton->getBoneIndex("LeftUpLeg");
-    LEG_MID_LEFT = skeleton->getBoneIndex("LeftLeg");
+    ARM_LEFT = skeleton->getValidJointIndex("LeftArm");
+    FOREARM_LEFT = skeleton->getValidJointIndex("LeftForeArm");
+    HIP_LEFT = skeleton->getValidJointIndex("LHipJoint");
+    LEG_TOP_LEFT = skeleton->getValidJointIndex("LeftUpLeg");
+    LEG_MID_LEFT = skeleton->getValidJointIndex("LeftLeg");
     
-    ARM_RIGHT = skeleton->getBoneIndex("RightArm");
-    FOREARM_RIGHT = skeleton->getBoneIndex("RightForeArm");
-    HIP_RIGHT = skeleton->getBoneIndex("RHipJoint");
-    LEG_TOP_RIGHT = skeleton->getBoneIndex("RightUpLeg");
-    LEG_MID_RIGHT = skeleton->getBoneIndex("RightLeg");
+    ARM_RIGHT = skeleton->getValidJointIndex("RightArm");
+    FOREARM_RIGHT = skeleton->getValidJointIndex("RightForeArm");
+    HIP_RIGHT = skeleton->getValidJointIndex("RHipJoint");
+    LEG_TOP_RIGHT = skeleton->getValidJointIndex("RightUpLeg");
+    LEG_MID_RIGHT = skeleton->getValidJointIndex("RightLeg");
     
-    LOWER_BACK = skeleton->getBoneIndex("LowerBack");
+    LOWER_BACK = skeleton->getValidJointIndex("LowerBack");
     
 }
 

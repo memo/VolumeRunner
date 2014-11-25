@@ -157,12 +157,12 @@ float compute_scene( in vec3 p, out int mtl )
     
     d = sdf_union(d, sdf_xz_plane(p, -0.0) );
 
-    vec3 samplepos;
+    //vec3 samplepos;
     
     // repeated box
-    samplepos = p;
-    samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
-    samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
+    //samplepos = p;
+    //samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
+    //samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
     //d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
     
     // test box
@@ -177,7 +177,7 @@ float compute_scene( in vec3 p, out int mtl )
     
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
-       dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 1.0, 1.0), 0.0) );
+       dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 1.0, 1.0), 0.2) );
     }
     
     if(dguy<d)

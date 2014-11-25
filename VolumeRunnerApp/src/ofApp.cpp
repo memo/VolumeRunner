@@ -134,7 +134,7 @@ void ofApp::draw(){
     }
     
     if(params["Display.Volume"]) {
-        volume.draw();
+        volume.draw(ofVec3f(dude.position.x, dude.position.y, dude.position.z));
     }
     
     ofSetupScreen();

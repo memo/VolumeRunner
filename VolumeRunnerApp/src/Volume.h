@@ -67,15 +67,16 @@ public:
         parentparams.add(&this->params);
     }
     
-    void draw() {
+    void draw(ofVec3f pos) {
         if(params["Threshold"].hasChanged()) myVolume.setThreshold(params["Threshold"]);
         if(params["Density"].hasChanged()) myVolume.setDensity(params["Density"]);
         if(params["XY Quality"].hasChanged()) myVolume.setXyQuality(params["XY Quality"]);
         if(params["Z Quality"].hasChanged()) myVolume.setZQuality(params["Z Quality"]);
         if(params["Filtering"].hasChanged()) myVolume.setVolumeTextureFilterMode(params["Filtering"].value() == 0 ? GL_LINEAR : GL_NEAREST);
         
+        pos += ofVec3f(params["Offset.x"], params["Offset.y"], params["Offset.z"]);
         
-        myVolume.drawVolume(params["Offset.x"], params["Offset.y"], params["Offset.z"], params["Size"], params["zTexOffset"]);
+        myVolume.drawVolume(pos.x, pos.y, pos.z, params["Size"], params["zTexOffset"]);
     }
     
 };

@@ -3,7 +3,6 @@
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
 
-cm::FileWatcher * reloader;
 
 ofBoxPrimitive box;
 
@@ -54,8 +53,8 @@ void ofApp::setup(){
     gui.setDefaultKeys(true);
     gui.show();
     
-    reloader = new cm::FileWatcher(ofToDataPath("shaders/raytrace_test.frag"),500);
-    reloader->startThread();
+    shaderRayTracerWatcher = new cm::FileWatcher(ofToDataPath("shaders/raytrace_test.frag"),500);
+    shaderRayTracerWatcher->startThread();
     
     shaderRayTracer.load("", "shaders/raytrace_test.frag");
     
@@ -83,7 +82,7 @@ void ofApp::draw(){
      camera.end();
      */
     
-    if( reloader->hasFileChanged() )
+    if( shaderRayTracerWatcher->hasFileChanged() )
     {
         shaderRayTracer.load("", "shaders/raytrace_test.frag");
     }
@@ -132,8 +131,8 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::exit(){
     //    params.saveXmlValues();
-    reloader->stopThread();
-    delete reloader;
+    shaderRayTracerWatcher->stopThread();
+    delete shaderRayTracerWatcher;
 }
 
 

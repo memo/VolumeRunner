@@ -17,6 +17,42 @@
 namespace cm
 {
     
+Vec3 SkeletonAnimSystem::Bone::getEndPos() const
+{
+    return b->worldMatrix.trans();
+}
+    
+Vec3 SkeletonAnimSystem::Bone::getStartPos() const
+{
+    return a->worldMatrix.trans();
+}
+    
+    
+float SkeletonAnimSystem::Bone::getLength() const
+{
+    return cm::distance(getStartPos(),getEndPos());
+}
+
+void SkeletonAnimSystem::Bone::update()
+{
+    matrix.identity();
+    
+    Vec3 d = b->getRestPosition()-a->getRestPosition();
+    d.normalize();
+    
+    matrix.identity();
+    matrix.pointAt(Vec3(0,0,0),d);
+    matrix = a->worldMatrix*matrix;
+    
+    /*
+    gfx::color(1,0,1);
+    gfx::drawLine(getStartPos(),getEndPos());
+    gfx::drawAxis(matrix,1.0);
+    gfx::color(0,0,1);
+    gfx::drawLine(matrix.trans(),matrix.trans()+matrix.z()*getLength());*/
+}
+
+
 SkeletonAnimSystem::SkeletonAnimSystem()
     :
 skel(0),
@@ -29,7 +65,7 @@ SkeletonAnimSystem::~SkeletonAnimSystem()
     SAFE_DELETE(skel);
     for(AnimMap::iterator it = animMap.begin(); it != animMap.end(); it++ )
         delete it->second;
-    
+    DELETE_VECTOR(bones);
 }
 
 void SkeletonAnimSystem::addAnimSource( const std::string & name, SkeletonAnimSource * src )
@@ -47,13 +83,6 @@ bool SkeletonAnimSystem::addBVHFile( const std::string & name, const std::string
         skel = bvh.createSkeleton();
         skelAnim = new SkeletonAnimLayer(skel->getNumJoints());
         skel->update();
-        
-        // flag the bones that are active, flag the invalid ones as not.
-        activeJointFlags.clear();
-        for( int i = 0; i < skel->getNumJoints(); i++ )
-        {
-            activeJointFlags.push_back(skel->getJoint(i)->isJointOk);
-        }
     }
     else
     {
@@ -97,52 +126,25 @@ void SkeletonAnimSystem::update( float msecs )
     skelAnim->update(msecs);
     skel->copyPose(skelAnim->pose);
     skel->update();
-}
-
-std::vector<std::string> SkeletonAnimSystem::getJointNames() const
-{
-    std::vector<std::string> N;
-    for( int i = 0; i < skel->getNumJoints(); i++ )
+    for( int i = 0; i < bones.size(); i++ )
     {
-        Joint * b = skel->getJoint(i);
-        if( b->isJointOk )
-            N.push_back(b->name);
+        bones[i]->update();
     }
-    return N;
 }
     
-std::vector<M44> SkeletonAnimSystem::getJointMatrices() const
+std::vector<M44> SkeletonAnimSystem::getBoneMatrices() const
 {
-    Pose * pose = skel->pose;
-    
     std::vector<M44> M;
-    for( int i = 0; i < skel->getNumJoints(); i++ )
-    {
-        Joint * b = skel->getJoint(i);
-        if(b->isJointOk)
-        {
-            M44 m = skel->getJoint(i)->getJointMatrix();
-            M.push_back(m);//skel->getJoint(i)->getJointMatrix());
-        }
-        //node->setNodeMatrix(m);
-    }
+    for( int i = 0; i < getNumBones(); i++ )
+        M.push_back(bones[i]->matrix);
     return M;
 }
-
-std::vector<float> SkeletonAnimSystem::getJointLengths() const
+    
+std::vector<float> SkeletonAnimSystem::getBoneLengths() const
 {
     std::vector<float> L;
-    for( int i = 0; i < skel->getNumJoints(); i++ )
-    {
-        Joint * b = skel->getJoint(i);
-        if( b->isJointOk )
-        {
-            if( b->parent )
-                L.push_back(b->parent->length);
-            else
-                L.push_back(b->length);
-        }
-    }
+    for( int i = 0; i < getNumBones(); i++ )
+        L.push_back(bones[i]->getLength());
     return L;
 }
     
@@ -155,9 +157,38 @@ int SkeletonAnimSystem::getNumJoints() const
 {
     return skel->getNumJoints();
 }
+    
+SkeletonAnimSystem::Bone *SkeletonAnimSystem::addBone( const std::string & joint1, const std::string & joint2 )
+{
+    int i;
+    i = skel->getJointIndex(joint1);
+    if(i<0)
+    {
+        cm::debugPrint("Could not find bone %s\n",joint1.c_str());
+        return 0;
+    }
+    Joint * a = skel->getJoint(i);
+    
+    i = skel->getJointIndex(joint2);
+    if(i<0)
+    {
+        cm::debugPrint("Could not find bone %s\n",joint2.c_str());
+        return 0;
+    }
+    
+    Joint * b = skel->getJoint(i);
+    
+
+    SkeletonAnimSystem::Bone * ab = new SkeletonAnimSystem::Bone(a,b);
+    bones.push_back( ab );
+    return ab;
+}
 
 Vec3 SkeletonAnimSystem::getOffset()
 {
+    assert(0);
+    return Vec3(0.0);
+    /*
     Vec3 vel(0,0,0);
     float low = 10000.0;
     for( int i = 0; i < skel->getNumJoints(); i++ )
@@ -173,7 +204,7 @@ Vec3 SkeletonAnimSystem::getOffset()
             vel.y = low;
         }
     }
-    return vel;
+    return vel;*/
 }
 
 }

@@ -3,13 +3,10 @@
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
 
-#define kNumJoints   21
-
-
 cm::FileWatcher * reloader;
 
 ofBoxPrimitive box;
-SkeletonAnimSystem animSys;
+
 
 
 //--------------------------------------------------------------
@@ -61,10 +58,7 @@ void ofApp::setup(){
     
     cam = new ofCamera();
     
-    //
-    animSys.addBVHFile("1",ofToDataPath("mocap/test.bvh"));
-    animSys.play("1");
-    //    cam = new ofEasyCam();
+    dude.init();
 }
 
 //--------------------------------------------------------------
@@ -113,25 +107,9 @@ void ofApp::draw(){
 //    boxMat.scale(params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
     
     
-    // read bones from animation
-    animSys.update(20);
-
-    std::vector<M44> boneMats = animSys.getJointMatrices();//[kNumJoints];
-    std::vector<M44> originalJoints = animSys.getJointMatrices();
-    
-    std::vector<float> boneLengths = animSys.getJointLengths();
-    int boneCount = min(boneMats.size(), kNumJoints);
-    for( int i = 0; i < boneCount; i++ )
-    {
-        boneMats[i].scale(1,1,boneLengths[i]);
-        //if(boneMats[i].hasNans())
-        //    assert(false);
-        
-        boneMats[i].invert();
-        //for(int j=0; j<16; j++) if(isnan(boneMats[i].m[j])) boneMats[i].identity();
-    }
     
     
+    /*
     // multiple random test bones
     if(params["Display.Random bones"]) {
         boneMats.clear();
@@ -149,10 +127,9 @@ void ofApp::draw(){
             m.invert();
         }
     }
+     */
     
-    
-    
-    
+    dude.update();
     
     gfx::enableDepthBuffer(false);
     gfx::setIdentityTransform();
@@ -165,8 +142,7 @@ void ofApp::draw(){
     shaderRayTracer.setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
     shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
     
-    //    shaderRayTracer.setUniformMatrix4f("box_mat", ofMatrix4x4((float*)boxMat).getInverse());
-    shaderRayTracer.setUniformMatrix4f("box_mats", (ofMatrix4x4&) boneMats[0], kNumJoints);//
+    dude.updateRenderer(shaderRayTracer);
     
     shaderRayTracer.setUniformMatrix4f("invViewMatrix", viewMat.getInverse());//camera.getModelViewMatrix());
     shaderRayTracer.setUniform1f("tanHalfFov", tan(ofDegToRad(cam->getFov()/2)));
@@ -179,12 +155,12 @@ void ofApp::draw(){
      box.draw();
      cam.end();*/
     
-    
     gfx::setPerspectiveProjection(cam->getFov(),(float)ofGetWidth()/ofGetHeight(),0.1,1000.0);
     gfx::setModelViewMatrix(wv);
+
     
     if(params["Display.Debug skeleton"]) {
-        debugDrawSkeleton(originalJoints,animSys.getJointLengths());
+        //dude.debugDraw();
     }
     
     ofSetupScreen();

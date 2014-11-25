@@ -229,7 +229,6 @@ BVHNode *BVHParser::parseNode( Buffer & buf, BVHNode * parent )
 			}
 			
 			node->addChild(child);
-			child->computeBindPoseMatrix(node);
 			//buf.getToken(str);
 		}
 		else if( str=="End" )
@@ -245,7 +244,6 @@ BVHNode *BVHParser::parseNode( Buffer & buf, BVHNode * parent )
 			}
 			
 			node->addChild(child);
-			child->computeBindPoseMatrix(node);
 		}
 		
 		buf.getToken(str);
@@ -255,28 +253,8 @@ BVHNode *BVHParser::parseNode( Buffer & buf, BVHNode * parent )
 	if( node->children.size() )
 	{
 		BVHNode * child = node->children[0];
-		node->length = child->offset.length();
-		node->direction( child->offset / node->length );
 	}
-	
-	if( node->parent )
-	{
-		node->parentDirection = node->offset;
-		node->parentLength = length(node->parentDirection);
-        if(node->parentLength == 0)
-        {
-            // hack.
-            node->parentDirection(0,0,1);
-            node->parentLength = 1.0;
-            node->boneCorrupted = true;
-            //assert(false);
-            //node->parentLength = 1.0;
-        }
-		node->parentDirection /= node->parentLength;//normalize();
-        assert(!node->parentDirection.hasNans());
-
-	}
-	
+		
 	return node;
 }
 
@@ -414,16 +392,8 @@ bool	BVHParser::parseMotion( Buffer & buf )
 Joint *	BVHParser::createJoint( BVHNode * node )
 {
 	Joint * b = new Joint();
-	b->length = node->length;
 	b->name = node->name;
-	b->direction = node->direction;
-	b->parentDirection = node->parentDirection;
-	b->parentLength = node->parentLength;
-
-    b->isJointOk = !node->boneCorrupted;
-
 	b->offset = node->offset;
-	b->invBindPoseMatrix = node->bindPoseMatrix.inverted();
 
     for( int i = 0; i < node->children.size(); i++ )
 	{
@@ -460,7 +430,8 @@ Skeleton * BVHParser::createSkeleton()
 	}
 	
 	s->pose = pose;
-	
+    s->init();
+    
 	return s;
 }
 

@@ -5,11 +5,11 @@
 #define STRINGIFY( A) #A
 ofxVolumetrics::ofxVolumetrics()
 {
-    quality = ofVec3f(1.0);
+    quality = 1.0;
     threshold = 1.0/255.0;
     density = 1.0;
-    volWidth = renderWidth = 0;
-    volHeight = renderHeight = 0;
+    volWidth = 0;
+    volHeight = 0;
     volDepth = 0;
     bIsInitialized = false;
 
@@ -103,7 +103,6 @@ void ofxVolumetrics::setup(int w, int h, int d, ofVec3f voxelSize, bool usePower
                                         uniform sampler3D volume_tex;
                                         uniform vec3 vol_d;
                                         uniform vec3 vol_d_pot;
-                                        uniform vec2 bg_d;
                                         uniform float zoffset;
                                         uniform float quality;
                                         uniform float threshold;
@@ -208,8 +207,8 @@ void ofxVolumetrics::setup(int w, int h, int d, ofVec3f voxelSize, bool usePower
 
     bIsPowerOfTwo = usePowerOfTwoTexSize;
 
-    volWidthPOT = volWidth = renderWidth = w;
-    volHeightPOT = volHeight = renderHeight = h;
+    volWidthPOT = volWidth = w;
+    volHeightPOT = volHeight = h;
     volDepthPOT = volDepth = d;
 
     if(bIsPowerOfTwo){
@@ -220,7 +219,6 @@ void ofxVolumetrics::setup(int w, int h, int d, ofVec3f voxelSize, bool usePower
         ofLogVerbose() << "ofxVolumetrics::setup(): Using power of two texture size. Requested: " << w << "x" <<h<<"x"<<d<<". Actual: " << volWidthPOT<<"x"<<volHeightPOT<<"x"<<volDepthPOT<<".\n";
     }
 
-    fboRender.allocate(w, h, GL_RGBA);
     volumeTexture.allocate(volWidthPOT, volHeightPOT, volDepthPOT, GL_RGBA);
     if(bIsPowerOfTwo){
         // if using cropped power of two, blank out the extra memory
@@ -237,12 +235,10 @@ void ofxVolumetrics::setup(int w, int h, int d, ofVec3f voxelSize, bool usePower
 void ofxVolumetrics::destroy()
 {
     volumeShader.unload();
-//    fboBackground.destroy();
-//    fboRender.destroy();
     volumeTexture.clear();
 
-    volWidth = renderWidth = 0;
-    volHeight = renderHeight = 0;
+    volWidth = 0;
+    volHeight = 0;
     volDepth = 0;
     bIsInitialized = false;
 }
@@ -263,7 +259,10 @@ void ofxVolumetrics::drawVolume(float x, float y, float z, float size, int zTexO
 
 void ofxVolumetrics::drawVolume(float x, float y, float z, float w, float h, float d, int zTexOffset)
 {
-    updateRenderDimentions();
+    ofPushStyle();
+    ofPushView();
+    
+    ofEnableAlphaBlending();
 
     ofVec3f cubeSize = ofVec3f(w, h, d);
 
@@ -282,9 +281,7 @@ void ofxVolumetrics::drawVolume(float x, float y, float z, float w, float h, flo
     GLint cull_mode_fbo = (scale.x*scale.y*scale.z) > 0 ? GL_CCW : GL_CW;
 
     /* raycasting pass */
-    fboRender.begin();
     volumeShader.begin();
-    ofClear(0,0,0,0);
 
     //load matricies from outside the FBO
     glMatrixMode(GL_PROJECTION);
@@ -304,9 +301,8 @@ void ofxVolumetrics::drawVolume(float x, float y, float z, float w, float h, flo
 
     volumeShader.setUniform3f("vol_d", (float)volWidth, (float)volHeight, (float)volDepth); //dimensions of the volume texture
     volumeShader.setUniform3f("vol_d_pot", (float)volWidthPOT, (float)volHeightPOT, (float)volDepthPOT); //dimensions of the volume texture power of two
-    volumeShader.setUniform2f("bg_d", (float)renderWidth, (float)renderHeight); // dimensions of the background texture
     volumeShader.setUniform1f("zoffset",zTexOffset); // used for animation so that we dont have to upload the entire volume every time
-    volumeShader.setUniform1f("quality", quality.z); // 0 ... 1
+    volumeShader.setUniform1f("quality", quality); // 0 ... 1
     volumeShader.setUniform1f("density", density); // 0 ... 1
     volumeShader.setUniform1f("threshold", threshold);//(float)mouseX/(float)ofGetWidth());
 
@@ -318,15 +314,9 @@ void ofxVolumetrics::drawVolume(float x, float y, float z, float w, float h, flo
     glFrontFace(cull_mode);
 
     volumeShader.end();
-    fboRender.end();
-
-    ofPushView();
-
-    glColor4iv(color);
-    ofSetupScreenOrtho();//ofGetWidth(), ofGetHeight(),OF_ORIENTATION_DEFAULT,false,0,1000);
-    fboRender.draw(0,0,ofGetWidth(),ofGetHeight());
-
+    
     ofPopView();
+    ofPopStyle();
 
 }
 
@@ -350,26 +340,10 @@ void ofxVolumetrics::drawRGBCube()
     glDisableClientState(GL_VERTEX_ARRAY);
 }
 
-void ofxVolumetrics::updateRenderDimentions()
-{
-    if((int)(ofGetWidth() * quality.x) != renderWidth)
-    {
-        renderWidth = ofGetWidth()*quality.x;
-        renderHeight = ofGetHeight()*quality.x;
-        fboRender.allocate(renderWidth, renderHeight, GL_RGBA);
-    }
-}
 
-void ofxVolumetrics::setXyQuality(float q)
+void ofxVolumetrics::setQuality(float q)
 {
-    float oldQuality = quality.x;
-    quality.x = MAX(q,0.01);
-
-    updateRenderDimentions();
-}
-void ofxVolumetrics::setZQuality(float q)
-{
-    quality.z = MAX(q,0.01);
+    quality = MAX(q,0.01);
 }
 void ofxVolumetrics::setThreshold(float t)
 {
@@ -379,10 +353,9 @@ void ofxVolumetrics::setDensity(float d)
 {
     density = MAX(d,0.0);
 }
-void ofxVolumetrics::setRenderSettings(float xyQuality, float zQuality, float dens, float thresh)
+void ofxVolumetrics::setRenderSettings(float quality, float dens, float thresh)
 {
-    setXyQuality(xyQuality);
-    setZQuality(zQuality);
+    setQuality(quality);
     setDensity(dens);
     setThreshold(thresh);
 }
@@ -412,21 +385,10 @@ int ofxVolumetrics::getVolumeDepth()
 {
     return volDepth;
 }
-int ofxVolumetrics::getRenderWidth()
+
+float ofxVolumetrics::getQuality()
 {
-    return renderWidth;
-}
-int ofxVolumetrics::getRenderHeight()
-{
-    return renderHeight;
-}
-float ofxVolumetrics::getXyQuality()
-{
-    return quality.x;
-}
-float ofxVolumetrics::getZQuality()
-{
-    return quality.z;
+    return quality;
 }
 float ofxVolumetrics::getThreshold()
 {
@@ -435,7 +397,4 @@ float ofxVolumetrics::getThreshold()
 float ofxVolumetrics::getDensity()
 {
     return density;
-}
-ofFbo & ofxVolumetrics::getFboReference(){
-    return fboRender;
 }

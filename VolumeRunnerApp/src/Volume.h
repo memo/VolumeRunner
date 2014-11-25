@@ -54,8 +54,7 @@ public:
         params.setName("Volume");
         params.addFloat("Threshold");
         params.addFloat("Density");
-        params.addFloat("XY Quality");
-        params.addFloat("Z Quality");
+        params.addFloat("Quality");
         params.addNamedIndex("Filtering").setLabels(2, "Linear", "Nearest");
         params.addFloat("Size").setRange(0, 50);
         params.addFloat("zTexOffset").setRange(0, 100);
@@ -73,8 +72,7 @@ public:
     void draw(ofVec3f pos) {
         if(params["Threshold"].hasChanged()) volumeData.setThreshold(params["Threshold"]);
         if(params["Density"].hasChanged()) volumeData.setDensity(params["Density"]);
-        if(params["XY Quality"].hasChanged()) volumeData.setXyQuality(params["XY Quality"]);
-        if(params["Z Quality"].hasChanged()) volumeData.setZQuality(params["Z Quality"]);
+        if(params["Quality"].hasChanged()) volumeData.setQuality(params["Quality"]);
         if(params["Filtering"].hasChanged()) volumeData.setVolumeTextureFilterMode(params["Filtering"].value() == 0 ? GL_LINEAR : GL_NEAREST);
         
         pos += ofVec3f(params["Offset.x"], params["Offset.y"], params["Offset.z"]);

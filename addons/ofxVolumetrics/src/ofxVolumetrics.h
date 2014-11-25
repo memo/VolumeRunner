@@ -26,25 +26,18 @@ public:
     int getVolumeWidth();
     int getVolumeHeight();
     int getVolumeDepth();
-    ofFbo & getFboReference();
-    int getRenderWidth();
-    int getRenderHeight();
-    float getXyQuality();
-    float getZQuality();
+    float getQuality();
     float getThreshold();
     float getDensity();
-    void setXyQuality(float q);
-    void setZQuality(float q);
+    void setQuality(float q);
     void setThreshold(float t);
     void setDensity(float d);
-    void setRenderSettings(float xyQuality, float zQuality, float dens, float thresh);
+    void setRenderSettings(float quality, float dens, float thresh);
     void setVolumeTextureFilterMode(GLint filterMode);
 protected:
 private:
     void drawRGBCube();
-    void updateRenderDimentions();
 
-    ofFbo fboRender;
     ofShader volumeShader;
     ofxTexture3d volumeTexture;
     //ofMesh volumeMesh; //unfortunately this only supports 2d texture coordinates at the moment.
@@ -55,8 +48,7 @@ private:
     int volWidth, volHeight, volDepth;
     int volWidthPOT, volHeightPOT, volDepthPOT;
     bool bIsPowerOfTwo;
-    ofVec3f quality;
+    float quality;
     float threshold;
     float density;
-    int renderWidth, renderHeight;
 };

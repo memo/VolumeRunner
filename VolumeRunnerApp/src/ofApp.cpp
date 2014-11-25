@@ -15,12 +15,17 @@ void ofApp::setup(){
     
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
+    volume.init();
     
-    
+
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
+    params.startGroup("Update"); {
+        params.addBool("Dude").set(true);
+    } params.endGroup();
+
     params.startGroup("Display"); {
-        params.addBool("Debug skeleton");
-        params.addBool("Random bones");
+        params.addBool("Debug skeleton").set(true);
+        params.addBool("Volume").set(true);
     } params.endGroup();
     
     
@@ -47,6 +52,8 @@ void ofApp::setup(){
     } params.endGroup();
     
     dude.addParams(params);
+    volume.addParams(params);
+    
     params.loadXmlValues();
     
     gui.addPage(params);
@@ -66,7 +73,10 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::update(){
     dude.updateParams(params);
-    dude.update();
+    
+    if(params["Update.Dude"]) {
+        dude.update();
+    }
     
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
@@ -121,6 +131,10 @@ void ofApp::draw(){
     if(params["Display.Debug skeleton"]) {
         dude.debugDraw();
         gfx::drawAxis(M44::identityMatrix(),3.0);
+    }
+    
+    if(params["Display.Volume"]) {
+        volume.draw();
     }
     
     ofSetupScreen();

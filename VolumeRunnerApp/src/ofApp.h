@@ -7,6 +7,8 @@
 #include "ofxMSAControlFreakGui.h"
 #include "Dude.h"
 #include "Camera.h"
+#include "Volume.h"
+
 
 class ofApp : public ofBaseApp{
 public:
@@ -21,6 +23,8 @@ public:
     
     Dude dude;
     Camera camera;
+
+    Volume volume;
     
     void setup();
     void update();

@@ -489,7 +489,7 @@ template <typename T> struct TMatrix4x4
 	
 	
 	
-	/// get identity matrix reference
+	/// get identity matrix
 	static const TMatrix4x4<T> & identityMatrix()
 	{
 		static T ar[] = {	1.0f, 0.0f, 0.0f, 0.0f,
@@ -500,15 +500,21 @@ template <typename T> struct TMatrix4x4
 		return m;
 	}
 	
-	/// get identity matrix reference
+	/// get translation matrix
 	static TMatrix4x4<T> translationMatrix( T x, T y, T z)
 	{
-		TMatrix4x4 m;
+		TMatrix4x4<T> m;
 		m.translation(x,y,z);
 		return m;
 	}
 	
-	
+    /// get translation matrix
+    static TMatrix4x4<T> translationMatrix( const TVec3<T> & v )
+    {
+        TMatrix4x4<T> m;
+        m.translation(v.x,v.y,v.z);
+        return m;
+    }
 	
 	inline  T &operator[] (int i) const {
 		return ((T*)this)[i];

@@ -139,8 +139,8 @@ void ofApp::exit(){
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
     switch(key) {
-        case 's': params.saveXmlValues();
-        case 'l': params.loadXmlValues();
+        case 's': params.saveXmlValues(); break;
+        case 'l': params.loadXmlValues(); break;
             //        case 'S': params.saveXmlSchema();
             //        case 'L': params.loadXmlSchema();
     }

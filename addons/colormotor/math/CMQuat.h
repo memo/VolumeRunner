@@ -143,6 +143,7 @@ namespace cm {
 		
 		void	direction( const TVec3<T> & dir )
 		{
+			assert(0); // This is broken ( flipped )
 			x = dir.y;
 			y = -dir.x;
 			z = 0.0f;

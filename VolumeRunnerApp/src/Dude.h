@@ -1,14 +1,26 @@
-//
-//  Dude.h
-//  VolumeRunnerApp
-//
-//  Created by Daniel Berio on 11/25/14.
-//
-//
+#pragma once
+#include "ofMain.h"
+#include "colormotor.h"
+#include "AnimSys.h"
+#include "RunningSkeleton.h"
 
-#ifndef __VolumeRunnerApp__Dude__
-#define __VolumeRunnerApp__Dude__
 
-#include <stdio.h>
-
-#endif /* defined(__VolumeRunnerApp__Dude__) */
+// We could create a base 'game thing' class with similar functions.
+class Dude
+{
+public:
+    Dude();
+    virtual ~Dude();
+    
+    bool init();
+    void update();
+    
+    void updateRenderer( ofShader & shader );
+    
+    void debugDraw();
+    
+    SkeletonAnimSystem animSys;
+    
+    std::vector<M44> renderMats;
+    
+};

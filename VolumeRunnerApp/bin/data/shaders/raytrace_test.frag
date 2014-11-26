@@ -29,7 +29,7 @@ const float EPSILON = 0.01;
 const float PI = 3.1415926535;
 const float PI2 = PI*2.0;
 
-const vec3 light1  = normalize(vec3(0.7,1.0,0.3));
+const vec3 light1  = normalize(vec3(0.7,1.0,0.9));
 
 
 // Modify these functions
@@ -179,7 +179,7 @@ float sdf_torus( in vec3 p, in vec2 t )
 float sdf_hex_prism( in vec3 p, in vec2 h )
 {
     vec3 q = abs(p);
-#if 0
+#if 1
     return max(q.z-h.y,max((q.x*0.866025+q.y*0.5),q.y)-h.x);
 #else
     float d1 = q.z-h.y;
@@ -488,7 +488,7 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     // subtly light based on normal, daniel hack
     l *= luminosity(normal_color(n))*1.4;
     l *= ambient_occlusion(p,n);
-    //l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 90));
+    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 90));
     
     vec4 clr = vec4(1.0);//,0.9,0.9);
     if(mtl==0)
@@ -514,7 +514,7 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
 
 vec3 guy_transform_inner( in vec3 p )
 {
-    return sdf_rotate_y(p,p.x*0.1);// sdf_repeat(p,vec3(0.0,0.0,0.0));
+    return sdf_rotate_y(p,p.y*-0.0);//+p.x*0.2);// sdf_repeat(p,vec3(0.0,0.0,0.0));
 }
 
 vec3 guy_transform_outer( in vec3 p )
@@ -524,7 +524,9 @@ vec3 guy_transform_outer( in vec3 p )
 
 float guy_primitive( in vec3 p )
 {
+    //return sdf_hex_prism(p,1.0);
     //return sdf_round_box(p, vec3(1.0, 2.0, 1.0), 0.1);
+    //return sdf_box(p,vec3(0.5));//sdf_torus(p,1.0,0.1);
     return sdf_prism(p,vec2(2.0,0.5));//sdf_round_box(p, vec3(4.0, 3.0, 1.0), 0.1);
     float d = sdf_round_box(p, vec3(0.3, 1.0, 1.0), 0.1);
     d = sdf_union(d,sdf_round_box(sdf_translate(p,vec3(1.3,1.5,0.1)), vec3(2.0, 3.0, 1.0), 0.1));

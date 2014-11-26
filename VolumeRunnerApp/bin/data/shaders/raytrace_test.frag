@@ -336,14 +336,14 @@ float ambient_occlusion( in vec3 p, in vec3 n )
 {
     //n = vec3(0.0,1.0,1.0);
     float ao = 0.0;
-    float weigth = 0.5;
+    float weight = 0.9;
     int mtl;
     
     for ( int i = 1; i < 6; ++i )
     {
         float delta = i*i*EPSILON *12.0;
-        ao += weigth * (delta-compute_scene(p+n*(0.0+delta), mtl));
-        weigth *= 0.5;
+        ao += weight * (delta-compute_scene(p+n*(0.0+delta), mtl));
+        weight *= 0.5;
     }
     
     return 1.0-saturate(ao);
@@ -388,20 +388,18 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     vec3 light = light1;
     
     // diffuse lighting
-    float nl = max(0.2, dot(n, light));
+    float l = max(0.2, dot(n, light));
     
     // subtly light based on normal, daniel hack
-    float fake = luminosity(normal_color(n))*1.3;
+    l *= luminosity(normal_color(n))*1.3;
+    l *= ambient_occlusion(p,n);
+    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 50.0));
     
     vec4 clr = vec4(1.0);//,0.9,0.9);
-    if(mtl==0)
-    {
-        clr = floor_color*rounded_squares_texture(p);
-    }
-    
-    float l = nl*fake;//*ambient_occlusion(p,n);
-    
-    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 30.0));
+//    if(mtl==0)
+//    {
+//        clr = floor_color*rounded_squares_texture(p);
+//    }
     
     clr.xyz *= l;
     

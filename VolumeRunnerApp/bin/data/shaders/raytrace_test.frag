@@ -65,7 +65,6 @@ float noise( in vec2 p )
     vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
     
     return dot( n, vec3(70.0) );
-    
 }
 
 
@@ -133,6 +132,12 @@ float smin_power( float a, float b, float k )
 float sdf_xz_plane(in vec3 p, float y)
 {
     return p.y - y;//+ sin(p.x*1.0)*sin(p.z*1.0)*0.9 - y; // + sin(p.x*3.0)*sin(p.z*2.0)*0.3
+}
+
+float sdf_box(in vec3 p, in vec3 size)
+{
+    vec3 d = abs(p) - size;
+    return min(max(d.x,max(d.y,d.z)),0.0) + length(max(d,0.0));
 }
 
 float sdf_round_box(in vec3 p, in vec3 size, float smoothness )
@@ -263,6 +268,28 @@ vec3 calc_normal ( in vec3 p )
     return normalize( n );
 }
 
+
+//---------------------------------------------------
+#define ambient_occlusion ambient_occlusion3
+
+// from iq. https://www.shadertoy.com/view/Xds3zN
+float ambient_occlusion3( in vec3 pos, in vec3 nor )
+{
+    float occ = 0.0;
+    float sca = 1.0;
+    int mtl;
+    for( int i=0; i<5; i++ )
+    {
+        float hr = 0.001 + 0.1*float(i);
+        vec3 aopos =  nor * hr + pos;
+        float dd = compute_scene( aopos, mtl );
+        occ += -(dd-hr)*sca;
+        sca *= 0.95;
+    }
+    return clamp( 1.0 - 1.0*occ, 0.0, 1.0 );
+}
+
+
 //---------------------------------------------------
 float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samples)
 {
@@ -277,11 +304,11 @@ float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samp
 }
 
 //---------------------------------------------------
-float ambient_occlusion( in vec3 p, in vec3 n )
+float ambient_occlusion1( in vec3 p, in vec3 n )
 {
     //n = vec3(0.0,1.0,1.0);
     float ao = 0.0;
-    float weight = 0.9;
+    float weight = 0.5;
     int mtl;
     
     for ( int i = 1; i < 6; ++i )
@@ -294,8 +321,28 @@ float ambient_occlusion( in vec3 p, in vec3 n )
     return 1.0-saturate(ao);
 }
 
+
 //---------------------------------------------------
-float soft_shadow( in vec3 p, in vec3 w, float mint, float maxt, float k )
+#define soft_shadow     soft_shadow1
+
+// from iq. https://www.shadertoy.com/view/Xds3zN
+float soft_shadow2( in vec3 ro, in vec3 rd, in float mint, in float tmax, float k )
+{
+    float res = 1.0;
+    float t = mint;
+    int mtl;
+    for( int i=0; i<76; i++ )
+    {
+        float h = compute_scene( ro + rd*t, mtl );
+        res = min( res, k*h/t );
+        t += h;//clamp( h, 0.02, 0.10 );
+        if( h<0.001 || t>tmax ) break;
+    }
+    return clamp( res, 0.0, 1.0 );
+}
+
+
+float soft_shadow1( in vec3 p, in vec3 w, float mint, float maxt, float k )
 {
     float res = 1.0;
     int mtl;
@@ -305,10 +352,12 @@ float soft_shadow( in vec3 p, in vec3 w, float mint, float maxt, float k )
         if( h<0.001 )
             return 0.0;
         res = min( res, k*h/t );
-        t += h;
+        t += h * 1.0;
     }
     return res;
 }
+
+
 
 
 //------------------------------------------------------------------------------------
@@ -367,7 +416,7 @@ const vec4 floor_color = vec4(0.1,0.2,0.99, 1.0); //vec3(0.8,0.9,1.0);
 vec4 compute_color( in vec3 p, in float distance, in int mtl )
 {
     vec3 n = calc_normal(p);
-    //    return normal_color(n); // use this to debug normals
+//    return normal_color(n); // use this to debug normals
     
     //
     //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
@@ -377,9 +426,9 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     float l = max(0.2, dot(n, light));
     
     // subtly light based on normal, daniel hack
-    l *= luminosity(normal_color(n))*1.3;
+//    l *= luminosity(normal_color(n))*1.3;
     l *= ambient_occlusion(p,n);
-    //    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 50.0));
+    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 90));
     
     vec4 clr = vec4(1.0);//,0.9,0.9);
     //    if(mtl==0)
@@ -448,7 +497,7 @@ float compute_scene( in vec3 p, out int mtl )
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, sdf_xz_plane(p, 0));//noise(p.xz) * 5.0) );
+    d = sdf_union(d, sdf_xz_plane(p, 0));//noise(p.xz * 0.2) * 5.0) );
     
     // repeated box
     //    {

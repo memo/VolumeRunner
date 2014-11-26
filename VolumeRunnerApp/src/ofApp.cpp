@@ -66,6 +66,9 @@ void ofApp::setup(){
 
     loadShaders();
     
+    ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
+    ofSetWindowPosition(0, 0);
+    
 //    cam = new ofCamera();
 }
 

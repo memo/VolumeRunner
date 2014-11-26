@@ -66,7 +66,7 @@ float smin_poly( float a, float b, float k )
     return mix( b, a, h ) - k*h*(1.0-h);
 }
 
-    
+
 // power smooth min (k = 8);
 float smin_power( float a, float b, float k )
 {
@@ -134,13 +134,13 @@ float sdf_blend_power( in float d1, in float d2, in float k )
 }
 
 /*
-float sdf_blend(vec3 p, float a, float b)
-{
-    float s = smoothstep(length(p), 0.0, 1.0);
-    float d = mix(a, b, s);
-    return d;
-}
-*/
+ float sdf_blend(vec3 p, float a, float b)
+ {
+ float s = smoothstep(length(p), 0.0, 1.0);
+ float d = mix(a, b, s);
+ return d;
+ }
+ */
 
 vec3 sdf_repeat( in vec3 p, in vec3 rep)
 {
@@ -223,20 +223,20 @@ float sdf_guy( in vec3 p )
 {
     float d = 1000.0;
     for(int i=0; i<kNumJoints; i++) {
-       //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+        //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
         d = sdf_blend_poly(d,    guy_primitive(
-                                guy_transform_inner(
-                                    sdf_translate(
-                                        sdf_transform(
-                                            guy_transform_outer(p),
-                                             box_mats[i]),
-                                        vec3(0.0,0.0,0.5)
-                                    )
-                                )
-                            )
-                      , blend_k);
+                                               guy_transform_inner(
+                                                                   sdf_translate(
+                                                                                 sdf_transform(
+                                                                                               guy_transform_outer(p),
+                                                                                               box_mats[i]),
+                                                                                 vec3(0.0,0.0,0.5)
+                                                                                 )
+                                                                   )
+                                               )
+                           , blend_k);
     }
-
+    
     return d;
 }
 
@@ -245,39 +245,42 @@ float compute_scene( in vec3 p, out int mtl )
     mtl = 0;
     float d = 1e10;
     
-    //d = sdf_union(d, sdf_xz_plane(p, -0.0) );
-
-    //vec3 samplepos;
+    d = sdf_union(d, sdf_xz_plane(p, -0.0) );
     
     // repeated box
-    //samplepos = p;
-    //samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
-    //samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
-    //d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
+//    {
+//        vec3 samplepos = p;
+//        samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
+//        samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
+//        d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
+//    }
+    
     
     // test box
-    // samplepos = p;
-    //samplepos = sdf_translate(samplepos, box_pos);
-    //samplepos = sdf_rotate_y(samplepos, box_rot.y);
-    //samplepos = sdf_rotate_x(samplepos, box_rot.x);
-    //samplepos = sdf_rotate_z(samplepos, box_rot.z);
-    //samplepos = sdf_scale(samplepos, box_scale);
-    // samplepos = sdf_transform(samplepos, box_mat);
-    //d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
+//    {
+//        vec3 samplepos = p;
+//        samplepos = sdf_translate(samplepos, box_pos);
+//        samplepos = sdf_rotate_y(samplepos, box_rot.y);
+//        samplepos = sdf_rotate_x(samplepos, box_rot.x);
+//        samplepos = sdf_rotate_z(samplepos, box_rot.z);
+//        samplepos = sdf_scale(samplepos, box_scale);
+//        samplepos = sdf_transform(samplepos, box_mat);
+//        d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
+//    }
     
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
-       //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+        //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
         dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix))); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
     }
     
-    if(dguy<d)
-    {
-        mtl = 1;
-    }
+    //if(dguy<d)
+    // {
+    mtl = 1;
+    //}
     
-    d = sdf_union(d,dguy);
-
+    d = sdf_blend_poly(d, dguy, blend_k);
+    
     return d;
     /*
      mtl = 0;
@@ -317,7 +320,7 @@ vec3 calc_normal ( in vec3 p )
     return normalize( n );
 }
 
-float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samples) 
+float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samples)
 {
     const float stepDistance = 0.25;//EPSILON;
     float samples = 5.0;
@@ -378,10 +381,10 @@ const vec4 floor_color = vec4(0.1,0.2,0.99, 1.0); //vec3(0.8,0.9,1.0);
 vec4 compute_color( in vec3 p, in float distance, in int mtl )
 {
     vec3 n = calc_normal(p);
-//    return normal_color(n); // use this to debug normals
-
+    //    return normal_color(n); // use this to debug normals
+    
     //
-//    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
+    //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
     vec3 light = light1;
     
     // diffuse lighting
@@ -390,35 +393,33 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     // subtly light based on normal, daniel hack
     float fake = luminosity(normal_color(n))*1.3;
     
-    
     vec4 clr = vec4(1.0);//,0.9,0.9);
-//    if(mtl==0)
-//    {
-//        clr = floor_color*rounded_squares_texture(p);
-//    }
+    if(mtl==0)
+    {
+        clr = floor_color*rounded_squares_texture(p);
+    }
     
     float l = nl*fake;//*ambient_occlusion(p,n);
     
-//    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 30.0));
+    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 30.0));
     
     clr.xyz *= l;
     
-    //clr = pow( clr, vec3(1.0/2.2) ); // gamma
-    
     //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
-//    float fog = attenuation(max(0.0,distance-10.0),0.0005);
-//    clr = mix(clr,fog_clr,(1.0-fog));
-
+    //    float fog = attenuation(max(0.0,distance-10.0),0.0005);
+    //    clr = mix(clr,fog_clr,(1.0-fog));
+    
     return clr;
 }
 
 /*************************************/
 /* Ray marcher                       */
 
+
 vec4 trace_ray(in vec3 p, in vec3 w, inout float distance)
 {
-//    const float maxDistance = 50;//1e10;
-    const int maxIterations = 32;
+    //    const float maxDistance = 50;//1e10;
+    const int maxIterations = 64;
     const float closeEnough = EPSILON; //1e-2;
     vec3 rp;
     int mtl;
@@ -456,12 +457,12 @@ void main(void)
                                              vec3( (xy - resolution / 2.0)*vec2(1.0,1.0), resolution.y/(-2.0*tanHalfFov))
                                              );
     
-    float distance = 50;//1e10;
-
+    float distance = 10000000;//1e10;
+    
     vec4 clr = trace_ray(p, w, distance);
-
-//    clr = pow( clr, vec4(vec3(1.0/2.2) ); // gamma correction.
-
+    
+    clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
+    
     gl_FragColor = clr;
 }
 

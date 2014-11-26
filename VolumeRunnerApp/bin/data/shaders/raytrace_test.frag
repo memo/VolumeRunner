@@ -1,6 +1,6 @@
 #version 120
 
-#define kNumJoints   7
+#define kNumJoints   9
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time
@@ -426,9 +426,9 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     float l = max(0.2, dot(n, light));
     
     // subtly light based on normal, daniel hack
-    //    l *= luminosity(normal_color(n))*1.3;
+    l *= luminosity(normal_color(n))*1.4;
     l *= ambient_occlusion(p,n);
-    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 90));
+    //l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 90));
     
     vec4 clr = vec4(1.0);//,0.9,0.9);
     if(mtl==0)
@@ -459,7 +459,7 @@ vec3 guy_transform_inner( in vec3 p )
 
 vec3 guy_transform_outer( in vec3 p )
 {
-    return sdf_repeat(p,vec3(23.0,0.0,53.0));
+    return p;//sdf_repeat(p,vec3(23.0,0.0,53.0));
 }
 
 float guy_primitive( in vec3 p )

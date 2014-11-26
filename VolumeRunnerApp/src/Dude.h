@@ -34,6 +34,7 @@ public:
     Vec3 position;
     float heading;
     
+    SkeletonAnimSystem::Bone * bodyBone;
     SkeletonAnimSystem animSys;
     SkeletonWalkAnimSource * walkingAnim;
     

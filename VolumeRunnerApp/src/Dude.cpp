@@ -44,9 +44,20 @@ bool Dude::init()
     bodym.identity();
     //bodym.rotateZ(radians(30));
     bodym.translate(0,2.0,0.0);
-    bodym.scale(2.9,1.3,1.3);
+    bodym.scale(2.0,1.3,1.3);
     
-    animSys.addBone("Head","LowerBack",bodym);
+    bodyBone = animSys.addBone("LowerBack","Head",bodym);
+    
+    // Left Arm
+    animSys.addBone("LeftArm","LeftForeArm");
+    animSys.addBone("LeftForeArm","LeftHand");
+    // Right Arm
+    animSys.addBone("RightArm","RightForeArm");
+    animSys.addBone("RightForeArm","RightHand");
+
+            
+    
+    
 }
 
 void Dude::addParams( msa::controlfreak::ParameterGroup &params )
@@ -73,6 +84,8 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
     params.startGroup("Dude"); {
         params.addFloat("speed").setRange(0.0,30.0).set(walkingAnim->speed);
         params.addFloat("hip rotation").setRange(-40,40).set(walkingAnim->rothip);
+        params.addFloat("backAngle").setRange(-45,45).set(walkingAnim->backAngle);
+        
         params.addFloat("blend k").setRange(0.1,10.0).set(blend_k);
         params.startGroup("Legs"); {
             params.addFloat("startAngHigh").setRange(-50,0).setIncrement(1.0).set(walkingAnim->startAngHigh);
@@ -95,13 +108,14 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     walkingAnim->endAngLow = params["Dude.Legs.endAngLow"];
     walkingAnim->legPhase = params["Dude.Legs.legPhase"];
     
+    walkingAnim->backAngle = params["Dude.backAngle"];
     blend_k = params["Dude.blend k"];
 }
 
 void Dude::update()
 {
     // update the animation
-    animSys.update(20);
+    animSys.update(ofGetLastFrameTime()*1000);
     
     // update dude position based on movement
     Vec3 o = getOffset();

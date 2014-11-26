@@ -141,8 +141,13 @@ void ofApp::draw(){
     
     if(params["Display.Volume"]) {
         gfx::pushMatrix();
-        gfx::applyMatrix(dude.renderSteerMatrix);
-        volume.draw(ofVec3f(dude.position.x, dude.position.y, dude.position.z));
+        M44 m;
+        m.identity();
+        m.translate(dude.position);
+        m *= dude.bodyBone->matrix;
+        gfx::applyMatrix(m);//dude.renderSteerMatrix);
+        
+        volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
         gfx::popMatrix();
     }
     

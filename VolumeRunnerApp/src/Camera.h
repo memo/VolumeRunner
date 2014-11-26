@@ -7,7 +7,7 @@ class Camera
 public:
     Camera()
     :
-    fov(90),
+    fov(60),
     rotx(0),
     roty(0),
     distance(100.0),

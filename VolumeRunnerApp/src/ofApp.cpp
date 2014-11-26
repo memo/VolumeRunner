@@ -178,7 +178,7 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    float rotspeed = 2.0;
+    float rotspeed = 4.0;
     switch(key) {
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;

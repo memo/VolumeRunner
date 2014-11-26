@@ -19,9 +19,9 @@ const float EPSILON = 0.01;
 const float PI = 3.1415926535;
 const float PI2 = PI*2.0;
 
-const vec3 light1  = vec3(0.5,1.0,0.3);
+const vec3 light1  = vec3(0.7,1.0,0.3);
 
-const vec3 fog_clr = vec3(1.0,1.0,1.0);
+const vec3 fog_clr = vec3(0.9,0.9,1.0);
 
 float saturate( in float v )
 {
@@ -76,10 +76,11 @@ float smin_power( float a, float b, float k )
 // p: sample position
 // assumes object is at 0, 0, 0
 
-
+//f(x,z) = sin(x)·sin(z)
+//color = pow( color, vec3(1.0/2.2) );
 float sdf_xz_plane(in vec3 p, float y)
 {
-    return p.y - y;
+    return p.y - y; // + sin(p.x*3.0)*sin(p.z*2.0)*0.3
 }
 
 float sdf_round_box(in vec3 p, in vec3 size, float smoothness )
@@ -116,13 +117,19 @@ float sdf_union( in float d1, in float d2  )
 
 float sdf_blend_exp( in float d1, in float d2, in float k )
 {
-    return smin_poly(d1,d2,k);
+    return smin_exp(d1,d2,k);
 }
 
 float sdf_blend_poly( in float d1, in float d2, in float k )
 {
     return smin_poly(d1,d2,k);
 }
+
+float sdf_blend_power( in float d1, in float d2, in float k )
+{
+    return smin_power(d1,d2,k);
+}
+
 /*
 float sdf_blend(vec3 p, float a, float b)
 {
@@ -217,7 +224,9 @@ float sdf_guy( in vec3 p )
         d = sdf_blend_poly(d,    guy_primitive(
                                 guy_transform_inner(
                                     sdf_translate(
-                                        sdf_transform(p, box_mats[i]),
+                                        sdf_transform(
+                                            guy_transform_outer(p),
+                                             box_mats[i]),
                                         vec3(0.0,0.0,0.5)
                                     )
                                 )
@@ -256,7 +265,7 @@ float compute_scene( in vec3 p, out int mtl )
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
        //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
-        dguy = sdf_union(dguy, sdf_guy(guy_transform_outer(p))); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+        dguy = sdf_union(dguy, sdf_guy(p)); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
     }
     
     if(dguy<d)
@@ -297,12 +306,24 @@ float compute_scene( in vec3 p, out int mtl )
 vec3 calc_normal ( in vec3 p )
 {
     vec3 n = vec3(0.0);
-    vec3 delta = vec3( 0.005, 0.0, 0.0 );
+    vec3 delta = vec3( 0.004, 0.0, 0.0 );
     int mtl;
     n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
     n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );
     n.z = compute_scene( p+delta.yzx, mtl ) - compute_scene( p-delta.yzx, mtl );
     return normalize( n );
+}
+
+float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samples) 
+{
+    const float stepDistance = 0.25;//EPSILON;
+    float samples = 5.0;
+    float occlusion = 1.0;
+    int mtl;
+    for (occlusion = 1.0 ; samples > 0.0 ; samples-=1.0) {
+        occlusion -= (samples * stepDistance - (compute_scene( p + n * samples * stepDistance, mtl))) / pow(2.0, samples);
+    }
+    return occlusion;
 }
 
 float ambient_occlusion( in vec3 p, in vec3 n )
@@ -322,6 +343,20 @@ float ambient_occlusion( in vec3 p, in vec3 n )
     return 1.0-saturate(ao);
 }
 
+float soft_shadow( in vec3 p, in vec3 w, float mint, float maxt, float k )
+{
+    float res = 1.0;
+    int mtl;
+    for( float t=mint; t < maxt; )
+    {
+        float h = compute_scene(p + w*t,mtl);
+        if( h<0.001 )
+            return 0.0;
+        res = min( res, k*h/t );
+        t += h;
+    }
+    return res;
+}
 
 float rounded_squares_texture(in vec3 p)
 {
@@ -335,25 +370,30 @@ float rounded_squares_texture(in vec3 p)
 /*************************************/
 /* Colors and materials              */
 
+
+const vec3 floor_color = vec3(0.99,0.2,0.0); //vec3(0.8,0.9,1.0);
 vec3 compute_color( in vec3 p, in float distance, in int mtl )
 {
     vec3 n = calc_normal(p);
     //return normal_color(n); // use this to debug normals
     
-    vec3 light = normalize(light1);
-    float nl = max(0.3,dot(n,light));
-    float fake = luminosity(normal_color(n))*1.4;
-    vec3 clr = vec3(2.0);//,0.9,0.9);
+    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
+    float nl = max(0.2,dot(n,light));
+    float fake = luminosity(normal_color(n))*1.3;
+    vec3 clr = vec3(1.4);//,0.9,0.9);
     if(mtl==0)
     {
-        clr = vec3(0.8,0.9,1.0)*rounded_squares_texture(p);
+        clr = floor_color*rounded_squares_texture(p);
     }
     float l = nl*fake*ambient_occlusion(p,n);
-    //l = expose(l,0.8);
-    float fog = attenuation(distance,0.0001);
+    l *= max(0.3,soft_shadow(p,light,0.4,200.0,30.0));
+    clr *= l;
+
+    float fog = exp(min(-distance+100,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
     
-    //l *= 
-    return mix(clr*l,fog_clr,1.0-fog);
+    clr = mix(clr,fog_clr,1.0-fog);
+    clr = pow( clr, vec3(1.0/2.2) ); // gamma
+    return clr;
 }
 
 /*************************************/

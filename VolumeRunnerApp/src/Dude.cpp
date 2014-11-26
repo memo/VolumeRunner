@@ -49,13 +49,13 @@ bool Dude::init()
     bodyBone = animSys.addBone("LowerBack","Head",bodym);
     
     // Left Arm
-//    animSys.addBone("LeftArm","LeftForeArm");
-//    animSys.addBone("LeftForeArm","LeftHand");
-    animSys.addBone("LeftArm","LeftHand");
+    animSys.addBone("LeftArm","LeftForeArm");
+    animSys.addBone("LeftForeArm","LeftHand");
+    //animSys.addBone("LeftArm","LeftHand");
     // Right Arm
-//    animSys.addBone("RightArm","RightForeArm");
-//    animSys.addBone("RightForeArm","RightHand");
-    animSys.addBone("RightArm","RightHand");
+    animSys.addBone("RightArm","RightForeArm");
+    animSys.addBone("RightForeArm","RightHand");
+    //animSys.addBone("RightArm","RightHand");
 }
 
 void Dude::addParams( msa::controlfreak::ParameterGroup &params )
@@ -92,6 +92,16 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
             params.addFloat("endAngLow").setRange(40,120).setIncrement(1.0).set(walkingAnim->endAngLow);
             params.addFloat("legPhase").setRange(PI/10,PI).set(walkingAnim->legPhase);
         } params.endGroup();
+        
+        params.startGroup("Arms"); {
+            params.addFloat("startAngArm").setRange(-90,0).setIncrement(1.0).set(walkingAnim->startAngArm);
+            params.addFloat("endAngArm").setRange(10,90).setIncrement(1.0).set(walkingAnim->endAngArm);
+            params.addFloat("startAngForeArm").setRange(-30,10).setIncrement(1.0).set(walkingAnim->startAngForeArm);
+            params.addFloat("endAngForeArm").setRange(50,150).setIncrement(1.0).set(walkingAnim->endAngForeArm);
+            params.addFloat("armAngle").setRange(10,90).set(walkingAnim->armAngle);
+        } params.endGroup();
+        
+        
     } params.endGroup();
 }
 
@@ -105,6 +115,13 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     walkingAnim->startAngLow = params["Dude.Legs.startAngLow"];
     walkingAnim->endAngLow = params["Dude.Legs.endAngLow"];
     walkingAnim->legPhase = params["Dude.Legs.legPhase"];
+    
+    walkingAnim->startAngArm = params["Dude.Arms.startAngArm"];
+    walkingAnim->endAngArm = params["Dude.Arms.endAngArm"];
+    walkingAnim->startAngForeArm = params["Dude.Arms.startAngForeArm"];
+    walkingAnim->endAngForeArm = params["Dude.Arms.endAngForeArm"];
+    walkingAnim->armAngle = params["Dude.Arms.armAngle"];
+    
     
     walkingAnim->backAngle = params["Dude.backAngle"];
     blend_k = params["Dude.blend k"];

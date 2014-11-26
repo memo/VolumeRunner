@@ -17,6 +17,7 @@ public:
     msa::controlfreak::gui::Gui gui;
     
     ofShader shaderRayTracer;
+    ofShader shaderSea;
     cm::FileWatcher *shaderRayTracerWatcher;
 
     ofCamera *cam;

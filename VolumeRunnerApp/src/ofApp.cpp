@@ -20,6 +20,7 @@ void ofApp::setup(){
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
+        params.addBool("Pause").set(false);
         params.addBool("Dude").set(true);
     } params.endGroup();
     
@@ -63,13 +64,13 @@ void ofApp::setup(){
     
     shaderFolderWatcher = new cm::FileWatcher(ofToDataPath("shaders"),500);
     shaderFolderWatcher->startThread();
-
+    
     loadShaders();
     
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
     
-//    cam = new ofCamera();
+    //    cam = new ofCamera();
 }
 
 //--------------------------------------------------------------
@@ -85,6 +86,8 @@ void ofApp::loadShaders() {
 
 //--------------------------------------------------------------
 void ofApp::update(){
+    if(params["Update.Pause"]) return;
+    
     dude.updateParams(params);
     
     if(params["Update.Dude"]) {
@@ -107,51 +110,54 @@ void ofApp::draw(){
     }
     
     
-    gfx::enableDepthBuffer(false);
-    gfx::setIdentityTransform();
-    
-    
-    if(params["Display.Sea"]) {
-        shaderSea->begin();
-        shaderSea->setUniform2i("iResolution", ofGetWidth(), ofGetHeight());
-        shaderSea->setUniform2i("iMouse", ofGetMouseX(), ofGetMouseY());
-        shaderSea->setUniform1i("iGlobalTime", ofGetElapsedTimeMillis());
-        drawUVQuad();
-        shaderSea->end();
-    }
-    
-    shaderRayTracer->begin();
-    shaderRayTracer->setUniform2f("resolution", ofGetWidth(), ofGetHeight());
-    shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
-    
-    //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
-    //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
-    //    shaderRayTracer->setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
-    
-    dude.updateRenderer(*shaderRayTracer);
-    camera.updateRenderer(*shaderRayTracer);
-    
-    drawUVQuad();
-    shaderRayTracer->end();
-    
-    camera.apply();
-    
-    
-    if(params["Display.Debug skeleton"]) {
-        dude.debugDraw();
-        gfx::drawAxis(M44::identityMatrix(),3.0);
-    }
-    
-    if(params["Display.Volume"]) {
-        gfx::pushMatrix();
-        M44 m;
-        m.identity();
-        m.translate(dude.position);
-        m *= dude.bodyBone->matrix;
-        gfx::applyMatrix(m);//dude.renderSteerMatrix);
+    if(!params["Update.Pause"]) {
         
-        volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
-        gfx::popMatrix();
+        gfx::enableDepthBuffer(false);
+        gfx::setIdentityTransform();
+        
+        
+        if(params["Display.Sea"]) {
+            shaderSea->begin();
+            shaderSea->setUniform2i("iResolution", ofGetWidth(), ofGetHeight());
+            shaderSea->setUniform2i("iMouse", ofGetMouseX(), ofGetMouseY());
+            shaderSea->setUniform1i("iGlobalTime", ofGetElapsedTimeMillis());
+            drawUVQuad();
+            shaderSea->end();
+        }
+        
+        shaderRayTracer->begin();
+        shaderRayTracer->setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+        shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
+        
+        //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
+        //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
+        //    shaderRayTracer->setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
+        
+        dude.updateRenderer(*shaderRayTracer);
+        camera.updateRenderer(*shaderRayTracer);
+        
+        drawUVQuad();
+        shaderRayTracer->end();
+        
+        camera.apply();
+        
+        
+        if(params["Display.Debug skeleton"]) {
+            dude.debugDraw();
+            gfx::drawAxis(M44::identityMatrix(),3.0);
+        }
+        
+        if(params["Display.Volume"]) {
+            gfx::pushMatrix();
+            M44 m;
+            m.identity();
+            m.translate(dude.position);
+            m *= dude.bodyBone->matrix;
+            gfx::applyMatrix(m);//dude.renderSteerMatrix);
+            
+            volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
+            gfx::popMatrix();
+        }
     }
     
     ofSetupScreen();
@@ -173,13 +179,15 @@ void ofApp::keyPressed(int key){
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
+        case 'p': params["Update.Pause"] = ! params["Update.Pause"];
+            
         case OF_KEY_LEFT:
             dude.heading += (10);
             break;    // steer left
         case OF_KEY_RIGHT:
             dude.heading -= (10);
             break;   // steer right
-        
+            
         case OF_KEY_UP:
             params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
             break;
@@ -195,7 +203,7 @@ void ofApp::keyPressed(int key){
             dude.playAnimation("run");
             break;
             
-        //case '1':
+            //case '1':
             
             
             //        case 'S': params.saveXmlSchema();

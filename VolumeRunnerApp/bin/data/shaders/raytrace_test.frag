@@ -21,7 +21,7 @@ const float PI2 = PI*2.0;
 
 const vec3 light1  = vec3(0.7,1.0,0.3);
 
-const vec3 fog_clr = vec3(0.9,0.9,1.0);
+
 
 float saturate( in float v )
 {
@@ -80,7 +80,7 @@ float smin_power( float a, float b, float k )
 //color = pow( color, vec3(1.0/2.2) );
 float sdf_xz_plane(in vec3 p, float y)
 {
-    return p.y - y; // + sin(p.x*3.0)*sin(p.z*2.0)*0.3
+    return p.y - y;//+ sin(p.x*1.0)*sin(p.z*1.0)*0.9 - y; // + sin(p.x*3.0)*sin(p.z*2.0)*0.3
 }
 
 float sdf_round_box(in vec3 p, in vec3 size, float smoothness )
@@ -370,8 +370,8 @@ float rounded_squares_texture(in vec3 p)
 /*************************************/
 /* Colors and materials              */
 
-
-const vec3 floor_color = vec3(0.99,0.2,0.0); //vec3(0.8,0.9,1.0);
+const vec3 fog_clr = vec3(0.5,0.9,1.0);
+const vec3 floor_color = vec3(0.1,0.2,0.99); //vec3(0.8,0.9,1.0);
 vec3 compute_color( in vec3 p, in float distance, in int mtl )
 {
     vec3 n = calc_normal(p);
@@ -385,14 +385,15 @@ vec3 compute_color( in vec3 p, in float distance, in int mtl )
     {
         clr = floor_color*rounded_squares_texture(p);
     }
-    float l = nl*fake*ambient_occlusion(p,n);
+    float l = nl*fake;//*ambient_occlusion(p,n);
     l *= max(0.3,soft_shadow(p,light,0.4,200.0,30.0));
     clr *= l;
-
-    float fog = exp(min(-distance+100,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
+    //clr = pow( clr, vec3(1.0/2.2) ); // gamma
     
-    clr = mix(clr,fog_clr,1.0-fog);
-    clr = pow( clr, vec3(1.0/2.2) ); // gamma
+    //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
+    float fog = attenuation(max(0.0,distance-10.0),0.0005);
+    clr = mix(clr,fog_clr,(1.0-fog));
+
     return clr;
 }
 
@@ -417,7 +418,7 @@ vec3 trace_ray(in vec3 p, in vec3 w, inout float distance)
             distance = t;
             // use this to debug number of ray casts
             //return vec3(float(i)/128.0);
-            return compute_color(rp,t,mtl);
+            return compute_color(rp,t,mtl);//+vec3(float(i)/128.0);
         }
         else if(t > distance)
         {
@@ -441,7 +442,12 @@ void main(void)
                                              );
     
     float distance = 1e10;
-    gl_FragColor = vec4(trace_ray(p, w, distance),1.0);
+
+    vec3 clr = trace_ray(p, w, distance);
+
+    clr = pow( clr, vec3(1.0/2.2) ); // gamma correction.
+
+    gl_FragColor = vec4(clr,1.0);
 }
 
 

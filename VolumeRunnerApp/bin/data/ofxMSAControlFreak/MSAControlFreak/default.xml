@@ -1,6 +1,6 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="8.953742027"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="36.576862335"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Update">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Pause" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Dude" value="1"></Parameter>
@@ -9,19 +9,22 @@
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Debug skeleton" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Volume" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Sea" value="0"></Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="fbo" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="fbo size" value="0.500000000"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Shader">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="View">
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="distance" value="86.160713196"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="distance" value="55.803573608"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="4.821426392"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="83.571441650"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Dude">
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="1.000000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="3.080357313"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Rot speed" value="5.535715103"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="hip rotation" value="-14.285715103"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="backAngle" value="0.000000000"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="blend k" value="1.646875024"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="blend k" value="7.083035469"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Legs">
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="startAngHigh" value="-24.330356598"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="endAngHigh" value="55.714286804"></Parameter>
@@ -38,7 +41,7 @@
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Volume">
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Threshold" value="0.602678597"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Threshold" value="0.491071433"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Density" value="0.183035716"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Quality" value="1.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak19ParameterNamedIndexE" name="Filtering" value="0"></Parameter>

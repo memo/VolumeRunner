@@ -1,5 +1,13 @@
 #version 120
 
+//------------------------------------------------------------------------------------
+// A lot of the functions adapted from iq.
+// http://www.iquilezles.org/
+// https://www.shadertoy.com/user/iq
+
+
+
+
 #define kNumJoints   9
 
 uniform vec2 resolution; // screen resolution
@@ -163,28 +171,80 @@ float sdf_prism( in vec3 p, in vec2 h )
 }
 
 
+float sdf_torus( in vec3 p, in vec2 t )
+{
+    return length( vec2(length(p.xz)-t.x,p.y) )-t.y;
+}
+
+float sdf_hex_prism( in vec3 p, in vec2 h )
+{
+    vec3 q = abs(p);
+#if 0
+    return max(q.z-h.y,max((q.x*0.866025+q.y*0.5),q.y)-h.x);
+#else
+    float d1 = q.z-h.y;
+    float d2 = max((q.x*0.866025+q.y*0.5),q.y)-h.x;
+    return length(max(vec2(d1,d2),0.0)) + min(max(d1,d2), 0.);
+#endif
+}
+
+float sdf_capsule( in vec3 p, in vec3 a, in vec3 b, in float r )
+{
+    vec3 pa = p-a, ba = b-a;
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+    return length( pa - ba*h ) - r;
+}
+
+float sdf_cylinder( in vec3 p, in vec2 h )
+{
+    vec2 d = abs(vec2(length(p.xz),p.y)) - h;
+    return min(max(d.x,d.y),0.0) + length(max(d,0.0));
+}
+
+float sdf_cone( in vec3 p, in vec3 c )
+{
+    vec2 q = vec2( length(p.xz), p.y );
+#if 0
+    return max( max( dot(q,c.xy), p.y), -p.y-c.z );
+#else
+    float d1 = -p.y-c.z;
+    float d2 = max( dot(q,c.xy), p.y);
+    return length(max(vec2(d1,d2),0.0)) + min(max(d1,d2), 0.);
+#endif    
+}
+
 
 //------------------------------------------------------------------------------------
 #pragma mark SDF OPERATORS
 
-float sdf_union( in float d1, in float d2  )
+float sdf_union(in float d1, in float d2)
 {
-    return min(d1,d2);
+    return min(d1, d2);
+}
+
+float sdf_subtract(in float d1, in float d2)
+{
+    return max(-d2, d1);
+}
+
+float sdf_intersect(in float d1, in float d2)
+{
+    return max(d1, d2);
 }
 
 float sdf_blend_exp( in float d1, in float d2, in float k )
 {
-    return smin_exp(d1,d2,k);
+    return smin_exp(d1, d2, k);
 }
 
 float sdf_blend_poly( in float d1, in float d2, in float k )
 {
-    return smin_poly(d1,d2,k);
+    return smin_poly(d1, d2, k);
 }
 
 float sdf_blend_power( in float d1, in float d2, in float k )
 {
-    return smin_power(d1,d2,k);
+    return smin_power(d1, d2, k);
 }
 
 /*
@@ -257,20 +317,20 @@ vec3 sdf_scale(in vec3 p, in vec3 scale) {
 #pragma mark LIGHTING
 
 //---------------------------------------------------
+// from iq. https://www.shadertoy.com/view/Xds3zN
 vec3 calc_normal ( in vec3 p )
 {
-    vec3 n = vec3(0.0);
     vec3 delta = vec3( 0.004, 0.0, 0.0 );
     int mtl;
+    vec3 n;
     n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
     n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );
     n.z = compute_scene( p+delta.yzx, mtl ) - compute_scene( p-delta.yzx, mtl );
     return normalize( n );
 }
 
-
 //---------------------------------------------------
-#define ambient_occlusion ambient_occlusion3
+#define ambient_occlusion ambient_occlusion1
 
 // from iq. https://www.shadertoy.com/view/Xds3zN
 float ambient_occlusion3( in vec3 pos, in vec3 nor )
@@ -280,13 +340,13 @@ float ambient_occlusion3( in vec3 pos, in vec3 nor )
     int mtl;
     for( int i=0; i<5; i++ )
     {
-        float hr = 0.001 + 0.1*float(i);
+        float hr = 0.01 + 0.12*float(i)/4.0;
         vec3 aopos =  nor * hr + pos;
         float dd = compute_scene( aopos, mtl );
         occ += -(dd-hr)*sca;
         sca *= 0.95;
     }
-    return clamp( 1.0 - 1.0*occ, 0.0, 1.0 );
+    return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );
 }
 
 
@@ -479,7 +539,7 @@ float sdf_guy( in vec3 p )
     for(int i=0; i<kNumJoints; i++) {
         pt = p;
         
-        pt = guy_transform_outer(pt);
+//        pt = guy_transform_outer(pt);
         pt = guy_transform_inner(pt);
         pt = sdf_transform(pt,box_mats[i]);
         pt = sdf_translate(pt,vec3(0.0,0.0,0.5));

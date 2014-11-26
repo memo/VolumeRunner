@@ -7,7 +7,6 @@
 //ofBoxPrimitive box;
 
 
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(0, 0, 0);
@@ -28,6 +27,8 @@ void ofApp::setup(){
         params.addBool("Debug skeleton").set(true);
         params.addBool("Volume").set(true);
         params.addBool("Sea").set(true);
+        params.addBool("fbo").trackVariable(&renderManager.bUseFbo);
+        params.addFloat("fbo size").setRange(0, 1).setSnap(true).set(0.5);
     } params.endGroup();
     
     
@@ -84,6 +85,11 @@ void ofApp::loadShaders() {
     shaderSea->load("", "shaders/sea.frag");
 }
 
+void ofApp::allocateFbo() {
+    ofLogVerbose() << "*** allocateFbo ***";
+    renderManager.allocate(ofGetWidth() * (float)params["Display.fbo size"], ofGetHeight() * (float)params["Display.fbo size"]);
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
     if(params["Update.Pause"]) return;
@@ -97,20 +103,21 @@ void ofApp::update(){
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
     camera.distance = params["Shader.View.distance"];
-    camera.update(dude.position,0.1);//Vec3(0,0,0));
+    camera.update(dude.position, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     params["FPS"] = ofGetFrameRate();
     
-    if( shaderFolderWatcher->hasFileChanged() )
-    {
+    if( shaderFolderWatcher->hasFileChanged() ) {
         loadShaders();
     }
     
+    if(params["Display.fbo size"].hasChanged()) allocateFbo();
     
     if(!params["Update.Pause"]) {
+        renderManager.begin();
         
         gfx::enableDepthBuffer(false);
         gfx::setIdentityTransform();
@@ -118,7 +125,7 @@ void ofApp::draw(){
         
         if(params["Display.Sea"]) {
             shaderSea->begin();
-            shaderSea->setUniform2i("iResolution", ofGetWidth(), ofGetHeight());
+            shaderSea->setUniform2i("iResolution", renderManager.getWidth(), renderManager.getHeight());
             shaderSea->setUniform2i("iMouse", ofGetMouseX(), ofGetMouseY());
             shaderSea->setUniform1i("iGlobalTime", ofGetElapsedTimeMillis());
             drawUVQuad();
@@ -126,7 +133,7 @@ void ofApp::draw(){
         }
         
         shaderRayTracer->begin();
-        shaderRayTracer->setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+        shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
         
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
@@ -161,9 +168,12 @@ void ofApp::draw(){
             volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
             gfx::popMatrix();
         }
+        renderManager.end();
     }
     
     ofSetupScreen();
+    renderManager.draw(0, ofGetHeight(), ofGetWidth(), -ofGetHeight());
+    
     ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
 }
@@ -178,7 +188,7 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    float rotspeed = 2.0;
+    float rotspeed = params["Dude.Rot speed"];
     switch(key) {
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
@@ -246,7 +256,7 @@ void ofApp::mouseReleased(int x, int y, int button){
 
 //--------------------------------------------------------------
 void ofApp::windowResized(int w, int h){
-    
+    allocateFbo();
 }
 
 //--------------------------------------------------------------

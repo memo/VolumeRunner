@@ -23,7 +23,7 @@ public:
     
     void update() { assert(0); }
     
-    void update( const Vec3 & lookat, float easing = 0.1 )
+    void update( const Vec3 & lookat, float w, float h, float easing = 0.1)
     {
         // ease on target
         target += (lookat-target)*easing;
@@ -36,7 +36,7 @@ public:
         
         viewMatrix = worldMatrix.inverse();
         
-        projectionMatrix.perspective(radians(fov),(float)ofGetWidth()/ofGetHeight(),0.1,1000.0);
+        projectionMatrix.perspective(radians(fov),(float)w/h,0.1,1000.0);
     }
     
     void updateRenderer( ofShader & shader )

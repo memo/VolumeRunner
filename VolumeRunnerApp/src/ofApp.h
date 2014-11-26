@@ -16,16 +16,19 @@ public:
     msa::controlfreak::ParameterGroup params;
     msa::controlfreak::gui::Gui gui;
     
-    ofShader shaderRayTracer;
-    cm::FileWatcher *shaderRayTracerWatcher;
+    shared_ptr<ofShader> shaderRayTracer;
+    shared_ptr<ofShader> shaderSea;
+    cm::FileWatcher *shaderFolderWatcher;
 
-    ofCamera *cam;
+//    ofCamera *cam;
     
     Dude dude;
     Camera camera;
 
     Volume volume;
     
+    void loadShaders();
+
     void setup();
     void update();
     void draw();

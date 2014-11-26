@@ -17,30 +17,31 @@ void ofApp::setup(){
     dude.init();
     volume.init();
     
-
+    
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
         params.addBool("Dude").set(true);
     } params.endGroup();
-
+    
     params.startGroup("Display"); {
         params.addBool("Debug skeleton").set(true);
         params.addBool("Volume").set(true);
+        params.addBool("Sea").set(true);
     } params.endGroup();
     
     
     params.startGroup("Shader"); {
-//        params.startGroup("Test box"); {
-//            params.addFloat("posx").setRange(-100, 100).setIncrement(1.0).setSnap(true);
-//            params.addFloat("posy").setRange(-100, 100).setIncrement(1.0).setSnap(true);
-//            params.addFloat("posz").setRange(-100, 100).setIncrement(1.0).setSnap(true);
-//            params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0).setSnap(true);
-//            params.addFloat("roty").setRange(-180, 180).setIncrement(1.0).setSnap(true);
-//            params.addFloat("rotz").setRange(-180, 180).setIncrement(1.0).setSnap(true);
-//            params.addFloat("scalex").setRange(0, 50).setIncrement(0.1).setSnap(true);
-//            params.addFloat("scaley").setRange(0, 50).setIncrement(0.1).setSnap(true);
-//            params.addFloat("scalez").setRange(0, 50).setIncrement(0.1).setSnap(true);
-//        } params.endGroup();
+        //        params.startGroup("Test box"); {
+        //            params.addFloat("posx").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+        //            params.addFloat("posy").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+        //            params.addFloat("posz").setRange(-100, 100).setIncrement(1.0).setSnap(true);
+        //            params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0).setSnap(true);
+        //            params.addFloat("roty").setRange(-180, 180).setIncrement(1.0).setSnap(true);
+        //            params.addFloat("rotz").setRange(-180, 180).setIncrement(1.0).setSnap(true);
+        //            params.addFloat("scalex").setRange(0, 50).setIncrement(0.1).setSnap(true);
+        //            params.addFloat("scaley").setRange(0, 50).setIncrement(0.1).setSnap(true);
+        //            params.addFloat("scalez").setRange(0, 50).setIncrement(0.1).setSnap(true);
+        //        } params.endGroup();
         
         
         params.startGroup("View"); {
@@ -60,14 +61,23 @@ void ofApp::setup(){
     gui.setDefaultKeys(true);
     gui.show();
     
-    shaderRayTracerWatcher = new cm::FileWatcher(ofToDataPath("shaders/raytrace_test.frag"),500);
-    shaderRayTracerWatcher->startThread();
+    shaderFolderWatcher = new cm::FileWatcher(ofToDataPath("shaders"),500);
+    shaderFolderWatcher->startThread();
+
+    loadShaders();
     
-    shaderRayTracer.load("", "shaders/raytrace_test.frag");
+//    cam = new ofCamera();
+}
+
+//--------------------------------------------------------------
+void ofApp::loadShaders() {
+    ofLogVerbose() << "*** Loading Shaders ***";
     
-    cam = new ofCamera();
+    shaderRayTracer = shared_ptr<ofShader>(new ofShader());
+    shaderRayTracer->load("", "shaders/raytrace_test.frag");
     
-    
+    shaderSea = shared_ptr<ofShader>(new ofShader());
+    shaderSea->load("", "shaders/sea.frag");
 }
 
 //--------------------------------------------------------------
@@ -88,31 +98,41 @@ void ofApp::update(){
 void ofApp::draw(){
     params["FPS"] = ofGetFrameRate();
     
-    if( shaderRayTracerWatcher->hasFileChanged() )
+    if( shaderFolderWatcher->hasFileChanged() )
     {
-        shaderRayTracer.load("", "shaders/raytrace_test.frag");
+        loadShaders();
     }
     
     
     gfx::enableDepthBuffer(false);
     gfx::setIdentityTransform();
     
-    shaderRayTracer.begin();
-    shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
-    shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
     
-//    shaderRayTracer.setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
-//    shaderRayTracer.setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
-//    shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
+    if(params["Display.Sea"]) {
+        shaderSea->begin();
+        shaderSea->setUniform2i("iResolution", ofGetWidth(), ofGetHeight());
+        shaderSea->setUniform2i("iMouse", ofGetMouseX(), ofGetMouseY());
+        shaderSea->setUniform1i("iGlobalTime", ofGetElapsedTimeMillis());
+        drawUVQuad();
+        shaderSea->end();
+    }
     
-    dude.updateRenderer(shaderRayTracer);
-    camera.updateRenderer(shaderRayTracer);
+    shaderRayTracer->begin();
+    shaderRayTracer->setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+    shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
+    
+    //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
+    //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
+    //    shaderRayTracer->setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
+    
+    dude.updateRenderer(*shaderRayTracer);
+    camera.updateRenderer(*shaderRayTracer);
     
     drawUVQuad();
-    shaderRayTracer.end();
-
+    shaderRayTracer->end();
+    
     camera.apply();
-
+    
     
     if(params["Display.Debug skeleton"]) {
         dude.debugDraw();
@@ -134,8 +154,8 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::exit(){
     //    params.saveXmlValues();
-    shaderRayTracerWatcher->stopThread();
-    delete shaderRayTracerWatcher;
+    shaderFolderWatcher->stopThread();
+    delete shaderFolderWatcher;
 }
 
 

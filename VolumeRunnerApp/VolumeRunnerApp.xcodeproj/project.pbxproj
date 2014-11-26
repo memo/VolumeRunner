@@ -141,6 +141,7 @@
 		BBD918BA1A2503B1008267A4 /* ofxVolumetrics.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxVolumetrics.h; sourceTree = "<group>"; };
 		BBD918C11A250611008267A4 /* Volume.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Volume.cpp; sourceTree = "<group>"; };
 		BBD918C21A250611008267A4 /* Volume.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Volume.h; sourceTree = "<group>"; };
+		BBD918CE1A25EEEB008267A4 /* sea.frag */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; name = sea.frag; path = bin/data/shaders/sea.frag; sourceTree = "<group>"; };
 		BBF9C3CC1A2355D300209F8B /* license.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = license.md; sourceTree = "<group>"; };
 		BBF9C3CD1A2355D300209F8B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		BBF9C3CF1A2355D300209F8B /* AnyValue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AnyValue.h; sourceTree = "<group>"; };
@@ -805,6 +806,7 @@
 		E4B69B4A0A3A1720003C02F2 = {
 			isa = PBXGroup;
 			children = (
+				BBD918CE1A25EEEB008267A4 /* sea.frag */,
 				E4B6FCAD0C3E899E008CF71C /* openFrameworks-Info.plist */,
 				E4EB6923138AFD0F00A09F29 /* Project.xcconfig */,
 				BBF9C4611A23748800209F8B /* shaders */,

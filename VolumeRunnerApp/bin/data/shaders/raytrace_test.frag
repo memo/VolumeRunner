@@ -21,7 +21,7 @@ const float EPSILON = 0.01;
 const float PI = 3.1415926535;
 const float PI2 = PI*2.0;
 
-const vec3 light1  = vec3(0.7,1.0,0.3);
+const vec3 light1  = normalize(vec3(0.7,1.0,0.3));
 
 
 
@@ -35,15 +35,16 @@ float expose( in float l, in float e )
     return (1.5 - exp(-l*e));
 }
 
-const vec3 lumi = vec3(0.30, 0.59, 0.11);
-float luminosity( in vec3 clr )
+const vec4 lumi = vec4(0.30, 0.59, 0.11, 0);
+
+float luminosity( in vec4 clr )
 {
-    return dot(clr,lumi);
+    return dot(clr, lumi);
 }
 
-vec3  normal_color( in vec3 n )
+vec4  normal_color( in vec3 n )
 {
-    return (n*vec3(0.5)+vec3(0.5));
+    return vec4((n*vec3(0.5)+vec3(0.5)), 1);
 }
 
 float attenuation( in float distance, in float atten )
@@ -244,7 +245,7 @@ float compute_scene( in vec3 p, out int mtl )
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, sdf_xz_plane(p, -0.0) );
+    //d = sdf_union(d, sdf_xz_plane(p, -0.0) );
 
     //vec3 samplepos;
     
@@ -372,29 +373,41 @@ float rounded_squares_texture(in vec3 p)
 /*************************************/
 /* Colors and materials              */
 
-const vec3 fog_clr = vec3(0.5,0.9,1.0);
-const vec3 floor_color = vec3(0.1,0.2,0.99); //vec3(0.8,0.9,1.0);
-vec3 compute_color( in vec3 p, in float distance, in int mtl )
+const vec4 fog_clr = vec4(0.5,0.9,1.0, 0.0);
+const vec4 floor_color = vec4(0.1,0.2,0.99, 1.0); //vec3(0.8,0.9,1.0);
+vec4 compute_color( in vec3 p, in float distance, in int mtl )
 {
     vec3 n = calc_normal(p);
-    //return normal_color(n); // use this to debug normals
+//    return normal_color(n); // use this to debug normals
+
+    //
+//    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
+    vec3 light = light1;
     
-    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
-    float nl = max(0.2,dot(n,light));
+    // diffuse lighting
+    float nl = max(0.2, dot(n, light));
+    
+    // subtly light based on normal, daniel hack
     float fake = luminosity(normal_color(n))*1.3;
-    vec3 clr = vec3(1.4);//,0.9,0.9);
-    if(mtl==0)
-    {
-        clr = floor_color*rounded_squares_texture(p);
-    }
+    
+    
+    vec4 clr = vec4(1.0);//,0.9,0.9);
+//    if(mtl==0)
+//    {
+//        clr = floor_color*rounded_squares_texture(p);
+//    }
+    
     float l = nl*fake;//*ambient_occlusion(p,n);
-    l *= max(0.3,soft_shadow(p,light,0.4,200.0,30.0));
-    clr *= l;
+    
+//    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 30.0));
+    
+    clr.xyz *= l;
+    
     //clr = pow( clr, vec3(1.0/2.2) ); // gamma
     
     //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
-    float fog = attenuation(max(0.0,distance-10.0),0.0005);
-    clr = mix(clr,fog_clr,(1.0-fog));
+//    float fog = attenuation(max(0.0,distance-10.0),0.0005);
+//    clr = mix(clr,fog_clr,(1.0-fog));
 
     return clr;
 }
@@ -402,10 +415,10 @@ vec3 compute_color( in vec3 p, in float distance, in int mtl )
 /*************************************/
 /* Ray marcher                       */
 
-vec3 trace_ray(in vec3 p, in vec3 w, inout float distance)
+vec4 trace_ray(in vec3 p, in vec3 w, inout float distance)
 {
-    const float maxDistance = 1e10;
-    const int maxIterations = 128;
+//    const float maxDistance = 50;//1e10;
+    const int maxIterations = 32;
     const float closeEnough = EPSILON; //1e-2;
     vec3 rp;
     int mtl;
@@ -443,13 +456,13 @@ void main(void)
                                              vec3( (xy - resolution / 2.0)*vec2(1.0,1.0), resolution.y/(-2.0*tanHalfFov))
                                              );
     
-    float distance = 1e10;
+    float distance = 50;//1e10;
 
-    vec3 clr = trace_ray(p, w, distance);
+    vec4 clr = trace_ray(p, w, distance);
 
-    clr = pow( clr, vec3(1.0/2.2) ); // gamma correction.
+//    clr = pow( clr, vec4(vec3(1.0/2.2) ); // gamma correction.
 
-    gl_FragColor = vec4(clr,1.0);
+    gl_FragColor = clr;
 }
 
 

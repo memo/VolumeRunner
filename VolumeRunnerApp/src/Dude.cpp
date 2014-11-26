@@ -10,7 +10,8 @@
 
 Dude::Dude()
 :
-blend_k(1.0)
+blend_k(1.0),
+heading(0.0)
 {
 
 }
@@ -27,7 +28,7 @@ bool Dude::init()
     //animSys.play("1");
 
     // Walking
-    walkingAnim = new SkeletonWalkAnimSource(animSys.getSkeleton(),"walk");
+    walkingAnim = new SkeletonWalkAnimSource(animSys.getSkeleton(),"run");
     animSys.addAnimSource("run", walkingAnim );
     animSys.play("run");
     
@@ -105,10 +106,20 @@ void Dude::update()
     // update dude position based on movement
     Vec3 o = getOffset();
     
-    position.x -= o.x; //+vel.x*skippy*0.5;
-    position.z -= o.z; //+vel.z*skippy*0.5;
+    // steer
+    steerMatrix.identity();
+    steerMatrix.rotateY(radians(heading));
+    
+    // velocity of the dude
+    Vec3 v(-o.x,0.0,-o.z);
+    v = mul(steerMatrix,v);
+    
+    // move the dude
+    position.x += v.x;//o.x*cos(heading); //+vel.x*skippy*0.5;
+    position.z += v.z;//o.z*sin(heading); //+vel.z*skippy*0.5;
+    
+    // offset the dude to touch the ground
     position.y = -o.y;
-//    guyNode->scale(cscale);
 }
 
 void Dude::updateRenderer( ofShader & shader )
@@ -124,7 +135,14 @@ void Dude::updateRenderer( ofShader & shader )
         renderMats[i].invert();
     }
     
-    // set them
+    // prepare rendering steer matrix
+    renderSteerMatrix.identity();
+    renderSteerMatrix.translate(position);
+    renderSteerMatrix *= steerMatrix;
+    renderSteerMatrix.translate(-position);
+
+    // set it up
+    shader.setUniformMatrix4f("steerMatrix",ofMatrix4x4((float*)renderSteerMatrix.inverse()));
     shader.setUniform1f("blend_k",blend_k);
     shader.setUniformMatrix4f("box_mats", (ofMatrix4x4&) renderMats[0], renderMats.size());//
 }
@@ -155,11 +173,13 @@ void Dude::playAnimation( const std::string & name )
 
 void Dude::debugDraw()
 {
-
     std::vector<M44> M = animSys.getBoneMatrices();
     std::vector<float> L = animSys.getBoneLengths();
     gfx::pushMatrix();
     gfx::translate(position.x,position.y,position.z);
+    M44 m;
+    m.identity();
+    gfx::applyMatrix(steerMatrix);
     debugDrawSkeleton(M,L);
     gfx::popMatrix();
 }

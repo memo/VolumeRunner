@@ -11,6 +11,8 @@ uniform vec2 mouse; // mouse position (screen space)
 uniform mat4 box_mats[kNumJoints];
 
 uniform mat4 invViewMatrix;
+uniform mat4 steerMatrix;
+
 uniform float tanHalfFov; // tan(fov/2)
 
 uniform float blend_k;
@@ -266,7 +268,7 @@ float compute_scene( in vec3 p, out int mtl )
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
        //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
-        dguy = sdf_union(dguy, sdf_guy(p)); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+        dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix))); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
     }
     
     if(dguy<d)

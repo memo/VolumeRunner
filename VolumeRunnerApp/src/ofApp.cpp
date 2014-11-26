@@ -140,7 +140,10 @@ void ofApp::draw(){
     }
     
     if(params["Display.Volume"]) {
+        gfx::pushMatrix();
+        gfx::applyMatrix(dude.renderSteerMatrix);
         volume.draw(ofVec3f(dude.position.x, dude.position.y, dude.position.z));
+        gfx::popMatrix();
     }
     
     ofSetupScreen();
@@ -162,8 +165,30 @@ void ofApp::keyPressed(int key){
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
-        case OF_KEY_LEFT: break;    // steer left
-        case OF_KEY_RIGHT: break;   // steer right
+        case OF_KEY_LEFT:
+            dude.heading += (10);
+            break;    // steer left
+        case OF_KEY_RIGHT:
+            dude.heading -= (10);
+            break;   // steer right
+        
+        case OF_KEY_UP:
+            params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
+            break;
+        case OF_KEY_DOWN:
+            params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
+            break;
+            
+        case '1':
+            dude.playAnimation("1");
+            break;
+            
+        case '2':
+            dude.playAnimation("run");
+            break;
+            
+        //case '1':
+            
             
             //        case 'S': params.saveXmlSchema();
             //        case 'L': params.loadXmlSchema();

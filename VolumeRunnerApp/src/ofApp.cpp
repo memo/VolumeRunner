@@ -61,15 +61,23 @@ void ofApp::setup(){
     gui.setDefaultKeys(true);
     gui.show();
     
-    shaderRayTracerWatcher = new cm::FileWatcher(ofToDataPath("shaders/raytrace_test.frag"),500);
-    shaderRayTracerWatcher->startThread();
+    shaderFolderWatcher = new cm::FileWatcher(ofToDataPath("shaders"),500);
+    shaderFolderWatcher->startThread();
+
+    loadShaders();
     
-    shaderRayTracer.load("", "shaders/raytrace_test.frag");
-    shaderSea.load("", "shaders/sea.frag");
+//    cam = new ofCamera();
+}
+
+//--------------------------------------------------------------
+void ofApp::loadShaders() {
+    ofLogVerbose() << "*** Loading Shaders ***";
     
-    cam = new ofCamera();
+    shaderRayTracer = shared_ptr<ofShader>(new ofShader());
+    shaderRayTracer->load("", "shaders/raytrace_test.frag");
     
-    
+    shaderSea = shared_ptr<ofShader>(new ofShader());
+    shaderSea->load("", "shaders/sea.frag");
 }
 
 //--------------------------------------------------------------
@@ -90,9 +98,9 @@ void ofApp::update(){
 void ofApp::draw(){
     params["FPS"] = ofGetFrameRate();
     
-    if( shaderRayTracerWatcher->hasFileChanged() )
+    if( shaderFolderWatcher->hasFileChanged() )
     {
-        shaderRayTracer.load("", "shaders/raytrace_test.frag");
+        loadShaders();
     }
     
     
@@ -101,27 +109,27 @@ void ofApp::draw(){
     
     
     if(params["Display.Sea"]) {
-        shaderSea.begin();
-        shaderSea.setUniform2i("iResolution", ofGetWidth(), ofGetHeight());
-        shaderSea.setUniform2i("iMouse", ofGetMouseX(), ofGetMouseY());
-        shaderSea.setUniform1i("iGlobalTime", ofGetElapsedTimeMillis());
+        shaderSea->begin();
+        shaderSea->setUniform2i("iResolution", ofGetWidth(), ofGetHeight());
+        shaderSea->setUniform2i("iMouse", ofGetMouseX(), ofGetMouseY());
+        shaderSea->setUniform1i("iGlobalTime", ofGetElapsedTimeMillis());
         drawUVQuad();
-        shaderSea.end();
+        shaderSea->end();
     }
     
-    shaderRayTracer.begin();
-    shaderRayTracer.setUniform2f("resolution", ofGetWidth(), ofGetHeight());
-    shaderRayTracer.setUniform1f("time", ofGetElapsedTimef());
+    shaderRayTracer->begin();
+    shaderRayTracer->setUniform2f("resolution", ofGetWidth(), ofGetHeight());
+    shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
     
-    //    shaderRayTracer.setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
-    //    shaderRayTracer.setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
-    //    shaderRayTracer.setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
+    //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
+    //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
+    //    shaderRayTracer->setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
     
-    dude.updateRenderer(shaderRayTracer);
-    camera.updateRenderer(shaderRayTracer);
+    dude.updateRenderer(*shaderRayTracer);
+    camera.updateRenderer(*shaderRayTracer);
     
     drawUVQuad();
-    shaderRayTracer.end();
+    shaderRayTracer->end();
     
     camera.apply();
     
@@ -143,8 +151,8 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::exit(){
     //    params.saveXmlValues();
-    shaderRayTracerWatcher->stopThread();
-    delete shaderRayTracerWatcher;
+    shaderFolderWatcher->stopThread();
+    delete shaderFolderWatcher;
 }
 
 

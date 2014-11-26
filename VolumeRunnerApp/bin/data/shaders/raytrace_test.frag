@@ -415,7 +415,7 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
 
 vec4 trace_ray(in vec3 p, in vec3 w, inout float distance)
 {
-    const float maxDistance = 50;//1e10;
+//    const float maxDistance = 50;//1e10;
     const int maxIterations = 32;
     const float closeEnough = EPSILON; //1e-2;
     vec3 rp;
@@ -454,7 +454,7 @@ void main(void)
                                              vec3( (xy - resolution / 2.0)*vec2(1.0,1.0), resolution.y/(-2.0*tanHalfFov))
                                              );
     
-    float distance = 1e10;
+    float distance = 50;//1e10;
 
     vec4 clr = trace_ray(p, w, distance);
 

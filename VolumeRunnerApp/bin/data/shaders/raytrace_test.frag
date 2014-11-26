@@ -24,7 +24,54 @@ const float PI2 = PI*2.0;
 const vec3 light1  = normalize(vec3(0.7,1.0,0.3));
 
 
+// Modify these functions
+float compute_scene( in vec3 p, out int mtl );
+vec4 compute_color( in vec3 p, in float distance, in int mtl );
 
+
+
+//------------------------------------------------------------------------------------
+#pragma mark NOISE
+// SIMPLE NOISE
+// Created by inigo quilez - iq/2013
+// License Creative Commons Attribution-NonCommercial-ShareAlike 3.0 Unported License.
+
+// Simplex Noise (http://en.wikipedia.org/wiki/Simplex_noise), a type of gradient noise
+// that uses N+1 vertices for random gradient interpolation instead of 2^N as in regular
+// latice based Gradient Noise.
+
+vec2 hash( vec2 p )
+{
+    p = vec2( dot(p,vec2(127.1,311.7)),
+             dot(p,vec2(269.5,183.3)) );
+    
+    return -1.0 + 2.0*fract(sin(p)*43758.5453123);
+}
+
+float noise( in vec2 p )
+{
+    const float K1 = 0.366025404; // (sqrt(3)-1)/2;
+    const float K2 = 0.211324865; // (3-sqrt(3))/6;
+    
+    vec2 i = floor( p + (p.x+p.y)*K1 );
+    
+    vec2 a = p - i + (i.x+i.y)*K2;
+    vec2 o = (a.x>a.y) ? vec2(1.0,0.0) : vec2(0.0,1.0); //vec2 of = 0.5 + 0.5*vec2(sign(a.x-a.y), sign(a.y-a.x));
+    vec2 b = a - o + K2;
+    vec2 c = a - 1.0 + 2.0*K2;
+    
+    vec3 h = max( 0.5-vec3(dot(a,a), dot(b,b), dot(c,c) ), 0.0 );
+    
+    vec3 n = h*h*h*h*vec3( dot(a,hash(i+0.0)), dot(b,hash(i+o)), dot(c,hash(i+1.0)));
+    
+    return dot( n, vec3(70.0) );
+    
+}
+
+
+
+//------------------------------------------------------------------------------------
+#pragma mark UTILS
 float saturate( in float v )
 {
     return clamp(v,0.0,1.0);
@@ -74,8 +121,10 @@ float smin_power( float a, float b, float k )
     return pow( (a*b)/(a+b), 1.0/k );
 }
 
-/*************************************/
-/* Objects                           */
+
+//------------------------------------------------------------------------------------
+#pragma mark SDF PRIMITIVES
+// SDF Objects
 // p: sample position
 // assumes object is at 0, 0, 0
 
@@ -110,8 +159,8 @@ float sdf_prism( in vec3 p, in vec2 h )
 
 
 
-/*************************************/
-/* Operators                         */
+//------------------------------------------------------------------------------------
+#pragma mark SDF OPERATORS
 
 float sdf_union( in float d1, in float d2  )
 {
@@ -197,8 +246,160 @@ vec3 sdf_scale(in vec3 p, in vec3 scale) {
     return p / scale;
 }
 
-/**************************************/
-/* Scene description here..           */
+
+
+//------------------------------------------------------------------------------------
+#pragma mark LIGHTING
+
+//---------------------------------------------------
+vec3 calc_normal ( in vec3 p )
+{
+    vec3 n = vec3(0.0);
+    vec3 delta = vec3( 0.004, 0.0, 0.0 );
+    int mtl;
+    n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
+    n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );
+    n.z = compute_scene( p+delta.yzx, mtl ) - compute_scene( p-delta.yzx, mtl );
+    return normalize( n );
+}
+
+//---------------------------------------------------
+float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samples)
+{
+    const float stepDistance = 0.25;//EPSILON;
+    float samples = 5.0;
+    float occlusion = 1.0;
+    int mtl;
+    for (occlusion = 1.0 ; samples > 0.0 ; samples-=1.0) {
+        occlusion -= (samples * stepDistance - (compute_scene( p + n * samples * stepDistance, mtl))) / pow(2.0, samples);
+    }
+    return occlusion;
+}
+
+//---------------------------------------------------
+float ambient_occlusion( in vec3 p, in vec3 n )
+{
+    //n = vec3(0.0,1.0,1.0);
+    float ao = 0.0;
+    float weight = 0.9;
+    int mtl;
+    
+    for ( int i = 1; i < 6; ++i )
+    {
+        float delta = i*i*EPSILON *12.0;
+        ao += weight * (delta-compute_scene(p+n*(0.0+delta), mtl));
+        weight *= 0.5;
+    }
+    
+    return 1.0-saturate(ao);
+}
+
+//---------------------------------------------------
+float soft_shadow( in vec3 p, in vec3 w, float mint, float maxt, float k )
+{
+    float res = 1.0;
+    int mtl;
+    for( float t=mint; t < maxt; )
+    {
+        float h = compute_scene(p + w*t,mtl);
+        if( h<0.001 )
+            return 0.0;
+        res = min( res, k*h/t );
+        t += h;
+    }
+    return res;
+}
+
+
+//------------------------------------------------------------------------------------
+#pragma mark RAY MARCHER
+
+// Ray marcher
+vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
+{
+    //    const float maxDistance = 50;//1e10;
+    const int maxIterations = 64;
+    const float closeEnough = EPSILON; //1e-2;
+    vec3 rp;
+    int mtl;
+    float t = 0;
+    for (int i = 0; i < maxIterations; ++i)
+    {
+        rp = p+w*t;
+        float d = compute_scene(rp,mtl);
+        t += d;
+        if (d < closeEnough)
+        {
+            distance = t;
+            // use this to debug number of ray casts
+            //return vec3(float(i)/128.0);
+            return compute_color(rp,t,mtl);//+vec3(float(i)/128.0);
+        }
+        else if(t > distance)
+        {
+            return bg_clr;//vec3(0.0);
+        }
+        
+        
+    }
+    
+    return bg_clr;//vec3(0.0); // return skybox here
+}
+
+
+
+
+//------------------------------------------------------------------------------------
+#pragma mark MATERIALS
+
+float rounded_squares_texture(in vec3 p)
+{
+    float div = 0.1;
+    float v = 1.0;
+    v = (fract(p.x*div)-0.5)*(fract(p.z*div)-0.5);
+    v = saturate(pow(v*220,1.9));
+    return max(0.9,v);
+}
+
+
+const vec4 fog_clr = vec4(0.5,0.9,1.0, 0.0);
+const vec4 floor_color = vec4(0.1,0.2,0.99, 1.0); //vec3(0.8,0.9,1.0);
+vec4 compute_color( in vec3 p, in float distance, in int mtl )
+{
+    vec3 n = calc_normal(p);
+    //    return normal_color(n); // use this to debug normals
+    
+    //
+    //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
+    vec3 light = light1;
+    
+    // diffuse lighting
+    float l = max(0.2, dot(n, light));
+    
+    // subtly light based on normal, daniel hack
+    l *= luminosity(normal_color(n))*1.3;
+    l *= ambient_occlusion(p,n);
+    //    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 50.0));
+    
+    vec4 clr = vec4(1.0);//,0.9,0.9);
+    //    if(mtl==0)
+    //    {
+    //        clr = floor_color*rounded_squares_texture(p);
+    //    }
+    
+    clr.xyz *= l;
+    
+    //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
+    //    float fog = attenuation(max(0.0,distance-10.0),0.0005);
+    //    clr = mix(clr,fog_clr,(1.0-fog));
+    
+    return clr;
+}
+
+
+
+//------------------------------------------------------------------------------------
+#pragma mark SCENE
 
 vec3 guy_transform_inner( in vec3 p )
 {
@@ -240,33 +441,35 @@ float sdf_guy( in vec3 p )
     return d;
 }
 
+
+//------------------------------------------------------------------------------------
 float compute_scene( in vec3 p, out int mtl )
 {
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, sdf_xz_plane(p, -0.0) );
+    d = sdf_union(d, sdf_xz_plane(p, 0));//noise(p.xz) * 5.0) );
     
     // repeated box
-//    {
-//        vec3 samplepos = p;
-//        samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
-//        samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
-//        d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
-//    }
+    //    {
+    //        vec3 samplepos = p;
+    //        samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
+    //        samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
+    //        d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
+    //    }
     
     
     // test box
-//    {
-//        vec3 samplepos = p;
-//        samplepos = sdf_translate(samplepos, box_pos);
-//        samplepos = sdf_rotate_y(samplepos, box_rot.y);
-//        samplepos = sdf_rotate_x(samplepos, box_rot.x);
-//        samplepos = sdf_rotate_z(samplepos, box_rot.z);
-//        samplepos = sdf_scale(samplepos, box_scale);
-//        samplepos = sdf_transform(samplepos, box_mat);
-//        d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
-//    }
+    //    {
+    //        vec3 samplepos = p;
+    //        samplepos = sdf_translate(samplepos, box_pos);
+    //        samplepos = sdf_rotate_y(samplepos, box_rot.y);
+    //        samplepos = sdf_rotate_x(samplepos, box_rot.x);
+    //        samplepos = sdf_rotate_z(samplepos, box_rot.z);
+    //        samplepos = sdf_scale(samplepos, box_scale);
+    //        samplepos = sdf_transform(samplepos, box_mat);
+    //        d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
+    //    }
     
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++) {
@@ -306,145 +509,8 @@ float compute_scene( in vec3 p, out int mtl )
 }
 
 
-/*************************************/
-/* Lighting                          */
-
-vec3 calc_normal ( in vec3 p )
-{
-    vec3 n = vec3(0.0);
-    vec3 delta = vec3( 0.004, 0.0, 0.0 );
-    int mtl;
-    n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
-    n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );
-    n.z = compute_scene( p+delta.yzx, mtl ) - compute_scene( p-delta.yzx, mtl );
-    return normalize( n );
-}
-
-float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samples)
-{
-    const float stepDistance = 0.25;//EPSILON;
-    float samples = 5.0;
-    float occlusion = 1.0;
-    int mtl;
-    for (occlusion = 1.0 ; samples > 0.0 ; samples-=1.0) {
-        occlusion -= (samples * stepDistance - (compute_scene( p + n * samples * stepDistance, mtl))) / pow(2.0, samples);
-    }
-    return occlusion;
-}
-
-float ambient_occlusion( in vec3 p, in vec3 n )
-{
-    //n = vec3(0.0,1.0,1.0);
-    float ao = 0.0;
-    float weight = 0.9;
-    int mtl;
-    
-    for ( int i = 1; i < 6; ++i )
-    {
-        float delta = i*i*EPSILON *12.0;
-        ao += weight * (delta-compute_scene(p+n*(0.0+delta), mtl));
-        weight *= 0.5;
-    }
-    
-    return 1.0-saturate(ao);
-}
-
-float soft_shadow( in vec3 p, in vec3 w, float mint, float maxt, float k )
-{
-    float res = 1.0;
-    int mtl;
-    for( float t=mint; t < maxt; )
-    {
-        float h = compute_scene(p + w*t,mtl);
-        if( h<0.001 )
-            return 0.0;
-        res = min( res, k*h/t );
-        t += h;
-    }
-    return res;
-}
-
-float rounded_squares_texture(in vec3 p)
-{
-    float div = 0.1;
-    float v = 1.0;
-    v = (fract(p.x*div)-0.5)*(fract(p.z*div)-0.5);
-    v = saturate(pow(v*220,1.9));
-    return max(0.9,v);
-}
-
-/*************************************/
-/* Colors and materials              */
-
-const vec4 fog_clr = vec4(0.5,0.9,1.0, 0.0);
-const vec4 floor_color = vec4(0.1,0.2,0.99, 1.0); //vec3(0.8,0.9,1.0);
-vec4 compute_color( in vec3 p, in float distance, in int mtl )
-{
-    vec3 n = calc_normal(p);
-    //    return normal_color(n); // use this to debug normals
-    
-    //
-    //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
-    vec3 light = light1;
-    
-    // diffuse lighting
-    float l = max(0.2, dot(n, light));
-    
-    // subtly light based on normal, daniel hack
-    l *= luminosity(normal_color(n))*1.3;
-    l *= ambient_occlusion(p,n);
-    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 50.0));
-    
-    vec4 clr = vec4(1.0);//,0.9,0.9);
-//    if(mtl==0)
-//    {
-//        clr = floor_color*rounded_squares_texture(p);
-//    }
-    
-    clr.xyz *= l;
-    
-    //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
-    //    float fog = attenuation(max(0.0,distance-10.0),0.0005);
-    //    clr = mix(clr,fog_clr,(1.0-fog));
-    
-    return clr;
-}
-
-/*************************************/
-/* Ray marcher                       */
-
-
-vec4 trace_ray(in vec3 p, in vec3 w, inout float distance)
-{
-    //    const float maxDistance = 50;//1e10;
-    const int maxIterations = 64;
-    const float closeEnough = EPSILON; //1e-2;
-    vec3 rp;
-    int mtl;
-    float t = 0;
-    for (int i = 0; i < maxIterations; ++i)
-    {
-        rp = p+w*t;
-        float d = compute_scene(rp,mtl);
-        t += d;
-        if (d < closeEnough)
-        {
-            distance = t;
-            // use this to debug number of ray casts
-            //return vec3(float(i)/128.0);
-            return compute_color(rp,t,mtl);//+vec3(float(i)/128.0);
-        }
-        else if(t > distance)
-        {
-            return fog_clr;//vec3(0.0);
-        }
-        
-        
-    }
-    
-    return fog_clr;//vec3(0.0); // return skybox here
-}
-
+//------------------------------------------------------------------------------------
+#pragma mark MAIN
 void main(void)
 {
     vec2 xy = gl_FragCoord.xy;
@@ -457,7 +523,7 @@ void main(void)
     
     float distance = 10000000;//1e10;
     
-    vec4 clr = trace_ray(p, w, distance);
+    vec4 clr = trace_ray(p, w, fog_clr, distance);
     
     clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
     

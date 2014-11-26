@@ -1,8 +1,7 @@
 #pragma once
-#include "ofMain.h"
-#include "colormotor.h"
+#include "Thing.h"
 
-class Camera
+class Camera  : public Thing
 {
 public:
     Camera()
@@ -14,10 +13,15 @@ public:
     target(0,0,0)
     {
     }
-    ~Camera()
+    
+    virtual ~Camera()
     {
         
     }
+    
+    bool init() { return true; }
+    
+    void update() { assert(0); }
     
     void update( const Vec3 & lookat, float w, float h, float easing = 0.1)
     {

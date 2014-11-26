@@ -1,13 +1,11 @@
 #pragma once
-#include "ofMain.h"
-#include "ofxMSAControlFreak.h"
-#include "colormotor.h"
+#include "Thing.h"
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
 
 
 // We could create a base 'game thing' class with similar functions.
-class Dude
+class Dude : public Thing
 {
 public:
     Dude();

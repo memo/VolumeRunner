@@ -124,12 +124,13 @@ void Dude::update()
     Vec3 v(-o.x,0.0,-o.z);
     v = mul(steerMatrix,v);
     
+    /*
     // move the dude
     position.x += v.x;//o.x*cos(heading); //+vel.x*skippy*0.5;
     position.z += v.z;//o.z*sin(heading); //+vel.z*skippy*0.5;
     
     // offset the dude to touch the ground
-    position.y = -o.y;
+    position.y = -o.y;*/
 }
 
 void Dude::updateRenderer( ofShader & shader )

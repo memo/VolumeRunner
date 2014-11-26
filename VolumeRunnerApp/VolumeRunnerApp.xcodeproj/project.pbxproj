@@ -133,6 +133,7 @@
 		6474CBF019BCE00B003C94E2 /* AVFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AVFoundation.framework; path = System/Library/Frameworks/AVFoundation.framework; sourceTree = SDKROOT; };
 		6474CBF119BCE00B003C94E2 /* CoreMedia.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreMedia.framework; path = System/Library/Frameworks/CoreMedia.framework; sourceTree = SDKROOT; };
 		6474CBF219BCE00B003C94E2 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		BB6C31D01A264450008509F0 /* RenderManager.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = RenderManager.h; sourceTree = "<group>"; };
 		BBAB23BE13894E4700AA2426 /* GLUT.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = GLUT.framework; path = ../../../libs/glut/lib/osx/GLUT.framework; sourceTree = "<group>"; };
 		BBD918B61A2503B1008267A4 /* ofxImageSequencePlayer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxImageSequencePlayer.h; sourceTree = "<group>"; };
 		BBD918B71A2503B1008267A4 /* ofxTexture3d.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxTexture3d.cpp; sourceTree = "<group>"; };
@@ -833,6 +834,7 @@
 				D69964B51A24EAB1000F51F8 /* Camera.h */,
 				BBD918C11A250611008267A4 /* Volume.cpp */,
 				BBD918C21A250611008267A4 /* Volume.h */,
+				BB6C31D01A264450008509F0 /* RenderManager.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

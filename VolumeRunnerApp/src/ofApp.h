@@ -8,6 +8,7 @@
 #include "Dude.h"
 #include "Camera.h"
 #include "Volume.h"
+#include "RenderManager.h"
 
 
 class ofApp : public ofBaseApp{
@@ -24,10 +25,11 @@ public:
     
     Dude dude;
     Camera camera;
-
     Volume volume;
+    RenderManager renderManager;
     
     void loadShaders();
+    void allocateFbo();
 
     void setup();
     void update();

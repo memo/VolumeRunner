@@ -330,7 +330,7 @@ vec3 calc_normal ( in vec3 p )
 }
 
 //---------------------------------------------------
-#define ambient_occlusion ambient_occlusion3
+#define ambient_occlusion ambient_occlusion1
 
 // from iq. https://www.shadertoy.com/view/Xds3zN
 float ambient_occlusion3( in vec3 pos, in vec3 nor )
@@ -340,13 +340,13 @@ float ambient_occlusion3( in vec3 pos, in vec3 nor )
     int mtl;
     for( int i=0; i<5; i++ )
     {
-        float hr = 0.001 + 0.1*float(i);
+        float hr = 0.01 + 0.12*float(i)/4.0;
         vec3 aopos =  nor * hr + pos;
         float dd = compute_scene( aopos, mtl );
         occ += -(dd-hr)*sca;
         sca *= 0.95;
     }
-    return clamp( 1.0 - 1.0*occ, 0.0, 1.0 );
+    return clamp( 1.0 - 3.0*occ, 0.0, 1.0 );
 }
 
 

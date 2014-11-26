@@ -241,7 +241,8 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-    
+    params["Shader.View.roty"] = (float)params["Shader.View.roty"] + (x - ofGetPreviousMouseX()) * ofGetLastFrameTime() * 10.0;
+    params["Shader.View.rotx"] = (float)params["Shader.View.rotx"] - (y - ofGetPreviousMouseY()) * ofGetLastFrameTime() * 10.0;
 }
 
 //--------------------------------------------------------------

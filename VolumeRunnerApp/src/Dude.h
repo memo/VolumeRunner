@@ -28,7 +28,11 @@ public:
     
     float blend_k;
     
+    M44 renderSteerMatrix;
+    M44 steerMatrix;
+
     Vec3 position;
+    float heading;
     
     SkeletonAnimSystem animSys;
     SkeletonWalkAnimSource * walkingAnim;

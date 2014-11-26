@@ -4,7 +4,6 @@
 #include "RunningSkeleton.h"
 
 
-// We could create a base 'game thing' class with similar functions.
 class Dude : public Thing
 {
 public:
@@ -19,7 +18,9 @@ public:
     
     void updateRenderer( ofShader & shader );
     
+    /// Returns the offset of the dude, based on the position of the lowest (Y) joint.
     Vec3 getOffset() const;
+    
     void playAnimation( const std::string & name );
     
     void debugDraw();

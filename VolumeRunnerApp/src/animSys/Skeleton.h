@@ -107,6 +107,12 @@ namespace cm
 			}
 		}
 		
+        void identity()
+        {
+            for( int i = 0; i < nTransforms; i++ )
+                transforms[i].identity();
+        }
+        
 		const cm::Transform & getTransform( int index ) const { return transforms[index]; }
 		
 		cm::Transform * transforms;

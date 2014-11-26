@@ -48,7 +48,7 @@ void ofApp::setup(){
         
         params.startGroup("View"); {
             params.addFloat("distance").setRange(0, 100).setIncrement(1.0);
-            params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0);
+            params.addFloat("rotx").setRange(-180, 10).setIncrement(1.0);
             params.addFloat("roty").setRange(-720, 720).setIncrement(1.0);
         } params.endGroup();
         
@@ -211,14 +211,19 @@ void ofApp::keyPressed(int key){
         case OF_KEY_DOWN:
             params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
             break;
-            
+
         case '1':
-            dude.playAnimation("1");
-            break;
-            
-        case '2':
             dude.playAnimation("run");
             break;
+
+        case '2':
+            dude.playAnimation("box");
+            break;
+        
+        case '3':
+            dude.playAnimation("skip");
+            break;
+            
             
             //case '1':
             
@@ -241,7 +246,13 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-    params["Shader.View.roty"] = (float)params["Shader.View.roty"] - (x - ofGetPreviousMouseX()) * ofGetLastFrameTime() * 10.0;
+    float roty = (float)params["Shader.View.roty"] - (x - ofGetPreviousMouseX()) * ofGetLastFrameTime() * 10.0;
+    if(roty<-180)
+        roty+=360;
+    if(roty>180)
+        roty-=360;
+    params["Shader.View.roty"] = roty;
+    
     params["Shader.View.rotx"] = (float)params["Shader.View.rotx"] - (y - ofGetPreviousMouseY()) * ofGetLastFrameTime() * 10.0;
 }
 

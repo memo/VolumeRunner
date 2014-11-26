@@ -12,6 +12,7 @@ public:
     ~SkeletonWalkAnimInstance();
     
     void	update( float msecs );
+    void	rewind() { t = 0.0; }
     
     cm::Transform getTransformForJoint( int i ) const;
     

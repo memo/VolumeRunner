@@ -24,7 +24,8 @@ Dude::~Dude()
 
 bool Dude::init()
 {
-    animSys.addBVHFile("1",ofToDataPath("mocap/test.bvh"));
+    animSys.addBVHFile("box",ofToDataPath("mocap/boxing.bvh"));
+    animSys.addBVHFile("skip",ofToDataPath("mocap/jumpy.bvh"));
     //animSys.play("1");
 
     // Walking

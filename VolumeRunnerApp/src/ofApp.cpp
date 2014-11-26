@@ -182,11 +182,13 @@ void ofApp::keyPressed(int key){
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
-        case 'p': params["Update.Pause"] = ! params["Update.Pause"];
+        case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
+        case 'r': dude.position(0, 0, 0); camera.target(0, 0, 0); break;
             
         case OF_KEY_LEFT:
             dude.heading += (10);
             break;    // steer left
+            
         case OF_KEY_RIGHT:
             dude.heading -= (10);
             break;   // steer right
@@ -194,6 +196,7 @@ void ofApp::keyPressed(int key){
         case OF_KEY_UP:
             params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
             break;
+            
         case OF_KEY_DOWN:
             params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
             break;

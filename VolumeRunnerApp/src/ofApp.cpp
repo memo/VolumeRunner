@@ -144,16 +144,19 @@ void ofApp::draw(){
         
         if(params["Display.Debug skeleton"]) {
             dude.debugDraw();
-            gfx::drawAxis(M44::identityMatrix(),3.0);
         }
         
         if(params["Display.Volume"]) {
+            
             gfx::pushMatrix();
             M44 m;
             m.identity();
             m.translate(dude.position);
             m *= dude.bodyBone->matrix;
-            gfx::applyMatrix(m);//dude.renderSteerMatrix);
+            // bone is oriented towards z, so rotate the head.
+            m.rotateX(radians(90));
+            m.rotateY(radians(dude.heading));
+            gfx::applyMatrix(m);
             
             volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
             gfx::popMatrix();

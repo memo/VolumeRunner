@@ -54,10 +54,6 @@ bool Dude::init()
     // Right Arm
     animSys.addBone("RightArm","RightForeArm");
     animSys.addBone("RightForeArm","RightHand");
-
-            
-    
-    
 }
 
 void Dude::addParams( msa::controlfreak::ParameterGroup &params )

@@ -289,10 +289,10 @@ void ofxVolumetrics::drawVolume(float x, float y, float z, float w, float h, flo
     glMatrixMode(GL_MODELVIEW);
     glLoadMatrixf(modl);
 
-    ofTranslate(x-cubeSize.x/2, y-cubeSize.y/2, z-cubeSize.z/2);
-    ofRotateX(90);
+    ofTranslate(x, y, z);
     ofScale(cubeSize.x,cubeSize.y,cubeSize.z);
-
+    ofRotateX(90);
+    ofTranslate(-0.5, -0.5, -0.5);
     //pass variables to the shader
     glActiveTexture(GL_TEXTURE1);
     volumeTexture.bind();

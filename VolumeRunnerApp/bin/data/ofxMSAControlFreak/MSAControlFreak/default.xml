@@ -1,6 +1,6 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="30.296337128"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="10.602084160"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Update">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Dude" value="1"></Parameter>
         </Parameter>
@@ -17,8 +17,9 @@
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Dude">
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="21.294641495"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="3.883928537"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="hip rotation" value="-7.500000000"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="backAngle" value="0.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="blend k" value="2.000446320"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Legs">
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="startAngHigh" value="-24.330356598"></Parameter>
@@ -37,7 +38,7 @@
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="zTexOffset" value="0.000000000"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Offset">
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="x" value="0.000000000"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="y" value="26.785720825"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="y" value="0.000000000"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="z" value="0.000000000"></Parameter>
             </Parameter>
         </Parameter>

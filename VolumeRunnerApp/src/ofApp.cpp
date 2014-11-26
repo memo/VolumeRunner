@@ -49,7 +49,7 @@ void ofApp::setup(){
         params.startGroup("View"); {
             params.addFloat("distance").setRange(0, 100).setIncrement(1.0);
             params.addFloat("rotx").setRange(-180, 180).setIncrement(1.0);
-            params.addFloat("roty").setRange(-180, 180).setIncrement(1.0);
+            params.addFloat("roty").setRange(-720, 720).setIncrement(1.0);
         } params.endGroup();
         
     } params.endGroup();
@@ -241,7 +241,7 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-    params["Shader.View.roty"] = (float)params["Shader.View.roty"] + (x - ofGetPreviousMouseX()) * ofGetLastFrameTime() * 10.0;
+    params["Shader.View.roty"] = (float)params["Shader.View.roty"] - (x - ofGetPreviousMouseX()) * ofGetLastFrameTime() * 10.0;
     params["Shader.View.rotx"] = (float)params["Shader.View.rotx"] - (y - ofGetPreviousMouseY()) * ofGetLastFrameTime() * 10.0;
 }
 

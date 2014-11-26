@@ -35,7 +35,7 @@ public:
     }
     
     float getHeight() {
-        return bUseFbo ? fbo.getHeight() : ofGetWidth();
+        return bUseFbo ? fbo.getHeight() : ofGetHeight();
     }
     
 private:

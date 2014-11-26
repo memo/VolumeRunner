@@ -178,6 +178,7 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
+    float rotspeed = 2.0;
     switch(key) {
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
@@ -185,10 +186,10 @@ void ofApp::keyPressed(int key){
         case 'p': params["Update.Pause"] = ! params["Update.Pause"];
             
         case OF_KEY_LEFT:
-            dude.heading += (10);
+            dude.heading += (rotspeed);
             break;    // steer left
         case OF_KEY_RIGHT:
-            dude.heading -= (10);
+            dude.heading -= (rotspeed);
             break;   // steer right
             
         case OF_KEY_UP:

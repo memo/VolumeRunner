@@ -49,11 +49,13 @@ bool Dude::init()
     bodyBone = animSys.addBone("LowerBack","Head",bodym);
     
     // Left Arm
-    animSys.addBone("LeftArm","LeftForeArm");
-    animSys.addBone("LeftForeArm","LeftHand");
+//    animSys.addBone("LeftArm","LeftForeArm");
+//    animSys.addBone("LeftForeArm","LeftHand");
+    animSys.addBone("LeftArm","LeftHand");
     // Right Arm
-    animSys.addBone("RightArm","RightForeArm");
-    animSys.addBone("RightForeArm","RightHand");
+//    animSys.addBone("RightArm","RightForeArm");
+//    animSys.addBone("RightForeArm","RightHand");
+    animSys.addBone("RightArm","RightHand");
 }
 
 void Dude::addParams( msa::controlfreak::ParameterGroup &params )
@@ -124,13 +126,13 @@ void Dude::update()
     Vec3 v(-o.x,0.0,-o.z);
     v = mul(steerMatrix,v);
     
-    /*
+    
     // move the dude
     position.x += v.x;//o.x*cos(heading); //+vel.x*skippy*0.5;
     position.z += v.z;//o.z*sin(heading); //+vel.z*skippy*0.5;
     
     // offset the dude to touch the ground
-    position.y = -o.y;*/
+    position.y = -o.y;
 }
 
 void Dude::updateRenderer( ofShader & shader )
@@ -142,7 +144,7 @@ void Dude::updateRenderer( ofShader & shader )
     for( int i = 0; i < animSys.getNumBones(); i++ )
     {
         renderMats[i].scale(1,1,boneLengths[i]);
-        renderMats[i].preTranslate(position);
+        //renderMats[i].preTranslate(position);
         renderMats[i].invert();
     }
     
@@ -150,7 +152,7 @@ void Dude::updateRenderer( ofShader & shader )
     renderSteerMatrix.identity();
     renderSteerMatrix.translate(position);
     renderSteerMatrix *= steerMatrix;
-    renderSteerMatrix.translate(-position);
+    //renderSteerMatrix.translate(-position);
 
     // set it up
     shader.setUniformMatrix4f("steerMatrix",ofMatrix4x4((float*)renderSteerMatrix.inverse()));

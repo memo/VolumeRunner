@@ -1,7 +1,12 @@
 #version 120
 
 //------------------------------------------------------------------------------------
-// A lot of the functions adapted from iq. https://www.shadertoy.com/view/Xds3zN
+// A lot of the functions adapted from iq.
+// http://www.iquilezles.org/
+// https://www.shadertoy.com/user/iq
+
+
+
 
 #define kNumJoints   7
 
@@ -214,27 +219,32 @@ float sdf_cone( in vec3 p, in vec3 c )
 
 float sdf_union(in float d1, in float d2)
 {
-    return min(d1,d2);
+    return min(d1, d2);
 }
 
 float sdf_subtract(in float d1, in float d2)
 {
-    return max(-d2,d1);
+    return max(-d2, d1);
+}
+
+float sdf_intersect(in float d1, in float d2)
+{
+    return max(d1, d2);
 }
 
 float sdf_blend_exp( in float d1, in float d2, in float k )
 {
-    return smin_exp(d1,d2,k);
+    return smin_exp(d1, d2, k);
 }
 
 float sdf_blend_poly( in float d1, in float d2, in float k )
 {
-    return smin_poly(d1,d2,k);
+    return smin_poly(d1, d2, k);
 }
 
 float sdf_blend_power( in float d1, in float d2, in float k )
 {
-    return smin_power(d1,d2,k);
+    return smin_power(d1, d2, k);
 }
 
 /*

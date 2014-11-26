@@ -237,6 +237,7 @@
 		BBF9C45B1A2356A400209F8B /* ofxMSAInteractiveObject.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = ofxMSAInteractiveObject.cpp; sourceTree = "<group>"; };
 		BBF9C45C1A2356A400209F8B /* ofxMSAInteractiveObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ofxMSAInteractiveObject.h; sourceTree = "<group>"; };
 		BBF9C4611A23748800209F8B /* shaders */ = {isa = PBXFileReference; lastKnownFileType = folder; name = shaders; path = bin/data/shaders; sourceTree = "<group>"; };
+		D60803481A2644500018B8CF /* Thing.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Thing.h; sourceTree = "<group>"; };
 		D69964B11A24CE16000F51F8 /* Dude.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Dude.cpp; sourceTree = "<group>"; };
 		D69964B21A24CE16000F51F8 /* Dude.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Dude.h; sourceTree = "<group>"; };
 		D69964B41A24EAB1000F51F8 /* Camera.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
@@ -833,6 +834,7 @@
 				D69964B51A24EAB1000F51F8 /* Camera.h */,
 				BBD918C11A250611008267A4 /* Volume.cpp */,
 				BBD918C21A250611008267A4 /* Volume.h */,
+				D60803481A2644500018B8CF /* Thing.h */,
 			);
 			path = src;
 			sourceTree = SOURCE_ROOT;

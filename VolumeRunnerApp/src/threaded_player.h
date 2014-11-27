@@ -11,14 +11,17 @@
 //#define MAXIMILIAN_PORTAUDIO
 #define MAXIMILIAN_RT_AUDIO
 
+class RtAudio;
+
 class MaxiThread : public cm::Thread
 {
 public:
-    MaxiThread() {}
-    virtual ~MaxiThread() {}
+    MaxiThread();
+    virtual ~MaxiThread();
     void run();
     
     virtual void setup() {}
-    virtual void sample( double * output ) {}
+    virtual void play( double * output ) {}
     
+    RtAudio * dacRef;
 };

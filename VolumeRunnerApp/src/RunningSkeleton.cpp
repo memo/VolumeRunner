@@ -45,6 +45,7 @@ void	SkeletonWalkAnimInstance::update( float msecs )
 {
     SkeletonWalkAnimSource * src = (SkeletonWalkAnimSource*)source;
     t += 0.001*msecs*src->speed;
+    src->t = t;
     //gt = t; // hacky
     pose->identity();
 //    pose->copy(src->skeleton->pose);

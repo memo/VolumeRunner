@@ -23,6 +23,12 @@
 //#include "../libs/rtaudio/include/Rt
 #endif
 
+struct StreamData
+{
+    MaxiThread * maxiThread;
+    void * userData;
+};
+
 #ifdef MAXIMILIAN_PORTAUDIO
 int routing(const void *inputBuffer,
             void *outputBuffer,
@@ -32,10 +38,14 @@ int routing(const void *inputBuffer,
             void *userData ){
 #elif defined(MAXIMILIAN_RT_AUDIO)
     int routing	(void *outputBuffer, void *inputBuffer, unsigned int nBufferFrames,
-                 double streamTime, RtAudioStreamStatus status, void *userData ) {
+                 double streamTime, RtAudioStreamStatus status, void *userData_ ) {
 #endif
         
         unsigned int i, j;
+        
+        StreamData * sd = (StreamData*)userData_;
+        void * userData = sd->userData;
+        MaxiThread * mt = sd->maxiThread;
         
 #ifdef MAXIMILIAN_PORTAUDIO
         float *buffer = (float *) outputBuffer;
@@ -50,7 +60,7 @@ int routing(const void *inputBuffer,
         }
         // Write interleaved audio data.
         for ( i=0; i<nBufferFrames; i++ ) {
-            //play(lastValues);
+            mt->play(lastValues);
             for ( j=0; j<maxiSettings::channels; j++ ) {
                 *buffer++=lastValues[j];
             }
@@ -58,54 +68,26 @@ int routing(const void *inputBuffer,
         return 0;
     }
     
+    MaxiThread::MaxiThread()
+    :
+    dacRef(0)
+    {
+        
+    }
+    
+    MaxiThread::~MaxiThread()
+    {
+        if(dacRef)
+            dacRef->stopStream();
+    }
+    
     void MaxiThread::run()
     {
         setup();
         
-#ifdef MAXIMILIAN_PORTAUDIO
-        PaStream *stream;
-        PaError err;
-        err = Pa_Initialize();
-        if( err != paNoError )
-            std::cout <<   "PortAudio error: " << Pa_GetErrorText( err ) << std::endl;
-        
-        double data[maxiSettings::channels];
-        
-        err = Pa_OpenDefaultStream( &stream,
-                                   0,          /* no input channels */
-                                   maxiSettings::channels,          /* stereo output */
-                                   paFloat32,  /* 64 bit floating point output */
-                                   maxiSettings::sampleRate,
-                                   maxiSettings::bufferSize,        /* frames per buffer, i.e. the number
-                                                                     of sample frames that PortAudio will
-                                                                     request from the callback. Many apps
-                                                                     may want to use
-                                                                     paFramesPerBufferUnspecified, which
-                                                                     tells PortAudio to pick the best,
-                                                                     possibly changing, buffer size.*/
-                                   &routing, /* this is your callback function */
-                                   &data ); /*This is a pointer that will be passed to
-                                             your callback*/
-        
-        //PaAlsa_EnableRealtimeScheduling(stream,true);
-        
-        err = Pa_StartStream( stream );
-        if( err != paNoError )
-            std::cout <<   "PortAudio error: " << Pa_GetErrorText( err ) << std::endl;
-        
-        
-        char input;
-        std::cout << "\nMaximilian is playing ... press <enter> to quit.\n";
-        std::cin.get( input );
-        
-        
-        
-        err = Pa_Terminate();
-        if( err != paNoError )
-            std::cout <<  "PortAudio error: "<< Pa_GetErrorText( err ) << std::endl;
-        
-#elif defined(MAXIMILIAN_RT_AUDIO)
         RtAudio dac(RtAudio::WINDOWS_DS);
+        dacRef = &dac;
+        
         if ( dac.getDeviceCount() < 1 ) {
             std::cout << "\nNo audio devices found!\n";
             char input;
@@ -121,10 +103,12 @@ int routing(const void *inputBuffer,
         unsigned int bufferFrames = maxiSettings::bufferSize; 
         //double data[maxiSettings::channels];
         vector<double> data(maxiSettings::channels,0);
-        
+        StreamData sd;
+        sd.maxiThread = this;
+        sd.userData = (void*)&(data[0]);
         try {
             dac.openStream( &parameters, NULL, RTAUDIO_FLOAT64,
-                           sampleRate, &bufferFrames, &routing, (void *)&(data[0]));
+                           sampleRate, &bufferFrames, &routing, (void *)&(sd));
             
             dac.startStream();
         }
@@ -146,6 +130,5 @@ int routing(const void *inputBuffer,
         }
         
         if ( dac.isStreamOpen() ) dac.closeStream();
-#endif
         
     }

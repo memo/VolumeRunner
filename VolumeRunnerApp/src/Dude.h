@@ -3,6 +3,27 @@
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
 
+struct SineTrigger
+{
+    SineTrigger()
+    :
+    old(1.0)
+    {
+        
+    }
+    
+    bool update( float t )
+    {
+        float v = sin(t);
+        bool res = false;
+        if( v < 0.0 && old >= 0.0 )
+            res = true;
+        old = v;
+        return res;
+    };
+    
+    float old;
+};
 
 class Dude : public Thing
 {
@@ -21,7 +42,7 @@ public:
     void updateRenderer( ofShader & shader );
     
     /// Returns the offset of the dude, based on the position of the lowest (Y) joint.
-    Vec3 getOffset() const;
+    Vec3 getOffset();
     
     Vec3 getLowestLimbPosition() const;
     
@@ -30,6 +51,8 @@ public:
     void debugDraw();
     
     float blend_k;
+    
+    Trigger<int> lowestIndex;
     
     M44 renderSteerMatrix;
     M44 steerMatrix;
@@ -41,6 +64,10 @@ public:
     SkeletonAnimSystem animSys;
     SkeletonWalkAnimSource * walkingAnim;
     
+    float stepSoundPhase;
+    
     std::vector<M44> renderMats;
     
+    SineTrigger step1;
+    SineTrigger step2;
 };

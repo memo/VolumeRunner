@@ -7,11 +7,13 @@
 //
 
 #include "Dude.h"
+#include "AudioManager.h"
 
 Dude::Dude()
 :
 blend_k(1.0),
-heading(0.0)
+heading(0.0),
+stepSoundPhase(0.0)
 {
 
 }
@@ -103,6 +105,9 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
             params.addFloat("armAngle").setRange(10,90).set(walkingAnim->armAngle);
         } params.endGroup();
         
+        params.startGroup("Audio"); {
+            params.addFloat("Step Phase").setRange(-TWOPI,TWOPI).set(stepSoundPhase);
+        } params.endGroup();
         
     } params.endGroup();
 }
@@ -126,11 +131,17 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     
     
     walkingAnim->backAngle = params["Dude.backAngle"];
+    
+    stepSoundPhase = params["Dude.Audio.Step Phase"];
+    
     blend_k = params["Dude.blend k"];
 }
 
 void Dude::update()
 {
+    if(lowestIndex.isTriggered())
+        AudioManager::getInstance()->playNote(random(2,15));
+    
     // update the animation
     animSys.update(ofGetLastFrameTime()*1000);
     
@@ -152,6 +163,8 @@ void Dude::update()
     
     // offset the dude to touch the ground
     position.y = floorHeight-o.y;
+    
+    
 }
 
 void Dude::updateRenderer( ofShader & shader )
@@ -179,10 +192,11 @@ void Dude::updateRenderer( ofShader & shader )
     shader.setUniformMatrix4f("box_mats", (ofMatrix4x4&) renderMats[0], renderMats.size());//
 }
 
-Vec3 Dude::getOffset() const
+Vec3 Dude::getOffset()
 {
     Vec3 vel(0,0,0);
     float low = 10000.0;
+    int li = 0;
     for( int i = 0; i < animSys.getNumBones(); i++ )
     {
         SkeletonAnimSystem::Bone * b = animSys.getBone(i);
@@ -193,8 +207,12 @@ Vec3 Dude::getOffset() const
             vel.z=b->b->velocity.z;
             low = p.y;
             vel.y = low;
+            li = i;
         }
     }
+    
+    lowestIndex.val = li;
+    
     return vel;
 }
 

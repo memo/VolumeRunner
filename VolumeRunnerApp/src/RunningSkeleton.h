@@ -54,7 +54,7 @@ public:
     float speed;
     float backAngle;
     
-    float gt;
+    float t;
     float skiph;
 
 protected:

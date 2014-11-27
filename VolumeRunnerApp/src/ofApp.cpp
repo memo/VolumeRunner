@@ -9,9 +9,12 @@
 ofSpherePrimitive sphere(1, 12);
 ofVec3f floorPos;
 
+AudioManager * am = 0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    am = AudioManager::getInstance();
+    
     ofDisableArbTex();
     
     ofBackground(0, 0, 0);
@@ -107,7 +110,6 @@ void ofApp::update(){
     
     dude.updateParams(params);
     
-
     if(params["Update.Dude"]) {
         // Using the position is not precise but for the moment it works fine.
         // Need to fix the lowest limb pos.
@@ -142,6 +144,9 @@ void ofApp::update(){
     Vec3 pos = dude.position;
 
     camera.update(pos, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
+    
+    //
+    AudioManager::getInstance()->update();
 }
 
 //--------------------------------------------------------------
@@ -233,6 +238,8 @@ void ofApp::exit(){
     //    params.saveXmlValues();
     shaderFolderWatcher->stopThread();
     delete shaderFolderWatcher;
+    
+    am->stop();
 }
 
 
@@ -273,6 +280,9 @@ void ofApp::keyPressed(int key){
             dude.playAnimation("skip");
             break;
             
+        case 'h':
+            AudioManager::getInstance()->playNote(0);
+            break;
             
             //case '1':
             

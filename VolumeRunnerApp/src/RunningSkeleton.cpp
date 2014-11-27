@@ -35,7 +35,9 @@ SkeletonWalkAnimInstance::~SkeletonWalkAnimInstance()
 }
 
 static float sin01(float t) { return sin(t)*0.5+0.5; }
-static float sinRange( float t, float l, float h ) { return l+sin01(t)*(h-l); }
+
+/// HACK, negated this because all the dynamics were flipped (facing the opposite direction)
+static float sinRange( float t, float l, float h ) { return -(l+sin01(t)*(h-l)); }
 
 /////////////////////////////////////////////////////////////////
 
@@ -44,7 +46,8 @@ void	SkeletonWalkAnimInstance::update( float msecs )
     SkeletonWalkAnimSource * src = (SkeletonWalkAnimSource*)source;
     t += 0.001*msecs*src->speed;
     //gt = t; // hacky
-    pose->copy(src->skeleton->pose);
+    pose->identity();
+//    pose->copy(src->skeleton->pose);
     
     float rh = radians(src->rothip);
     

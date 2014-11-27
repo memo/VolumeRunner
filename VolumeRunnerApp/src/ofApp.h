@@ -27,7 +27,7 @@ public:
     vector<shared_ptr<Floor> > floor;
     RenderManager renderManager;
     
-    ofImage shapeImage;
+    ofImage lutImage;
     
 
     

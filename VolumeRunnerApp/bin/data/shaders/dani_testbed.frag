@@ -35,6 +35,8 @@ uniform float floor_height1;
 uniform float floor_scale1;
 uniform float floor_offset1;
 
+uniform sampler2D color_image;
+
 
 const float EPSILON = 0.01;
 const float PI = 3.1415926535;
@@ -45,7 +47,7 @@ const vec3 light1  = normalize(vec3(0.7,1.0,0.9));
 
 // Modify these functions
 float compute_scene( in vec3 p, out int mtl );
-vec4 compute_color( in vec3 p, in float distance, in int mtl );
+vec4 compute_color( in vec3 p, in float distance, in int mtl, in float normItCount );
 
 
 
@@ -461,8 +463,9 @@ vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
         {
             distance = t;
             // use this to debug number of ray casts
-            return vec4(vec3(float(i)/128.0), 1.0);
-//            return compute_color(rp,t,mtl);//+vec3(float(i)/128.0);
+//            return vec4(vec3(float(i)/128.0), 1.0);
+//            return mtl == 0 ? vec4(vec3(float(i)/128.0), 1.0) : compute_color(rp,t,mtl);
+            return compute_color(rp, t, mtl, float(i) * 1.0/float(maxIterations));//+vec3(float(i)/128.0);
         }
         else if(t > distance)
         {
@@ -499,11 +502,14 @@ float texture_test(in vec3 p)
 
 const vec4 fog_clr = vec4(0.8, 0.9, 1.0, 1.0);//0.5,0.9,1.0, 1.0);
 const vec4 floor_color = vec4(1.0, 1.0, 0.9, 1.0); //vec3(0.8,0.9,1.0);
-const vec4 man_color = vec4(1, 0.9, 0.7, 1.0);
+const vec4 man_color = vec4(0.8, 0.95, 1.2, 1.0);
 
 
-vec4 compute_color( in vec3 p, in float distance, in int mtl )
+vec4 compute_color( in vec3 p, in float distance, in int mtl, in float normItCount )
 {
+    vec4 it_clr = vec4(vec3(normItCount), 1.0) * 2.0;
+    return it_clr;
+    
     vec3 n = calc_normal(p);
     //return normal_color(n); // use this to debug normals
     
@@ -529,6 +535,8 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
     float fog = attenuation(max(0.0,distance-100.0),0.0001);
     clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
+    
+    clr = mix(it_clr, clr, 0.5);
     
     return clr;
 }
@@ -742,6 +750,9 @@ void main(void)
     vec4 clr = trace_ray(p, w, fog_clr, distance);
     
     clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
+    
+    clr.xyz = texture2D(color_image, vec2(luminosity(clr), 0.0)).xyz;
+    
     //clr.w  = 1.0;
     gl_FragColor = clr;
 }

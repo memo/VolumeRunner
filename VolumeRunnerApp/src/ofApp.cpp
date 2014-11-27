@@ -83,6 +83,8 @@ void ofApp::setup(){
     
     loadShaders();
     
+    lutImage.load("images/color_lut.png");
+    
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
     //    cam = new ofCamera();
@@ -178,6 +180,7 @@ void ofApp::draw(){
         shaderRayTracer->begin();
         shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
+        shaderRayTracer->setUniformTexture("color_image", lutImage, 2);
 
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
         //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));

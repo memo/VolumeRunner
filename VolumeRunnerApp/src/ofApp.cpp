@@ -121,6 +121,19 @@ void ofApp::update(){
         
     }
     
+    if(ofGetKeyPressed(OF_KEY_UP)) {
+        dude.walkingAnim->speed += ((float)params["Dude.speed"] - dude.walkingAnim->speed) * 0.1;
+//        params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
+    } else {
+//        params["Dude.speed"] = (float) params["Dude.speed"] * 0.9;
+        dude.walkingAnim->speed *= 0.9;
+    }
+
+    float rotspeed = params["Dude.Rot speed"];
+    if(ofGetKeyPressed(OF_KEY_LEFT)) dude.heading += rotspeed * ofGetLastFrameTime();
+    if(ofGetKeyPressed(OF_KEY_RIGHT)) dude.heading -= rotspeed * ofGetLastFrameTime();
+
+    
     
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
@@ -225,7 +238,6 @@ void ofApp::exit(){
 
 //--------------------------------------------------------------
 void ofApp::keyPressed(int key){
-    float rotspeed = params["Dude.Rot speed"];
     switch(key) {
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
@@ -233,22 +245,22 @@ void ofApp::keyPressed(int key){
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
         case 'r': dude.position(0, 0, 0); camera.target(0, 0, 0); break;
             
-        case OF_KEY_LEFT:
-            dude.heading += (rotspeed);
-            break;    // steer left
-            
-        case OF_KEY_RIGHT:
-            dude.heading -= (rotspeed);
-            break;   // steer right
-            
-        case OF_KEY_UP:
-            params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
-            break;
-            
-        case OF_KEY_DOWN:
-            params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
-            break;
-
+//        case OF_KEY_LEFT:
+//            dude.heading += (rotspeed);
+//            break;    // steer left
+//            
+//        case OF_KEY_RIGHT:
+//            dude.heading -= (rotspeed);
+//            break;   // steer right
+//            
+//        case OF_KEY_UP:
+//            params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
+//            break;
+//            
+//        case OF_KEY_DOWN:
+//            params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
+//            break;
+//
         case '1':
             dude.playAnimation("run");
             break;

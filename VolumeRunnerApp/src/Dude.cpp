@@ -82,7 +82,7 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
     
     params.startGroup("Dude"); {
         params.addFloat("speed").setRange(0.0,30.0).set(walkingAnim->speed);
-        params.addFloat("Rot speed").setRange(0, 10).set(4);
+        params.addFloat("Rot speed").setRange(0, 100).set(4);
         params.addFloat("hip rotation").setRange(-40,40).set(walkingAnim->rothip);
         params.addFloat("backAngle").setRange(-45,45).set(walkingAnim->backAngle);
         
@@ -109,7 +109,7 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
 
 void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
 {
-    walkingAnim->speed = params["Dude.speed"];
+//    walkingAnim->speed = params["Dude.speed"];
     walkingAnim->rothip = params["Dude.hip rotation"];
     
     walkingAnim->startAngHigh = params["Dude.Legs.startAngHigh"];

@@ -10,6 +10,8 @@ public:
     Dude();
     virtual ~Dude();
     
+    float floorHeight;
+    
     bool init();
     void addParams( msa::controlfreak::ParameterGroup &params );
     void updateParams( msa::controlfreak::ParameterGroup &params );

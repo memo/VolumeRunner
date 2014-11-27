@@ -2,6 +2,7 @@
 #include "colormotor.h"
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
+
 #include "threaded_player.h"
 #include "maximilian.h"
 //ofBoxPrimitive box;
@@ -85,6 +86,12 @@ void play(double *output) {
 }
 
 
+
+
+ofSpherePrimitive sphere(1, 12);
+ofVec3f floorPos;
+
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     maxi.startThread();
@@ -97,7 +104,7 @@ void ofApp::setup(){
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
     volume.init();
-    
+    floor.init();
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
@@ -138,6 +145,7 @@ void ofApp::setup(){
     
     dude.addParams(params);
     volume.addParams(params);
+    floor.addParams(params);
     
     params.loadXmlValues();
     
@@ -182,9 +190,15 @@ void ofApp::update(){
     
     dude.updateParams(params);
     
+
     if(params["Update.Dude"]) {
+//        Vec3 dudeLowest = dude.getLowestLimbPosition();
+        floorPos.set(dude.position.x, floor.getHeight(dude.position.x, dude.position.z,shapeImage), dude.position.z);
+        dude.floorHeight = floorPos.y;
         dude.update();
+        
     }
+    
     
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
@@ -223,14 +237,13 @@ void ofApp::draw(){
         shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
 
-        shaderRayTracer->setUniformTexture("shape_image",GL_TEXTURE_2D,shapeImage.getTexture().getTextureData().textureID,0);
-        
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
         //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
         //    shaderRayTracer->setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
         
         dude.updateRenderer(*shaderRayTracer);
         camera.updateRenderer(*shaderRayTracer);
+        floor.updateRenderer(*shaderRayTracer, shapeImage);
         
         drawUVQuad();
         shapeImage.unbind();
@@ -238,10 +251,18 @@ void ofApp::draw(){
         
         camera.apply();
         
+        ofPushMatrix();
+        ofPushStyle();
+        ofTranslate(floorPos);
+        ofSetColor(255, 0, 0);
+        sphere.draw();
+        ofPopStyle();
+        ofPopMatrix();
         
         if(params["Display.Debug skeleton"]) {
             dude.debugDraw();
         }
+        
         
         if(params["Display.Volume"]) {
             

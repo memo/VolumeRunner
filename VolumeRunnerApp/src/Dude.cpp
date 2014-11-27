@@ -151,7 +151,7 @@ void Dude::update()
     position.z += v.z;//o.z*sin(heading); //+vel.z*skippy*0.5;
     
     // offset the dude to touch the ground
-    position.y = -o.y;
+    position.y = floorHeight-o.y;
 }
 
 void Dude::updateRenderer( ofShader & shader )

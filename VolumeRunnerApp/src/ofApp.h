@@ -9,7 +9,7 @@
 #include "Camera.h"
 #include "Volume.h"
 #include "RenderManager.h"
-
+#include "Floor.h"
 
 class ofApp : public ofBaseApp{
 public:
@@ -24,7 +24,12 @@ public:
     Dude dude;
     Camera camera;
     Volume volume;
+    Floor floor;
     RenderManager renderManager;
+    
+    ofImage shapeImage;
+    
+
     
     void loadShaders();
     void allocateFbo();

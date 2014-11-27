@@ -6,8 +6,6 @@
 // https://www.shadertoy.com/user/iq
 
 
-
-
 #define kNumJoints   9
 
 uniform vec2 resolution; // screen resolution
@@ -469,6 +467,7 @@ vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
         }
         else if(t > distance)
         {
+            
             return bg_clr;//vec3(0.0);
         }
         
@@ -547,53 +546,6 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl, in float normItCou
 #pragma mark SCENE
 
 #define blending sdf_blend_poly
-
-vec3 pln;
-
-float terrain(vec3 p)
-{
-    p.xz *= 0.01;
-    float nx=floor(p.x)*13.0+floor(p.z)*1113.0,center=0.0,scale=2.0;
-    vec4 heights=vec4(0.0,0.0,0.0,0.0);
-    
-    for(int i=0;i<5;i+=1)
-    {
-        vec2 spxz=step(vec2(0.0),p.xz);
-        float corner_height = mix(mix(heights.x, heights.y, spxz.x),
-                                  mix(heights.w, heights.z, spxz.x),spxz.y);
-        
-        vec4 mid_heights=(heights+heights.yzwx)*0.5;
-        
-        heights =mix(mix(vec4(heights.x,mid_heights.x,center,mid_heights.w),
-                         vec4(mid_heights.x,heights.y,mid_heights.y,center), spxz.x),
-                     mix(vec4(mid_heights.w,center,mid_heights.z,heights.w),
-                         vec4(center,mid_heights.y,heights.z,mid_heights.z), spxz.x), spxz.y);
-        
-        nx=nx*4.0+spxz.x+2.0*spxz.y;
-        
-        center=(center+corner_height)*0.5+cos(nx*100.0)/scale*130.0;
-        p.xz=fract(p.xz)-vec2(0.5);
-        p*=2.0;
-        scale*=2.0;
-    }
-    
-    
-    float d0=p.x+p.z;
-    
-    vec2 plh=mix( mix(heights.xw,heights.zw,step(0.0,d0)),
-                 mix(heights.xy,heights.zy,step(0.0,d0)), step(p.z,p.x));
-    
-    pln=normalize(vec3(plh.x-plh.y,2.0,(plh.x-center)+(plh.y-center)));
-    
-    if(p.x+p.z>0.0)
-        pln.xz=-pln.zx;
-    
-    if(p.x<p.z)
-        pln.xz=pln.zx;
-    
-    p.y-=center;	
-    return dot(p,pln)/scale;
-}
 
 
 vec3 guy_transform_inner( in vec3 p )
@@ -679,31 +631,11 @@ float compute_scene( in vec3 p, out int mtl )
     floor_y += tex2d(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
     floor_y += tex2d(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
     d = sdf_union(d, sdf_xz_plane(p, floor_y));
-    // repeated box
-    //    {
-    //        vec3 samplepos = p;
-    //        samplepos = sdf_repeat(p, vec3(5.0, 0.0, 5.0));
-    //        samplepos = sdf_translate(samplepos, vec3(0.0, 1.0, 0.0));
-    //        d = sdf_union(d, sdf_round_box(samplepos, vec3(3.0, 3.0, 3.0), 0.0) );
-    //    }
-    
-    
-    // test box
-    //    {
-    //        vec3 samplepos = p;
-    //        samplepos = sdf_translate(samplepos, box_pos);
-    //        samplepos = sdf_rotate_y(samplepos, box_rot.y);
-    //        samplepos = sdf_rotate_x(samplepos, box_rot.x);
-    //        samplepos = sdf_rotate_z(samplepos, box_rot.z);
-    //        samplepos = sdf_scale(samplepos, box_scale);
-    //        samplepos = sdf_transform(samplepos, box_mat);
-    //        d = sdf_union(d, sdf_round_box(samplepos, vec3(10.0, 10.0, 10.0), 0.0) );
-    //    }
-    
+   
     float dguy = 100000.0;
-    for(int i=0; i<kNumJoints; i++) {
-        //dguy = sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
-        dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix))); //sdf_union(dguy, sdf_round_box(sdf_translate(sdf_transform(p, box_mats[i]),vec3(0.0,0.0,0.5)), vec3(1.0, 3.0, 1.0), 0.1) );
+    for(int i=0; i<kNumJoints; i++)
+    {
+        dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix)));
     }
     
     if(dguy<d)

@@ -521,7 +521,7 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl, in float normItCou
     float l = max(0.2, dot(n, light));
     
     l *= luminosity(normal_color(n))*1.4;   // daniel lighting
-//    l *= max(0.1, soft_shadow(p, light, 0.4, 200.0, 12));
+    l *= max(0.1, soft_shadow(p, light, 0.4, 200.0, 12));
 //    l *= max(0.2, hard_shadow(p, light, 0.4, 200.0));
     
     
@@ -648,17 +648,23 @@ float sdf_box_texture( in vec3 p, in vec3 size, in sampler2D tex )
     return sdf_box((p-vec3(0.0,-(clr.r)*333,0.0)),size);
 }
 
-float compute_scene_( in vec3 p, out int mtl )
+vec4 texture2DGood( sampler2D sam, vec2 uv, float bias )
 {
-    mtl = 0;
-    float d = 1e10;
-    
-    d = sdf_union(d, terrain(p));//sdf_xz_plane(p, texture2D(floor_image,p.xz*0.01).x*14.0-20.0));//sin(p.x*0.3)*sin(p.z*0.1)-20.0));//noise(p.xz) * 5.0) );
-//    float d2 = sdf_box_texture( p,vec3(6.0),floor_image );
-    float d2 = sdf_box( p,vec3(6.0) );
-    if(d2<d)
-        mtl = 1;
-    return min(d,d2);
+    uv = uv*1024.0 - 0.5;
+    vec2 iuv = floor(uv);
+    vec2 f = fract(uv);
+    vec4 rg1 = texture2D( sam, (iuv+ vec2(0.5,0.5))/1024.0, bias );
+    vec4 rg2 = texture2D( sam, (iuv+ vec2(1.5,0.5))/1024.0, bias );
+    vec4 rg3 = texture2D( sam, (iuv+ vec2(0.5,1.5))/1024.0, bias );
+    vec4 rg4 = texture2D( sam, (iuv+ vec2(1.5,1.5))/1024.0, bias );
+    return mix( mix(rg1,rg2,f.x), mix(rg3,rg4,f.x), f.y );
+}
+
+vec4 tex2d( sampler2D sam, vec2 uv )
+{
+//    return texture2D(sam,uv);
+    return smoothstep(0.01,0.99,texture2D(sam,uv));
+    //return texture2DGood(sam,uv,-100);
 }
 
 float compute_scene( in vec3 p, out int mtl )
@@ -670,8 +676,8 @@ float compute_scene( in vec3 p, out int mtl )
 //    d = sdf_union(d, sdf_xz_plane(p,  0));
     
     float floor_y = 0.0;
-    floor_y += texture2D(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
-    floor_y += texture2D(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
+    floor_y += tex2d(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
+    floor_y += tex2d(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
     d = sdf_union(d, sdf_xz_plane(p, floor_y));
     // repeated box
     //    {

@@ -77,6 +77,7 @@ int routing(const void *inputBuffer,
     
     MaxiThread::~MaxiThread()
     {
+        // Hacky stop DAC upon destruction
         if(dacRef)
             dacRef->stopStream();
     }

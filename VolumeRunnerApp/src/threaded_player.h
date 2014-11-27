@@ -13,6 +13,7 @@
 
 class RtAudio;
 
+///
 class MaxiThread : public cm::Thread
 {
 public:

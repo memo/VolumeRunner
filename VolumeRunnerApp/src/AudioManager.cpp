@@ -70,18 +70,13 @@ void AudioManager::playNote( int note )
 {
     DelayedNote * dn = new DelayedNote(note,ofGetElapsedTimeMillis());
     delayedNotes.insert(dn);
-    
-    //lockThread();
-    //notes.push_back(note);
-    //unlockThread();
 }
 
 float amts[6] = {1.0,1.0,1.0,1.0,1.0,0.5};
 
+// Just adapted the maximilian PolySynth example here
 void AudioManager::play( double * output )
 {
-    
-    
     mix=0;//we're adding up the samples each update and it makes sense to clear them each time first.
     
     //so this first bit is just a basic metronome so we can hear what we're doing.

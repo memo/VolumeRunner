@@ -198,6 +198,18 @@ Vec3 Dude::getOffset() const
     return vel;
 }
 
+Vec3 Dude::getLowestLimbPosition() const
+{
+    Vec3 lowest(0,100000,0);
+    for( int i = 0; i < animSys.getNumBones(); i++ )
+    {
+        const Vec3 &p = animSys.getBone(i)->getEndPos();
+        if(p.y < lowest.y)
+            lowest = p;
+    }
+    return lowest;
+}
+
 void Dude::playAnimation( const std::string & name )
 {
     animSys.play(name);

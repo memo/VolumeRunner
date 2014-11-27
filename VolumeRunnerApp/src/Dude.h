@@ -21,6 +21,8 @@ public:
     /// Returns the offset of the dude, based on the position of the lowest (Y) joint.
     Vec3 getOffset() const;
     
+    Vec3 getLowestLimbPosition() const;
+    
     void playAnimation( const std::string & name );
     
     void debugDraw();

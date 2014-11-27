@@ -16,6 +16,7 @@ uniform vec2 mouse; // mouse position (screen space)
 // uniform mat4 box_mat;    // for testing whole transform
 uniform mat4 box_mats[kNumJoints];
 
+uniform vec3 centerPos;
 uniform mat4 invViewMatrix;
 uniform mat4 steerMatrix;
 
@@ -168,6 +169,7 @@ float sdf_sphere(in vec3 p, in float radius)
 {
     return length(p)-radius;
 }
+
 
 float sdf_torus(in vec3 p, in float radius, in float thickness )
 {
@@ -622,7 +624,7 @@ vec4 tex2d( sampler2D sam, vec2 uv )
 float compute_scene( in vec3 p, out int mtl )
 {
     mtl = 0;
-    float d = 1e10;
+    float d =  -sdf_sphere(sdf_translate(p,centerPos),300.0);
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
 //    d = sdf_union(d, sdf_xz_plane(p,  0));

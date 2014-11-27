@@ -25,6 +25,8 @@ uniform float tanHalfFov; // tan(fov/2)
 
 uniform float blend_k;
 
+uniform sampler2D shape_image;
+
 const float EPSILON = 0.01;
 const float PI = 3.1415926535;
 const float PI2 = PI*2.0;
@@ -166,6 +168,7 @@ float sdf_torus(in vec3 p, in float radius, in float thickness )
 
 float sdf_prism( in vec3 p, in vec2 h )
 {
+    //p.y -= texture2D(shape_image,p.xz*0.1).x*3.0;
     vec3 q = abs(p);
     return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
 }
@@ -470,6 +473,12 @@ float rounded_squares_texture(in vec3 p)
     return max(0.9,v);
 }
 
+float texture_test(in vec3 p)
+{
+    vec2 uv = mod(p.xz*0.01,vec2(1.0));
+    return texture2D(shape_image,uv).x;
+}
+
 
 const vec4 fog_clr = vec4(1.0);//0.5,0.9,1.0, 1.0);
 const vec4 floor_color = vec4(0.99,1.0,0.99, 1.0); //vec3(0.8,0.9,1.0);
@@ -493,7 +502,7 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     vec4 clr = vec4(1.0);//,0.9,0.9);
     if(mtl==0)
     {
-        clr = floor_color*rounded_squares_texture(p);
+        clr = floor_color;//*rounded_squares_texture(p);
     }
     
     clr.xyz *= l;
@@ -511,6 +520,54 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
 #pragma mark SCENE
 
 #define blending sdf_blend_poly
+
+vec3 pln;
+
+float terrain(vec3 p)
+{
+    p.xz *= 0.01;
+    float nx=floor(p.x)*13.0+floor(p.z)*1113.0,center=0.0,scale=2.0;
+    vec4 heights=vec4(0.0,0.0,0.0,0.0);
+    
+    for(int i=0;i<5;i+=1)
+    {
+        vec2 spxz=step(vec2(0.0),p.xz);
+        float corner_height = mix(mix(heights.x, heights.y, spxz.x),
+                                  mix(heights.w, heights.z, spxz.x),spxz.y);
+        
+        vec4 mid_heights=(heights+heights.yzwx)*0.5;
+        
+        heights =mix(mix(vec4(heights.x,mid_heights.x,center,mid_heights.w),
+                         vec4(mid_heights.x,heights.y,mid_heights.y,center), spxz.x),
+                     mix(vec4(mid_heights.w,center,mid_heights.z,heights.w),
+                         vec4(center,mid_heights.y,heights.z,mid_heights.z), spxz.x), spxz.y);
+        
+        nx=nx*4.0+spxz.x+2.0*spxz.y;
+        
+        center=(center+corner_height)*0.5+cos(nx*100.0)/scale*130.0;
+        p.xz=fract(p.xz)-vec2(0.5);
+        p*=2.0;
+        scale*=2.0;
+    }
+    
+    
+    float d0=p.x+p.z;
+    
+    vec2 plh=mix( mix(heights.xw,heights.zw,step(0.0,d0)),
+                 mix(heights.xy,heights.zy,step(0.0,d0)), step(p.z,p.x));
+    
+    pln=normalize(vec3(plh.x-plh.y,2.0,(plh.x-center)+(plh.y-center)));
+    
+    if(p.x+p.z>0.0)
+        pln.xz=-pln.zx;
+    
+    if(p.x<p.z)
+        pln.xz=pln.zx;
+    
+    p.y-=center;	
+    return dot(p,pln)/scale;
+}
+
 
 vec3 guy_transform_inner( in vec3 p )
 {
@@ -556,13 +613,33 @@ float sdf_guy( in vec3 p )
 
 
 //------------------------------------------------------------------------------------
+
+float sdf_box_texture( in vec3 p, in vec3 size, in sampler2D tex )
+{
+    vec4 clr = texture2D(tex,(p.xz*0.1)+vec2(0.5));
+    return sdf_box((p-vec3(0.0,-(clr.r)*333,0.0)),size);
+}
+
+float compute_scene_( in vec3 p, out int mtl )
+{
+    mtl = 0;
+    float d = 1e10;
+    
+    d = sdf_union(d, terrain(p));//sdf_xz_plane(p, texture2D(shape_image,p.xz*0.01).x*14.0-20.0));//sin(p.x*0.3)*sin(p.z*0.1)-20.0));//noise(p.xz) * 5.0) );
+//    float d2 = sdf_box_texture( p,vec3(6.0),shape_image );
+    float d2 = sdf_box( p,vec3(6.0) );
+    if(d2<d)
+        mtl = 1;
+    return min(d,d2);
+}
+
 float compute_scene( in vec3 p, out int mtl )
 {
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
-    
+    //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
+    d = sdf_union(d, sdf_xz_plane(p, texture2D(shape_image,p.xz*0.001).x*14.0-9.0));
     // repeated box
     //    {
     //        vec3 samplepos = p;
@@ -595,7 +672,7 @@ float compute_scene( in vec3 p, out int mtl )
         mtl = 1;
     }
     
-    d = blending(d, dguy,blend_k);//, blend_k);
+    d = blending(d, dguy, blend_k);
     
     return d;
     /*
@@ -627,6 +704,7 @@ float compute_scene( in vec3 p, out int mtl )
 void main(void)
 {
     vec2 xy = gl_FragCoord.xy;
+    
     // Primary ray origin
     vec3 p = invViewMatrix[3].xyz;
     // Primary ray direction

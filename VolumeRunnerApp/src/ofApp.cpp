@@ -6,9 +6,12 @@
 
 //ofBoxPrimitive box;
 
+ofImage shapeImage;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
+    ofDisableArbTex();
+    
     ofBackground(0, 0, 0);
     ofSetLogLevel(OF_LOG_VERBOSE);
     
@@ -71,6 +74,10 @@ void ofApp::setup(){
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
     
+    
+    shapeImage.load("images/test.png");
+    shapeImage.getTexture().setTextureWrap(GL_REPEAT,GL_REPEAT);
+    //shapeImage.getTexture().setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
     //    cam = new ofCamera();
 }
 
@@ -79,7 +86,7 @@ void ofApp::loadShaders() {
     ofLogVerbose() << "*** Loading Shaders ***";
     
     shaderRayTracer = shared_ptr<ofShader>(new ofShader());
-    shaderRayTracer->load("", "shaders/raytrace_test.frag");
+    shaderRayTracer->load("", "shaders/dani_testbed.frag");
     
     shaderSea = shared_ptr<ofShader>(new ofShader());
     shaderSea->load("", "shaders/sea.frag");
@@ -103,6 +110,7 @@ void ofApp::update(){
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
     camera.distance = params["Shader.View.distance"];
+    //dude.position(0,0,0);
     camera.update(dude.position, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
 }
 
@@ -135,6 +143,8 @@ void ofApp::draw(){
         shaderRayTracer->begin();
         shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
+
+        shaderRayTracer->setUniformTexture("shape_image",GL_TEXTURE_2D,shapeImage.getTexture().getTextureData().textureID,0);
         
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
         //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
@@ -144,6 +154,7 @@ void ofApp::draw(){
         camera.updateRenderer(*shaderRayTracer);
         
         drawUVQuad();
+        shapeImage.unbind();
         shaderRayTracer->end();
         
         camera.apply();
@@ -173,7 +184,9 @@ void ofApp::draw(){
     
     ofSetupScreen();
     renderManager.draw(0, ofGetHeight(), ofGetWidth(), -ofGetHeight());
-    
+    shapeImage.getTexture().bind();
+    //drawUVQuad(0,0,512,512);
+    shapeImage.getTexture().unbind();
     ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
 }

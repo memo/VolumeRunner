@@ -20,8 +20,6 @@ public:
     shared_ptr<ofShader> shaderRayTracer;
     shared_ptr<ofShader> shaderSea;
     cm::FileWatcher *shaderFolderWatcher;
-
-//    ofCamera *cam;
     
     Dude dude;
     Camera camera;

@@ -639,7 +639,7 @@ float compute_scene( in vec3 p, out int mtl )
     float d = 1e10;
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
-    d = sdf_union(d, sdf_xz_plane(p, texture2D(shape_image,p.xz*0.001).x*14.0-9.0));
+    d = sdf_union(d, sdf_xz_plane(p, texture2D(shape_image,p.xz*0.008).x*14.0-9.0));
     // repeated box
     //    {
     //        vec3 samplepos = p;

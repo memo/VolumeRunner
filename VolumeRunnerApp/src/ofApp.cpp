@@ -22,8 +22,10 @@ void ofApp::setup(){
     volume.init();
     
     floor.resize(2);
-    floor[0].init(0, "images/noise_512.png");
-    floor[1].init(1, "images/noise_1024.png");
+    string floorPaths[] = { "images/noise_512.png", "images/noise_2048.png" };
+    for(int i=0; i<floor.size(); i++) {
+        floor[i] = shared_ptr<Floor>(new Floor(i, floorPaths[i]));
+    }
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
@@ -65,7 +67,7 @@ void ofApp::setup(){
     dude.addParams(params);
     volume.addParams(params);
     
-    for(int i=0; i<floor.size(); i++) floor[i].addParams(params);
+    for(int i=0; i<floor.size(); i++) floor[i]->addParams(params);
     
     params.loadXmlValues();
     
@@ -112,7 +114,7 @@ void ofApp::update(){
         Vec3 dudeLowest = dude.position;//dude.getLowestLimbPosition();
         floorPos.set(dudeLowest.x, 0, dudeLowest.z);
         
-        for(int i=0; i<floor.size(); i++) floorPos.y += floor[i].getHeight(dudeLowest.x, dudeLowest.z);
+        for(int i=0; i<floor.size(); i++) floorPos.y += floor[i]->getHeight(dudeLowest.x, dudeLowest.z);
         
         dude.floorHeight = floorPos.y;
         dude.update();
@@ -166,20 +168,23 @@ void ofApp::draw(){
         dude.updateRenderer(*shaderRayTracer);
         camera.updateRenderer(*shaderRayTracer);
         
-        for(int i=0; i<floor.size(); i++) floor[i].updateRenderer(*shaderRayTracer);
+        for(int i=0; i<floor.size(); i++) floor[i]->updateRenderer(*shaderRayTracer);
         
         drawUVQuad();
         shaderRayTracer->end();
         
         camera.apply();
-        
-        ofPushMatrix();
-        ofPushStyle();
-        ofTranslate(floorPos);
-        ofSetColor(255, 0, 0);
-        sphere.draw();
-        ofPopStyle();
-        ofPopMatrix();
+
+        // draw floor sphere
+//        {
+//            ofPushMatrix();
+//            ofPushStyle();
+//            ofTranslate(floorPos);
+//            ofSetColor(255, 0, 0);
+//            sphere.draw();
+//            ofPopStyle();
+//            ofPopMatrix();
+//        }
         
         if(params["Display.Debug skeleton"]) {
             dude.debugDraw();

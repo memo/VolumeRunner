@@ -24,7 +24,7 @@ public:
     Dude dude;
     Camera camera;
     Volume volume;
-    vector<Floor> floor;
+    vector<shared_ptr<Floor> > floor;
     RenderManager renderManager;
     
     ofImage shapeImage;

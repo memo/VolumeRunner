@@ -1,6 +1,6 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="15.050966263"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="21.905075073"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Update">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Pause" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Dude" value="1"></Parameter>
@@ -15,13 +15,13 @@
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Shader">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="View">
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="distance" value="55.803573608"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="3.083682299"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="-81.773330688"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="rotx" value="-24.473030090"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="roty" value="117.154563904"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Dude">
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="3.616071463"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Rot speed" value="5.535715103"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="speed" value="9.616071701"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Rot speed" value="6.294642448"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="hip rotation" value="-14.285715103"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="backAngle" value="24.910713196"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="blend k" value="3.724107027"></Parameter>
@@ -53,10 +53,17 @@
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="z" value="-1.478574038"></Parameter>
             </Parameter>
         </Parameter>
-        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Floor">
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="height" value="8.928571701"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="scale" value="0.080357142"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="offset" value="0.357143402"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Floor0">
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="height" value="1.610000610"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="scale" value="0.080000006"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="offset" value="0.000000000"></Parameter>
+        </Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Floor1">
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="enabled" value="1"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="height" value="-43.389999390"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="scale" value="0.036000002"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="offset" value="0.000000000"></Parameter>
         </Parameter>
     </Parameter>
 </ofxMSAControlFreak>

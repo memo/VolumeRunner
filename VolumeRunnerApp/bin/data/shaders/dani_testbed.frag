@@ -25,10 +25,16 @@ uniform float tanHalfFov; // tan(fov/2)
 
 uniform float blend_k;
 
-uniform sampler2D floor_image;
-uniform float floor_height;
-uniform float floor_scale;
-uniform float floor_offset;
+uniform sampler2D floor_image0;
+uniform float floor_height0;
+uniform float floor_scale0;
+uniform float floor_offset0;
+
+uniform sampler2D floor_image1;
+uniform float floor_height1;
+uniform float floor_scale1;
+uniform float floor_offset1;
+
 
 const float EPSILON = 0.01;
 const float PI = 3.1415926535;
@@ -171,7 +177,6 @@ float sdf_torus(in vec3 p, in float radius, in float thickness )
 
 float sdf_prism( in vec3 p, in vec2 h )
 {
-    //p.y -= texture2D(floor_image,p.xz*0.1).x*3.0;
     vec3 q = abs(p);
     return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
 }
@@ -370,18 +375,18 @@ float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samp
 }
 
 //---------------------------------------------------
-float ambient_occlusion1( in vec3 p, in vec3 n )
+float ambient_occlusion1( in vec3 p, in vec3 n, float startweight, float diminishweight )
 {
     //n = vec3(0.0,1.0,1.0);
     float ao = 0.0;
-    float weight = 0.5;
+    float weight = startweight;
     int mtl;
     
     for ( int i = 1; i < 6; ++i )
     {
         float delta = i*i*EPSILON *12.0;
         ao += weight * (delta-compute_scene(p+n*(0.0+delta), mtl));
-        weight *= 0.5;
+        weight *= diminishweight;
     }
     
     return 1.0-saturate(ao);
@@ -423,6 +428,15 @@ float soft_shadow1( in vec3 p, in vec3 w, float mint, float maxt, float k )
     return res;
 }
 
+float hard_shadow(in vec3 ro, in vec3 rd, float mint, float maxt) {
+    int mtl;
+    for(float t=mint; t < maxt;) {
+        float h = compute_scene(ro + rd*t, mtl);
+        if(h<0.001) return 0.0;
+        t += h;
+    }
+    return 1.0;
+}
 
 
 
@@ -479,39 +493,41 @@ float rounded_squares_texture(in vec3 p)
 float texture_test(in vec3 p)
 {
     vec2 uv = mod(p.xz*0.01,vec2(1.0));
-    return texture2D(floor_image,uv).x;
+    return texture2D(floor_image0,uv).x;
 }
 
 
-const vec4 fog_clr = vec4(1.0);//0.5,0.9,1.0, 1.0);
-const vec4 floor_color = vec4(0.99,1.0,0.99, 1.0); //vec3(0.8,0.9,1.0);
+const vec4 fog_clr = vec4(0.8, 0.9, 1.0, 1.0);//0.5,0.9,1.0, 1.0);
+const vec4 floor_color = vec4(1.0, 1.0, 0.9, 1.0); //vec3(0.8,0.9,1.0);
+const vec4 man_color = vec4(1, 0.9, 0.7, 1.0);
+
+
 vec4 compute_color( in vec3 p, in float distance, in int mtl )
 {
     vec3 n = calc_normal(p);
-    //    return normal_color(n); // use this to debug normals
+    //return normal_color(n); // use this to debug normals
     
     //
     //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
-    vec3 light = light1;
+    vec3 light = normalize(light1);
     
     // diffuse lighting
     float l = max(0.2, dot(n, light));
     
-    // subtly light based on normal, daniel hack
-    l *= luminosity(normal_color(n))*1.4;
-    l *= ambient_occlusion(p,n);
-    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 90));
+    l *= luminosity(normal_color(n))*1.4;   // daniel lighting
+//    l *= max(0.1, soft_shadow(p, light, 0.4, 200.0, 12));
+    l *= max(0.1, hard_shadow(p, light, 0.4, 200.0));
     
-    vec4 clr = vec4(1.0);//,0.9,0.9);
-    if(mtl==0)
-    {
-        clr = floor_color;//*rounded_squares_texture(p);
-    }
     
+    float ao_startweight = mtl == 0 ? 0.1 : 0.9;
+    float ao_weightdiminish = mtl == 0 ? 0.3 : 0.5;
+    l *= ambient_occlusion1(p,n, ao_startweight, ao_weightdiminish);
+
+    vec4 clr = mtl == 0 ? floor_color : man_color;
     clr.xyz *= l;
     
     //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
-    float fog = attenuation(max(0.0,distance-20.0),0.0001);
+    float fog = attenuation(max(0.0,distance-100.0),0.0001);
     clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
     
     return clr;
@@ -644,7 +660,11 @@ float compute_scene( in vec3 p, out int mtl )
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
 //    d = sdf_union(d, sdf_xz_plane(p,  0));
-    d = sdf_union(d, sdf_xz_plane(p, texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset));
+    
+    float floor_y = 0.0;
+    floor_y += texture2D(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
+    floor_y += texture2D(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
+    d = sdf_union(d, sdf_xz_plane(p, floor_y));
     // repeated box
     //    {
     //        vec3 samplepos = p;

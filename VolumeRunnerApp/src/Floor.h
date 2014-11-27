@@ -2,13 +2,16 @@
 
 class Floor {
 public:
-    msa::controlfreak::ParameterGroup params;
-    
-    void init() {
+    void init(int i, string imagePath) {
+        index = i;
         params.setName("Floor");
         params.addFloat("height").setRange(-90, 90);
         params.addFloat("scale").setRange(0, 1);
         params.addFloat("offset").setRange(-20, 20);
+        
+        image.load(imagePath);
+        image.getTexture().setTextureWrap(GL_REPEAT, GL_REPEAT);
+        //shapeImage.getTexture().setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
     }
     
     void addParams(msa::controlfreak::ParameterGroup &parentparams) {
@@ -16,7 +19,7 @@ public:
     }
     
     
-    float getHeight(float x, float z, ofImage &image) {
+    float getHeight(float x, float z) {
         ofVec2f p(x, z);
         float scale = params["scale"];
         scale *= scale;
@@ -28,12 +31,16 @@ public:
         return h;
     }
     
-    void updateRenderer( ofShader & shader, ofImage &image ) {
-        shader.setUniformTexture("shape_image",GL_TEXTURE_2D,image.getTexture().getTextureData().textureID,0);
-        shader.setUniform1f("floor_height", params["height"]);
-        shader.setUniform1f("floor_scale", (float)params["scale"] * (float)params["scale"]);
-        shader.setUniform1f("floor_offset", params["offset"]);
+    void updateRenderer( ofShader & shader) {
+        string si = ofToString(index);
+        shader.setUniformTexture("floor_image" + si,GL_TEXTURE_2D,image.getTexture().getTextureData().textureID,0);
+        shader.setUniform1f("floor_height" + si, params["height"]);
+        shader.setUniform1f("floor_scale" + si, (float)params["scale"] * (float)params["scale"]);
+        shader.setUniform1f("floor_offset" + si, params["offset"]);
     }
     
-    
+private:
+    msa::controlfreak::ParameterGroup params;
+    ofImage image;
+    int index;
 };

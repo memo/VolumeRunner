@@ -6,9 +6,6 @@
 
 //ofBoxPrimitive box;
 
-ofImage shapeImage;
-
-
 ofSpherePrimitive sphere(1, 12);
 ofVec3f floorPos;
 
@@ -23,7 +20,10 @@ void ofApp::setup(){
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
     volume.init();
-    floor.init();
+    
+    floor.resize(2);
+    floor[0].init(0, "images/noise_512.png");
+    floor[1].init(1, "images/noise_1024.png");
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
@@ -64,7 +64,8 @@ void ofApp::setup(){
     
     dude.addParams(params);
     volume.addParams(params);
-    floor.addParams(params);
+    
+    for(int i=0; i<floor.size(); i++) floor[i].addParams(params);
     
     params.loadXmlValues();
     
@@ -79,11 +80,6 @@ void ofApp::setup(){
     
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
-    
-    
-    shapeImage.load("images/test.png");
-    shapeImage.getTexture().setTextureWrap(GL_REPEAT,GL_REPEAT);
-    //shapeImage.getTexture().setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
     //    cam = new ofCamera();
 }
 
@@ -114,7 +110,10 @@ void ofApp::update(){
         // Using the position is not precise but for the moment it works fine.
         // Need to fix the lowest limb pos.
         Vec3 dudeLowest = dude.position;//dude.getLowestLimbPosition();
-        floorPos.set(dudeLowest.x, floor.getHeight(dudeLowest.x, dudeLowest.z,shapeImage), dudeLowest.z);
+        floorPos.set(dudeLowest.x, 0, dudeLowest.z);
+        
+        for(int i=0; i<floor.size(); i++) floorPos.y += floor[i].getHeight(dudeLowest.x, dudeLowest.z);
+        
         dude.floorHeight = floorPos.y;
         dude.update();
         
@@ -166,10 +165,10 @@ void ofApp::draw(){
         
         dude.updateRenderer(*shaderRayTracer);
         camera.updateRenderer(*shaderRayTracer);
-        floor.updateRenderer(*shaderRayTracer, shapeImage);
+        
+        for(int i=0; i<floor.size(); i++) floor[i].updateRenderer(*shaderRayTracer);
         
         drawUVQuad();
-        shapeImage.unbind();
         shaderRayTracer->end();
         
         camera.apply();
@@ -207,9 +206,6 @@ void ofApp::draw(){
     
     ofSetupScreen();
     renderManager.draw(0, ofGetHeight(), ofGetWidth(), -ofGetHeight());
-    shapeImage.getTexture().bind();
-    //drawUVQuad(0,0,512,512);
-    shapeImage.getTexture().unbind();
     ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
 }

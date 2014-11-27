@@ -25,7 +25,7 @@ uniform float tanHalfFov; // tan(fov/2)
 
 uniform float blend_k;
 
-uniform sampler2D shape_image;
+uniform sampler2D floor_image;
 uniform float floor_height;
 uniform float floor_scale;
 uniform float floor_offset;
@@ -171,7 +171,7 @@ float sdf_torus(in vec3 p, in float radius, in float thickness )
 
 float sdf_prism( in vec3 p, in vec2 h )
 {
-    //p.y -= texture2D(shape_image,p.xz*0.1).x*3.0;
+    //p.y -= texture2D(floor_image,p.xz*0.1).x*3.0;
     vec3 q = abs(p);
     return max(q.z-h.y,max(q.x*0.866025+p.y*0.5,-p.y)-h.x*0.5);
 }
@@ -479,7 +479,7 @@ float rounded_squares_texture(in vec3 p)
 float texture_test(in vec3 p)
 {
     vec2 uv = mod(p.xz*0.01,vec2(1.0));
-    return texture2D(shape_image,uv).x;
+    return texture2D(floor_image,uv).x;
 }
 
 
@@ -579,7 +579,7 @@ vec3 guy_transform_inner( in vec3 p )
 
 vec3 guy_transform_outer( in vec3 p )
 {
-//    float o = texture2D(shape_image, p.xz * floor_scale).r * floor_height - floor_offset;//sdf_repeat(p,vec3(23.0,0.0,53.0));
+//    float o = texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset;//sdf_repeat(p,vec3(23.0,0.0,53.0));
     return p;//+vec3(0,o,0);
 }
 
@@ -629,8 +629,8 @@ float compute_scene_( in vec3 p, out int mtl )
     mtl = 0;
     float d = 1e10;
     
-    d = sdf_union(d, terrain(p));//sdf_xz_plane(p, texture2D(shape_image,p.xz*0.01).x*14.0-20.0));//sin(p.x*0.3)*sin(p.z*0.1)-20.0));//noise(p.xz) * 5.0) );
-//    float d2 = sdf_box_texture( p,vec3(6.0),shape_image );
+    d = sdf_union(d, terrain(p));//sdf_xz_plane(p, texture2D(floor_image,p.xz*0.01).x*14.0-20.0));//sin(p.x*0.3)*sin(p.z*0.1)-20.0));//noise(p.xz) * 5.0) );
+//    float d2 = sdf_box_texture( p,vec3(6.0),floor_image );
     float d2 = sdf_box( p,vec3(6.0) );
     if(d2<d)
         mtl = 1;
@@ -644,7 +644,7 @@ float compute_scene( in vec3 p, out int mtl )
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
 //    d = sdf_union(d, sdf_xz_plane(p,  0));
-    d = sdf_union(d, sdf_xz_plane(p, texture2D(shape_image, p.xz * floor_scale).r * floor_height - floor_offset));
+    d = sdf_union(d, sdf_xz_plane(p, texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset));
     // repeated box
     //    {
     //        vec3 samplepos = p;
@@ -679,7 +679,7 @@ float compute_scene( in vec3 p, out int mtl )
     
     d = blending(d, dguy, blend_k);
     
-    return d;// + texture2D(shape_image, p.xz * floor_scale).r * floor_height - floor_offset;
+    return d;// + texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset;
     /*
      mtl = 0;
      float d1,d2;

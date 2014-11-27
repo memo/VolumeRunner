@@ -17,4 +17,8 @@ public:
     MaxiThread() {}
     virtual ~MaxiThread() {}
     void run();
+    
+    virtual void setup() {}
+    virtual void sample( double * output ) {}
+    
 };

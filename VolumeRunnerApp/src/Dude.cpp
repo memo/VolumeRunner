@@ -200,6 +200,9 @@ Vec3 Dude::getOffset() const
 
 Vec3 Dude::getLowestLimbPosition() const
 {
+    assert(0);
+    // Need to fix this
+    
     Vec3 lowest(0,100000,0);
     for( int i = 0; i < animSys.getNumBones(); i++ )
     {

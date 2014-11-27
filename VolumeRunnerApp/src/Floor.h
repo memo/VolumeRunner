@@ -6,7 +6,7 @@ public:
     
     void init() {
         params.setName("Floor");
-        params.addFloat("height").setRange(-10, 10);
+        params.addFloat("height").setRange(-90, 90);
         params.addFloat("scale").setRange(0, 1);
         params.addFloat("offset").setRange(-20, 20);
     }
@@ -22,10 +22,10 @@ public:
         scale *= scale;
         
         p *= scale;
-        p.x = (int)(p.x + image.getWidth()) % (int)image.getWidth();
-        p.y = (int)(p.y + image.getHeight()) % (int)image.getHeight();
-        
-        return (float)params["height"] * image.getColor(p.x, p.y).r / 255.0f + (float)params["offset"];
+        p.x = mod((float)(p.x*image.getWidth()),(float)image.getWidth());
+        p.y = mod((float)(p.y*image.getHeight()),(float)image.getHeight());
+        float h = (float)params["height"] * DIV255*image.getColor(p.x,p.y).r + (float)params["offset"];
+        return h;
     }
     
     void updateRenderer( ofShader & shader, ofImage &image ) {

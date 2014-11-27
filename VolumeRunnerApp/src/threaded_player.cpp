@@ -23,11 +23,6 @@
 //#include "../libs/rtaudio/include/Rt
 #endif
 
-
-void setup();//use this to do any initialisation if you want.
-
-void play(double *output);//run dac! Very very often. Too often in fact. er...
-
 #ifdef MAXIMILIAN_PORTAUDIO
 int routing(const void *inputBuffer,
             void *outputBuffer,
@@ -55,7 +50,7 @@ int routing(const void *inputBuffer,
         }
         // Write interleaved audio data.
         for ( i=0; i<nBufferFrames; i++ ) {
-            play(lastValues);
+            //play(lastValues);
             for ( j=0; j<maxiSettings::channels; j++ ) {
                 *buffer++=lastValues[j];
             }

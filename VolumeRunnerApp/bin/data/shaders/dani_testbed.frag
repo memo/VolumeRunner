@@ -447,8 +447,8 @@ float hard_shadow(in vec3 ro, in vec3 rd, float mint, float maxt) {
 vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
 {
     //    const float maxDistance = 50;//1e10;
-    const int maxIterations = 128;
-    const float closeEnough = EPSILON; //1e-2;
+    const int maxIterations =256;
+    const float closeEnough = 1e-5;
     vec3 rp;
     int mtl;
     float t = 0;
@@ -461,8 +461,8 @@ vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
         {
             distance = t;
             // use this to debug number of ray casts
-            //return vec3(float(i)/128.0);
-            return compute_color(rp,t,mtl);//+vec3(float(i)/128.0);
+            return vec4(vec3(float(i)/128.0), 1.0);
+//            return compute_color(rp,t,mtl);//+vec3(float(i)/128.0);
         }
         else if(t > distance)
         {
@@ -516,11 +516,11 @@ vec4 compute_color( in vec3 p, in float distance, in int mtl )
     
     l *= luminosity(normal_color(n))*1.4;   // daniel lighting
 //    l *= max(0.1, soft_shadow(p, light, 0.4, 200.0, 12));
-    l *= max(0.1, hard_shadow(p, light, 0.4, 200.0));
+//    l *= max(0.2, hard_shadow(p, light, 0.4, 200.0));
     
     
-    float ao_startweight = mtl == 0 ? 0.1 : 0.9;
-    float ao_weightdiminish = mtl == 0 ? 0.3 : 0.5;
+    float ao_startweight = mtl == 0 ? 0.1 : 0.8;
+    float ao_weightdiminish = mtl == 0 ? 0.3 : 0.6;
     l *= ambient_occlusion1(p,n, ao_startweight, ao_weightdiminish);
 
     vec4 clr = mtl == 0 ? floor_color : man_color;
@@ -737,7 +737,7 @@ void main(void)
                                              vec3( (xy - resolution / 2.0)*vec2(1.0,1.0), resolution.y/(-2.0*tanHalfFov))
                                              );
     
-    float distance = 1e10;
+    float distance = 1e3;
     
     vec4 clr = trace_ray(p, w, fog_clr, distance);
     

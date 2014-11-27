@@ -22,7 +22,7 @@ void ofApp::setup(){
     volume.init();
     
     floor.resize(2);
-    string floorPaths[] = { "images/noise_512.png", "images/noise_2048.png" };
+    string floorPaths[] = { "images/noise_512.png", "images/noise_4096.png" };
     for(int i=0; i<floor.size(); i++) {
         floor[i] = shared_ptr<Floor>(new Floor(i, floorPaths[i]));
     }

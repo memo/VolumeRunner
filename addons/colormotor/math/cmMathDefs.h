@@ -168,7 +168,7 @@ template <class NTYPE> NTYPE mod( NTYPE a, NTYPE b )
 {
 	NTYPE n = (NTYPE)(a/b);
 	a -= floor(n)*b;
-	if( a<0 )
+	while( a<0 )
 	{
 		a += b;
 	}

@@ -2,10 +2,16 @@
 #include "colormotor.h"
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
+#include "AudioManager.h"
+
+//ofBoxPrimitive box;
+
+ofImage shapeImage;
 
 
 ofSpherePrimitive sphere(1, 12);
 ofVec3f floorPos;
+
 
 //--------------------------------------------------------------
 void ofApp::setup(){
@@ -105,8 +111,10 @@ void ofApp::update(){
     
 
     if(params["Update.Dude"]) {
-//        Vec3 dudeLowest = dude.getLowestLimbPosition();
-        floorPos.set(dude.position.x, floor.getHeight(dude.position.x, dude.position.z,shapeImage), dude.position.z);
+        // Using the position is not precise but for the moment it works fine.
+        // Need to fix the lowest limb pos.
+        Vec3 dudeLowest = dude.position;//dude.getLowestLimbPosition();
+        floorPos.set(dudeLowest.x, floor.getHeight(dudeLowest.x, dudeLowest.z,shapeImage), dudeLowest.z);
         dude.floorHeight = floorPos.y;
         dude.update();
         
@@ -116,8 +124,10 @@ void ofApp::update(){
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
     camera.distance = params["Shader.View.distance"];
-    //dude.position(0,0,0);
-    camera.update(dude.position, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
+
+    Vec3 pos = dude.position;
+
+    camera.update(pos, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
 }
 
 //--------------------------------------------------------------

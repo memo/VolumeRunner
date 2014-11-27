@@ -4,10 +4,6 @@
 #include "RunningSkeleton.h"
 
 
-//ofBoxPrimitive box;
-
-ofImage shapeImage;
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofDisableArbTex();
@@ -18,7 +14,7 @@ void ofApp::setup(){
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
     volume.init();
-    
+    floor.init();
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
@@ -59,6 +55,7 @@ void ofApp::setup(){
     
     dude.addParams(params);
     volume.addParams(params);
+    floor.addParams(params);
     
     params.loadXmlValues();
     
@@ -144,14 +141,13 @@ void ofApp::draw(){
         shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
 
-        shaderRayTracer->setUniformTexture("shape_image",GL_TEXTURE_2D,shapeImage.getTexture().getTextureData().textureID,0);
-        
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
         //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
         //    shaderRayTracer->setUniform3f("box_scale", params["Shader.Test box.scalex"], params["Shader.Test box.scaley"], params["Shader.Test box.scalez"]);
         
         dude.updateRenderer(*shaderRayTracer);
         camera.updateRenderer(*shaderRayTracer);
+        floor.updateRenderer(*shaderRayTracer, shapeImage);
         
         drawUVQuad();
         shapeImage.unbind();

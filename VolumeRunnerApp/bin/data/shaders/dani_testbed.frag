@@ -26,6 +26,9 @@ uniform float tanHalfFov; // tan(fov/2)
 uniform float blend_k;
 
 uniform sampler2D shape_image;
+uniform float floor_height;
+uniform float floor_scale;
+uniform float floor_offset;
 
 const float EPSILON = 0.01;
 const float PI = 3.1415926535;
@@ -576,7 +579,8 @@ vec3 guy_transform_inner( in vec3 p )
 
 vec3 guy_transform_outer( in vec3 p )
 {
-    return p;//sdf_repeat(p,vec3(23.0,0.0,53.0));
+//    float o = texture2D(shape_image, p.xz * floor_scale).r * floor_height - floor_offset;//sdf_repeat(p,vec3(23.0,0.0,53.0));
+    return p;//+vec3(0,o,0);
 }
 
 float guy_primitive( in vec3 p )
@@ -639,7 +643,8 @@ float compute_scene( in vec3 p, out int mtl )
     float d = 1e10;
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
-    d = sdf_union(d, sdf_xz_plane(p, texture2D(shape_image,p.xz*0.008).x*14.0-9.0));
+//    d = sdf_union(d, sdf_xz_plane(p,  0));
+    d = sdf_union(d, sdf_xz_plane(p, texture2D(shape_image, p.xz * floor_scale).r * floor_height - floor_offset));
     // repeated box
     //    {
     //        vec3 samplepos = p;
@@ -674,7 +679,7 @@ float compute_scene( in vec3 p, out int mtl )
     
     d = blending(d, dguy, blend_k);
     
-    return d;
+    return d;// + texture2D(shape_image, p.xz * floor_scale).r * floor_height - floor_offset;
     /*
      mtl = 0;
      float d1,d2;

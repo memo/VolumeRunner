@@ -1,0 +1,20 @@
+/*
+ *  player.h
+ *  rtaudiotest
+ *
+ *  Created by Chris on 23/08/2011.
+ *  Copyright 2011 Goldsmiths Creative Computing. All rights reserved.
+ *
+ */
+#include "colormotor.h"
+
+//#define MAXIMILIAN_PORTAUDIO
+#define MAXIMILIAN_RT_AUDIO
+
+class MaxiThread : public cm::Thread
+{
+public:
+    MaxiThread() {}
+    virtual ~MaxiThread() {}
+    void run();
+};

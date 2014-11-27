@@ -61,8 +61,8 @@ void ofApp::setup(){
         
         params.startGroup("View"); {
             params.addFloat("distance").setRange(0, 100).setIncrement(1.0);
-            params.addFloat("rotx").setRange(-180, 10).setIncrement(1.0);
-            params.addFloat("roty").setRange(-720, 720).setIncrement(1.0);
+            //params.addFloat("rotx").setRange(-90, 5).setIncrement(1.0);
+            //params.addFloat("roty").setRange(-720, 720).setIncrement(1.0);
         } params.endGroup();
         
     } params.endGroup();
@@ -95,7 +95,7 @@ void ofApp::loadShaders() {
     ofLogVerbose() << "*** Loading Shaders ***";
     
     shaderRayTracer = shared_ptr<ofShader>(new ofShader());
-    shaderRayTracer->load("", "shaders/dani_testbed.frag");
+    shaderRayTracer->load("", "shaders/volume_runner_renderer.frag");
     
     shaderSea = shared_ptr<ofShader>(new ofShader());
     shaderSea->load("", "shaders/sea.frag");
@@ -125,7 +125,7 @@ void ofApp::update(){
         
     }
     
-    if(ofGetKeyPressed(OF_KEY_UP)) {
+    if(ofGetKeyPressed(OF_KEY_UP) || ofGetKeyPressed('w')) {
         dude.walkingAnim->speed += ((float)params["Dude.speed"] - dude.walkingAnim->speed) * 0.1;
 //        params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
     } else {
@@ -134,18 +134,15 @@ void ofApp::update(){
     }
 
     float rotspeed = params["Dude.Rot speed"];
-    if(ofGetKeyPressed(OF_KEY_LEFT)) dude.heading += rotspeed * ofGetLastFrameTime();
-    if(ofGetKeyPressed(OF_KEY_RIGHT)) dude.heading -= rotspeed * ofGetLastFrameTime();
+    if(ofGetKeyPressed(OF_KEY_LEFT) || ofGetKeyPressed('a')) dude.heading += rotspeed * ofGetLastFrameTime();
+    if(ofGetKeyPressed(OF_KEY_RIGHT) || ofGetKeyPressed('d')) dude.heading -= rotspeed * ofGetLastFrameTime();
 
     
-    
-    camera.rotx = params["Shader.View.rotx"];
-    camera.roty = params["Shader.View.roty"];
     camera.distance = params["Shader.View.distance"];
 
     Vec3 pos = dude.position;
 
-    camera.update(pos, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
+    camera.update(pos, dude.heading, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
     
     //
     AudioManager::getInstance()->update();
@@ -253,7 +250,7 @@ void ofApp::keyPressed(int key){
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
-        case 'r': dude.position(0, 0, 0); camera.target(0, 0, 0); break;
+        case 'r': dude.position(0, 0, 0); camera.target(Vec3(0, 0, 0)); break;
             
 //        case OF_KEY_LEFT:
 //            dude.heading += (rotspeed);
@@ -308,14 +305,8 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-    float roty = (float)params["Shader.View.roty"] - (x - ofGetPreviousMouseX()) * ofGetLastFrameTime() * 10.0;
-    if(roty<-180)
-        roty+=360;
-    if(roty>180)
-        roty-=360;
-    params["Shader.View.roty"] = roty;
-    
-    params["Shader.View.rotx"] = (float)params["Shader.View.rotx"] - (y - ofGetPreviousMouseY()) * ofGetLastFrameTime() * 10.0;
+    camera.roty = camera.roty - (x - ofGetPreviousMouseX()) * 2.0;//ofGetLastFrameTime() * 10.0;;
+    camera.rotx = clamp(camera.rotx - (y - ofGetPreviousMouseY()) * 2.0,-90.0,5.0);//ofGetLastFrameTime() * 10.0;
 }
 
 //--------------------------------------------------------------

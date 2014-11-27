@@ -4,6 +4,9 @@
 #include "RunningSkeleton.h"
 
 
+ofSpherePrimitive sphere(1, 12);
+ofVec3f floorPos;
+
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofDisableArbTex();
@@ -100,9 +103,15 @@ void ofApp::update(){
     
     dude.updateParams(params);
     
+
     if(params["Update.Dude"]) {
+//        Vec3 dudeLowest = dude.getLowestLimbPosition();
+        floorPos.set(dude.position.x, floor.getHeight(dude.position.x, dude.position.z,shapeImage), dude.position.z);
+        dude.floorHeight = floorPos.y;
         dude.update();
+        
     }
+    
     
     camera.rotx = params["Shader.View.rotx"];
     camera.roty = params["Shader.View.roty"];
@@ -155,10 +164,18 @@ void ofApp::draw(){
         
         camera.apply();
         
+        ofPushMatrix();
+        ofPushStyle();
+        ofTranslate(floorPos);
+        ofSetColor(255, 0, 0);
+        sphere.draw();
+        ofPopStyle();
+        ofPopMatrix();
         
         if(params["Display.Debug skeleton"]) {
             dude.debugDraw();
         }
+        
         
         if(params["Display.Volume"]) {
             

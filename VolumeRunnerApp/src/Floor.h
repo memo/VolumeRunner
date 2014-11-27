@@ -25,7 +25,7 @@ public:
         p.x = (int)(p.x + image.getWidth()) % (int)image.getWidth();
         p.y = (int)(p.y + image.getHeight()) % (int)image.getHeight();
         
-        return (float)params["height"] * image.getColor(p.x, p.y).r + (float)params["offset"];
+        return (float)params["height"] * image.getColor(p.x, p.y).r / 255.0f + (float)params["offset"];
     }
     
     void updateRenderer( ofShader & shader, ofImage &image ) {

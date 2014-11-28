@@ -1,3 +1,9 @@
+This code was written in under one week, in an extreme rush. Use with caution
+
+Memo Akten, Daniel Berio © 2014
+
+(A lot of GLSL code borrowed from Inigo Quilez, [http://www.iquilezles.org/](http://www.iquilezles.org/) )
+
 Dependencies 
 ============
 Built on openframeworks. HEAD as of 25/11/2014 with some minor modifications. Our modified version of OF can be found at [https://github.com/memo/openframeworks/tree/volumerunner](https://github.com/memo/openframeworks/tree/volumerunner)

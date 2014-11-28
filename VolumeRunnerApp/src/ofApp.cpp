@@ -258,7 +258,10 @@ void ofApp::keyPressed(int key){
         case 'f': ofToggleFullscreen(); break;
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
         case 'r': reset(); break;
-        case 'a': magmaManager.fire(ofVec3f(dude.position.x, dude.position.y - 10, dude.position.z)); break;  // TODO: get head position and orientation
+        case 'a': {
+            dude.getJointPosition("Head");
+            magmaManager.fire(ofVec3f(dude.position.x, dude.position.y, dude.position.z)); break;  // TODO: get head position and orientation
+        }
             
 //        case OF_KEY_LEFT:
 //            dude.heading += (rotspeed);

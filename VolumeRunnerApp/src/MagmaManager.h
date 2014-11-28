@@ -37,12 +37,14 @@ public:
     }
     
     void update(FloorManager &floorManager) {
+        float gravity = params["Gravity"];
+        
         for(int i=0; i<kNumMagma; i++) {
             ofVec4f &p = pos[i];
             if(p.w != 0) {
                 ofVec3f &v = vel[i];
                 p += v;
-                p.y += 1;
+                p.y += gravity;
             }
         }
     }

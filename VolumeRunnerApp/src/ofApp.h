@@ -7,7 +7,7 @@
 #include "ofxMSAControlFreakGui.h"
 #include "Dude.h"
 #include "Camera.h"
-#include "Volume.h"
+//#include "Volume.h"
 #include "RenderManager.h"
 #include "FloorManager.h"
 #include "MagmaManager.h"
@@ -24,7 +24,7 @@ public:
     
     Dude dude;
     Camera camera;
-    Volume volume;
+//    Volume volume;
     RenderManager renderManager;
     FloorManager floorManager;
     MagmaManager magmaManager;

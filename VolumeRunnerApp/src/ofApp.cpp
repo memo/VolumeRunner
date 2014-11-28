@@ -25,7 +25,7 @@ void ofApp::setup(){
     volume.init();
     
     floor.resize(2);
-    string floorPaths[] = { "images/noise_512.png", "images/noise_4096.png" };
+    string floorPaths[] = { "images/noise_1024.png", "images/noise_4096.png" };
     for(int i=0; i<floor.size(); i++) {
         floor[i] = shared_ptr<Floor>(new Floor(i, floorPaths[i]));
     }
@@ -180,7 +180,7 @@ void ofApp::draw(){
         shaderRayTracer->begin();
         shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
-        shaderRayTracer->setUniformTexture("color_image", lutImage, 2);
+        shaderRayTracer->setUniformTexture("color_image", lutImage, 5);
 
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
         //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));

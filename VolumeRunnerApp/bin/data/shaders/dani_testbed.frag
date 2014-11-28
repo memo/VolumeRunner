@@ -29,11 +29,13 @@ uniform sampler2D floor_image0;
 uniform float floor_height0;
 uniform float floor_scale0;
 uniform float floor_offset0;
+uniform float floor_center0;
 
 uniform sampler2D floor_image1;
 uniform float floor_height1;
 uniform float floor_scale1;
 uniform float floor_offset1;
+uniform float floor_center1;
 
 uniform sampler2D color_image;
 
@@ -670,8 +672,8 @@ float compute_scene( in vec3 p, out int mtl )
 //    d = sdf_union(d, sdf_xz_plane(p,  0));
     
     float floor_y = 0.0;
-    floor_y += texture2D(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
-    floor_y += texture2D(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
+    floor_y += (texture2D(floor_image0, p.xz * floor_scale0).r - floor_center0) * floor_height0 - floor_offset0;
+    floor_y += (texture2D(floor_image1, p.xz * floor_scale1).r - floor_center1) * floor_height1 - floor_offset1;
     d = sdf_union(d, sdf_xz_plane(p, floor_y));
     // repeated box
     //    {

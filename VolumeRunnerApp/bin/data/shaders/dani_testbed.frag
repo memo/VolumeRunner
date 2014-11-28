@@ -8,7 +8,8 @@
 
 
 
-#define kNumJoints   9
+#define kNumJoints  9
+#define kNumMagma   5
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time
@@ -38,6 +39,8 @@ uniform float floor_offset1;
 uniform float floor_center1;
 
 uniform sampler2D color_image;
+
+uniform vec4 magma[kNumMagma];  // xyz: position, w: active (!=0) or not (0)
 
 
 const float EPSILON = 0.01;

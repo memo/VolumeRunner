@@ -231,6 +231,8 @@ void	drawTriangleList(  float * v, unsigned int * inds, int numIndices );
 
 void	identity();
 
+void	translate( const Vec3 & v );
+    
 void	translate( float x, float y , float z = 0.0 );
 
 void	rotate( float x, float y, float z = 0.0 );

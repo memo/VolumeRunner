@@ -32,8 +32,6 @@ public:
     
     ofImage lutImage;
     
-
-    
     void loadShaders();
     void allocateFbo();
 
@@ -43,6 +41,8 @@ public:
     void update();
     void draw();
     void exit();
+    
+    void computeCameraCollision();
     
     void keyPressed(int key);
     void keyReleased(int key);

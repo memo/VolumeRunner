@@ -452,6 +452,70 @@ float hard_shadow(in vec3 ro, in vec3 rd, float mint, float maxt) {
 //------------------------------------------------------------------------------------
 #pragma mark RAY MARCHER
 
+
+// Ray marcher
+vec4 trace_ray_relaxed(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
+{
+    const int maxIterations = 256;
+    const float t_min = 3.3;
+    const float t_max = 10000.0;
+    const float pixelRadius = 0.00001;
+    const bool forceHit = true;
+    
+    mtl_t mtl;
+    
+    float omega = 1.2;
+    
+    float t = t_min;
+    float candidate_error = 10e8;//INFINITY;
+    float candidate_t = t_min;
+    float previousRadius = 0;
+    float stepLength = 0;
+    float functionSign = 1.0;///compute_scene(p,mtl) < 0 ? -1 : +1;
+    
+    vec3 rp;
+    int i;
+    for (i = 0; i < maxIterations; ++i)
+    {
+        rp = p+w*t;
+        float signedRadius = functionSign * compute_scene(rp,mtl);
+        float radius = abs(signedRadius);
+        bool sorFail = omega > 1 && (radius + previousRadius) < stepLength;
+        
+        //since an excessively small value might not only cause numerical problems,
+        // but also diminish theperformance of tracing a new refraction ray starting at the offset position as sphere tracing has to accelerate away from the surface initially.
+        // However, manually choosing εmin proved to be much eas- ier and more robust than choosing a global ε. The cost for
+        if (sorFail)
+        {
+            stepLength -= omega*stepLength;
+            omega = 1;
+        }
+        else
+        {
+            stepLength = signedRadius * omega;
+        }
+        
+        previousRadius = radius;
+        float error = radius / t;
+        
+        if (!sorFail && error < candidate_error)
+        {
+            candidate_t = t;
+            candidate_error = error;
+        }
+        
+        if (!sorFail && error < pixelRadius || t > t_max)
+            break;
+        t += stepLength;
+    }
+    
+    if ((t > t_max || candidate_error > pixelRadius) && !forceHit)
+        return bg_clr;
+    
+    return compute_color(rp, candidate_t, mtl, float(i) * 1.0/float(maxIterations));//+vec3(float(i)/128.0);;
+}
+
+
 // Ray marcher
 vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
 {

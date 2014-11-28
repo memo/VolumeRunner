@@ -13,6 +13,7 @@ Memo Akten [http://www.memo.tv](http://www.memo.tv), Daniel Berio [http://www.en
 Dependencies 
 ============
 Built on openframeworks. HEAD as of 25/11/2014 with some minor modifications. Our modified version of OF can be found at [https://github.com/memo/openframeworks/tree/volumerunner](https://github.com/memo/openframeworks/tree/volumerunner)
+(The main change from public OF is in [this commit](https://github.com/memo/openFrameworks/commit/876f135b0089338d631732ceb8f8de9ca4bae3e8), which allows passing of an arrow of Matrices as a uniform to a shader).
 
 Other dependencies are included in this repo (under **addons**).
 
@@ -74,4 +75,8 @@ We were able to build the renderer in a short amount of time thanks to the many 
 The motion capture data is from the Carnegie Mellon motion database, available in BVH format at [https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/cmu-bvh-conversion](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/cmu-bvh-conversion).
 
 
+License
+================
+This software is released under the GNU GPL v3. See included LICENSE file for details.
 
+Additional supplied libraries are under their own licenses. Again see LICENSE file in relevant folders. 

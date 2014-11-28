@@ -20,7 +20,7 @@ void ofApp::setup(){
     
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
-    volume.init();
+//    volume.init();
     floorManager.init();//{ "images/noise_1024.png", "images/noise_4096.png" });
     magmaManager.init();
     
@@ -70,7 +70,7 @@ void ofApp::setup(){
     } params.endGroup();
     
     dude.addParams(params);
-    volume.addParams(params);
+//    volume.addParams(params);
     floorManager.addParams(params);
     magmaManager.addParams(params);
     
@@ -278,21 +278,21 @@ void ofApp::draw(){
         }
         
         
-        if(params["Display.Volume"]) {
-            
-            gfx::pushMatrix();
-            M44 m;
-            m.identity();
-            m.translate(dude.position);
-            m *= dude.bodyBone->matrix;
-            // bone is oriented towards z, so rotate the head.
-            m.rotateX(radians(90));
-            m.rotateY(radians(dude.heading));
-            gfx::applyMatrix(m);
-            
-            volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
-            gfx::popMatrix();
-        }
+//        if(params["Display.Volume"]) {
+//            
+//            gfx::pushMatrix();
+//            M44 m;
+//            m.identity();
+//            m.translate(dude.position);
+//            m *= dude.bodyBone->matrix;
+//            // bone is oriented towards z, so rotate the head.
+//            m.rotateX(radians(90));
+//            m.rotateY(radians(dude.heading));
+//            gfx::applyMatrix(m);
+//            
+////            volume.draw(ofVec3f(0,0,0));//dude.position.x, dude.position.y, dude.position.z));
+//            gfx::popMatrix();
+//        }
         renderManager.end();
     }
     

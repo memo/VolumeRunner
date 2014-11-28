@@ -11,6 +11,8 @@ public:
     roty(180),
     slowRotX(rotx),
     slowRotY(roty),
+    rotySpeed(2.0),
+    rotxSpeed(2.0),
     groundAngle(0.0),
     distance(100.0),
     target(Vec3(0,0,0)),
@@ -32,8 +34,8 @@ public:
         double msecs = ofGetLastFrameTime()*1000;
         // ease on target
         groundAngle.update(msecs,8.0);
-        slowRotY.update(roty,msecs,2.0);
-        slowRotX.update(std::min(rotx+groundAngle,90.0f),msecs,1.0);
+        slowRotY.update(roty,msecs,rotySpeed);
+        slowRotX.update(std::max(rotx+groundAngle,-90.0f),msecs,rotxSpeed);
 
         target.update(lookat,msecs,2.0);
         heading.update(heading_,msecs,0.5);
@@ -67,6 +69,8 @@ public:
     float rotx;
     float roty;
     float distance;
+    float rotySpeed;
+    float rotxSpeed;
     
     SlowFloat groundAngle;
     SlowFloat slowRotX;

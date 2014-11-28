@@ -50,7 +50,7 @@ public:
     
     void playAnimation( const std::string & name );
     
-    void run() { animSys.play("run"); }
+    void run() { playAnimation("run"); }
     bool isRunning() const { return currentAnimation == "run"; }
     
     void debugDraw();

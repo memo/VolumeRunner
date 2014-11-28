@@ -34,7 +34,8 @@ bool Dude::init()
     // Walking
     walkingAnim = new SkeletonWalkAnimSource(animSys.getSkeleton(),"run");
     animSys.addAnimSource("run", walkingAnim );
-    animSys.play("run");
+
+    playAnimation("skip");
     
     
     // Left leg
@@ -135,7 +136,10 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     
     stepSoundPhase = params["Dude.Audio.Step Phase"];
     
-    blend_k = params["Dude.blend k"];
+    float maxspeed = params["Dude.speed"];
+    float bk = params["Dude.blend k"];
+    float pv = clamp(-position.y/20.0,0.0,1.0);
+    blend_k = bk*0.5+pv*bk*2.0+(maxspeed-walkingAnim->speed)*bk*0.05;
 }
 
 void Dude::update()
@@ -144,7 +148,7 @@ void Dude::update()
         AudioManager::getInstance()->playNote(random(2,15));
     
     // update the animation
-    animSys.update(ofGetLastFrameTime()*1000);
+    animSys.update(animSpeed*ofGetLastFrameTime()*1000);
     
     // update dude position based on movement
     Vec3 o = getOffset();

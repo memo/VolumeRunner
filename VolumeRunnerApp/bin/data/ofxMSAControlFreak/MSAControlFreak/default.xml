@@ -1,6 +1,6 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="18.719812393"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="25.729560852"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Update">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Pause" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Dude" value="1"></Parameter>
@@ -15,11 +15,14 @@
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Hold time" value="0.959821403"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Fade time" value="1.000000000"></Parameter>
             </Parameter>
+            <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Reload Ramp" value="0"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Shader">
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="View">
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="distance" value="55.803573608"></Parameter>
                 <Parameter type="N3msa12controlfreak14ParameterFloatE" name="forward offset" value="1.750000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="x rot speed" value="2.000000000"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="y rot speed" value="2.000000000"></Parameter>
             </Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Dude">

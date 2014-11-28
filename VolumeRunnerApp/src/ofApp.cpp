@@ -13,8 +13,6 @@ AudioManager * am = 0;
 
 //--------------------------------------------------------------
 void ofApp::setup(){
-    am = AudioManager::getInstance();
-    
     ofDisableArbTex();
     
     ofBackground(0, 0, 0);
@@ -42,6 +40,7 @@ void ofApp::setup(){
             params.addFloat("Hold time").setRange(0, 5).set(3);
             params.addFloat("Fade time").setRange(0, 5).set(1);
         } params.endGroup();
+        params.addBang("Reload Ramp");
     } params.endGroup();
     
     
@@ -62,6 +61,8 @@ void ofApp::setup(){
         params.startGroup("View"); {
             params.addFloat("distance").setRange(0, 100).setIncrement(1.0);
             params.addFloat("forward offset").setRange(0,4.0).setIncrement(1.0).set(0.0);
+            params.addFloat("x rot speed").setRange(1.0,14.0).set(camera.rotxSpeed);
+            params.addFloat("y rot speed").setRange(1.0,14.0).set(camera.rotySpeed);
             //params.addFloat("rotx").setRange(-90, 5).setIncrement(1.0);
             //params.addFloat("roty").setRange(-720, 720).setIncrement(1.0);
         } params.endGroup();
@@ -91,6 +92,7 @@ void ofApp::setup(){
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
     
+    am = AudioManager::getInstance();
     ofResetElapsedTimeCounter();
     //    cam = new ofCamera();
 }
@@ -140,6 +142,9 @@ void ofApp::computeCameraCollision()
 void ofApp::update(){
     if(params["Update.Pause"]) return;
     
+    if((bool)params["Display.Reload Ramp"])
+        lutImage.load("images/color_lut.png");
+                    
     dude.updateParams(params);
     
     if(params["Update.Dude"]) {
@@ -155,15 +160,34 @@ void ofApp::update(){
     magmaManager.update(floorManager);
     
     if(ofGetKeyPressed(OF_KEY_UP) || ofGetKeyPressed('w')) {
+        if(!dude.isRunning())
+        {
+            dude.walkingAnim->speed = 0.1;
+            dude.run();
+        }
+        
         dude.walkingAnim->speed += ((float)params["Dude.speed"] - dude.walkingAnim->speed) * 0.1;
     } else {
         dude.walkingAnim->speed *= 0.9;
+        
+        if(dude.isRunning() && dude.walkingAnim->speed < EPSILON)
+            if(percent(50))
+            {
+                dude.playAnimation("skip");
+            }
+            else
+            {
+                dude.playAnimation("box");
+            }
     }
+    
     
     float rotspeed = params["Dude.Rot speed"];
     if(ofGetKeyPressed(OF_KEY_LEFT) || ofGetKeyPressed('a')) dude.heading += rotspeed * ofGetLastFrameTime();
     if(ofGetKeyPressed(OF_KEY_RIGHT) || ofGetKeyPressed('d')) dude.heading -= rotspeed * ofGetLastFrameTime();
     
+    camera.rotxSpeed = params["Shader.View.x rot speed"];
+    camera.rotySpeed = params["Shader.View.y rot speed"];
     
     camera.distance = params["Shader.View.distance"];
     

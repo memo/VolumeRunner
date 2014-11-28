@@ -594,7 +594,7 @@ vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItC
         //        lum = y;
     }
     
-    clr.xyz = texture2D(color_image, vec2(lum, v)).xyz*vec3(1.0,0.97,0.82);
+    clr.xyz = texture2D(color_image, vec2(lum, v)).xyz;//*vec3(1.0,0.97,0.82);
     float fog = attenuation(max(0.0,distance-100.0),0.000021);
     clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
     

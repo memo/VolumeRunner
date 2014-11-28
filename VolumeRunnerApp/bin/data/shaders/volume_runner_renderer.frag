@@ -43,10 +43,12 @@ const float PI2 = PI*2.0;
 
 const vec3 light1  = normalize(vec3(0.7,1.0,0.9));
 
+#define mtl_t float
 
 // Modify these functions
-float compute_scene( in vec3 p, out int mtl );
-vec4 compute_color( in vec3 p, in float distance, in int mtl, in float normItCount );
+float compute_scene( in vec3 p, out mtl_t mtl );
+vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItCount );
+
 
 
 
@@ -334,7 +336,7 @@ vec3 sdf_scale(in vec3 p, in vec3 scale) {
 vec3 calc_normal ( in vec3 p )
 {
     vec3 delta = vec3( 0.004, 0.0, 0.0 );
-    int mtl;
+    mtl_t mtl;
     vec3 n;
     n.x = compute_scene( p+delta.xyz, mtl ) - compute_scene( p-delta.xyz, mtl );
     n.y = compute_scene( p+delta.yxz, mtl ) - compute_scene( p-delta.yxz, mtl );
@@ -350,7 +352,7 @@ float ambient_occlusion3( in vec3 pos, in vec3 nor )
 {
     float occ = 0.0;
     float sca = 1.0;
-    int mtl;
+    mtl_t mtl;
     for( int i=0; i<5; i++ )
     {
         float hr = 0.01 + 0.12*float(i)/4.0;
@@ -369,7 +371,7 @@ float ambient_occlusion2( in vec3 p, vec3 n ) //, float stepDistance, float samp
     const float stepDistance = 0.25;//EPSILON;
     float samples = 5.0;
     float occlusion = 1.0;
-    int mtl;
+    mtl_t mtl;
     for (occlusion = 1.0 ; samples > 0.0 ; samples-=1.0) {
         occlusion -= (samples * stepDistance - (compute_scene( p + n * samples * stepDistance, mtl))) / pow(2.0, samples);
     }
@@ -382,7 +384,7 @@ float ambient_occlusion1( in vec3 p, in vec3 n, float startweight, float diminis
     //n = vec3(0.0,1.0,1.0);
     float ao = 0.0;
     float weight = startweight;
-    int mtl;
+    mtl_t mtl;
     
     for ( int i = 1; i < 6; ++i )
     {
@@ -403,7 +405,7 @@ float soft_shadow2( in vec3 ro, in vec3 rd, in float mint, in float tmax, float 
 {
     float res = 1.0;
     float t = mint;
-    int mtl;
+    mtl_t mtl;
     for( int i=0; i<76; i++ )
     {
         float h = compute_scene( ro + rd*t, mtl );
@@ -418,7 +420,7 @@ float soft_shadow2( in vec3 ro, in vec3 rd, in float mint, in float tmax, float 
 float soft_shadow1( in vec3 p, in vec3 w, float mint, float maxt, float k )
 {
     float res = 1.0;
-    int mtl;
+    mtl_t mtl;
     for( float t=mint; t < maxt; )
     {
         float h = compute_scene(p + w*t,mtl);
@@ -431,7 +433,7 @@ float soft_shadow1( in vec3 p, in vec3 w, float mint, float maxt, float k )
 }
 
 float hard_shadow(in vec3 ro, in vec3 rd, float mint, float maxt) {
-    int mtl;
+    mtl_t mtl;
     for(float t=mint; t < maxt;) {
         float h = compute_scene(ro + rd*t, mtl);
         if(h<0.001) return 0.0;
@@ -452,7 +454,7 @@ vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
     const int maxIterations =256;
     const float closeEnough = 1e-5;
     vec3 rp;
-    int mtl;
+    mtl_t mtl;
     float t = 0;
     for (int i = 0; i < maxIterations; ++i)
     {
@@ -506,38 +508,26 @@ const vec4 floor_color = vec4(1.0, 1.0, 0.9, 1.0); //vec3(0.8,0.9,1.0);
 const vec4 man_color = vec4(0.8, 0.95, 1.2, 1.0);
 
 
-vec4 compute_color( in vec3 p, in float distance, in int mtl, in float normItCount )
+vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItCount )
 {
-    vec4 it_clr = vec4(vec3(normItCount), 1.0) * 2.0;
-    return it_clr;
+    //return vec4(vec3(mtl),1.0);
+    vec4 clr = vec4(vec3(normItCount), 1.0) * 2.0;
+    clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
     
-    vec3 n = calc_normal(p);
-    //return normal_color(n); // use this to debug normals
+    float v = mtl;
+    float lum = luminosity(clr);
+    float y = -p.y;
+    const float limit = 4.0;
+    if(y>limit)
+    {
+        y = clamp((y-limit)/30.0,0.0,1.0);
+        v = mix(0.5,1.0,y);
+//        lum = y;
+    }
     
-    //
-    //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
-    vec3 light = normalize(light1);
-    
-    // diffuse lighting
-    float l = max(0.2, dot(n, light));
-    
-    l *= luminosity(normal_color(n))*1.4;   // daniel lighting
-//    l *= max(0.1, soft_shadow(p, light, 0.4, 200.0, 12));
-//    l *= max(0.2, hard_shadow(p, light, 0.4, 200.0));
-    
-    
-    float ao_startweight = mtl == 0 ? 0.1 : 0.8;
-    float ao_weightdiminish = mtl == 0 ? 0.3 : 0.6;
-    l *= ambient_occlusion1(p,n, ao_startweight, ao_weightdiminish);
-
-    vec4 clr = mtl == 0 ? floor_color : man_color;
-    clr.xyz *= l;
-    
-    //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
-    float fog = attenuation(max(0.0,distance-100.0),0.0001);
+    clr.xyz = texture2D(color_image, vec2(lum, v)).xyz*vec3(1.0,0.97,0.82);
+    float fog = attenuation(max(0.0,distance-100.0),0.000021);
     clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
-    
-    clr = mix(it_clr, clr, 0.5);
     
     return clr;
 }
@@ -616,36 +606,71 @@ vec4 texture2DGood( sampler2D sam, vec2 uv, float bias )
 
 vec4 tex2d( sampler2D sam, vec2 uv )
 {
-//    return texture2D(sam,uv);
-    return smoothstep(0.01,0.99,texture2D(sam,uv));
+    return texture2D(sam,uv);
+//    return smoothstep(0.01,0.99,texture2D(sam,uv));
     //return texture2DGood(sam,uv,-100);
 }
 
-float compute_scene( in vec3 p, out int mtl )
+float blend_mtl( in float a, in float b, in float mtl1, in float mtl2, float k )
 {
-    mtl = 0;
-    float d =  -sdf_sphere(sdf_translate(p,centerPos),300.0);
+//    float h = smoothstep(0,1,clamp((b-a)/k,0.0,1.0));
+//    float h = smoothstep(0,1,clamp((b-a)/k,0.0,1.0));
+    float h = clamp((b-a)/4.0,0.0,1.0);
+ //   h = smoothstep(0.0,0.9,h);
+//    h = smoothstep(0.0,0.9,h);
+    return mix(mtl2,mtl1,h);//log(h*30.0));
+//    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
+//    return mix( mtl2, mtl1, h ) - (k*h*(1.0-h))*(mtl1-mtl2);
+}
+
+//float blend_mtl( float d1, float d2, )
+float compute_scene( in vec3 p, out mtl_t mtl )
+{
+    mtl = 0.0;
+    float d = 10000.0;
+    float dome =  -sdf_sphere(sdf_translate(p,centerPos),300.0);
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
 //    d = sdf_union(d, sdf_xz_plane(p,  0));
     
+    
     float floor_y = 0.0;
     floor_y += tex2d(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
     floor_y += tex2d(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
-    d = sdf_union(d, sdf_xz_plane(p, floor_y));
-   
+    float terr = sdf_xz_plane(p, floor_y);
+    d = sdf_union(terr,dome);
+    
+    if(terr<dome)
+    {
+        mtl = 1.0;
+    }
+    
     float dguy = 100000.0;
     for(int i=0; i<kNumJoints; i++)
     {
         dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix)));
     }
     
-    if(dguy<d)
-    {
-        mtl = 1;
-    }
+    
+//    mtl = clamp(blend_mtl(dome,terr,1.0,0.5,4.0),0.0,0.5);
+    mtl = clamp(blend_mtl(d,dguy,0.5,0.0,18.0),0.0,1.0);
+
+    
+//    mtl = blend_mtl_poly(dguy,terr,0.5,0.0,blend_k*2.0);
+//    mtl =
     
     d = blending(d, dguy, blend_k);
+    
+    /*
+    float floorlow = sdf_xz_plane(p,-10.0);
+    
+    if(floorlow<d)
+    {
+        //d = floorlow;
+        mtl = 2.0;
+    }*/
+    
+    
     
     return d;// + texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset;
     /*
@@ -689,11 +714,9 @@ void main(void)
     
     vec4 clr = trace_ray(p, w, fog_clr, distance);
     
-    clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
     
-    clr.xyz = texture2D(color_image, vec2(luminosity(clr), 0.0)).xyz;
     
-    //clr.w  = 1.0;
+    clr.w  = 1.0;
     gl_FragColor = clr;
 }
 

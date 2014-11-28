@@ -7,6 +7,7 @@
 
 
 #define kNumJoints   9
+#define kNumMagma   5
 
 uniform vec2 resolution; // screen resolution
 uniform float time; // current time
@@ -28,13 +29,17 @@ uniform sampler2D floor_image0;
 uniform float floor_height0;
 uniform float floor_scale0;
 uniform float floor_offset0;
+uniform float floor_center0;
 
 uniform sampler2D floor_image1;
 uniform float floor_height1;
 uniform float floor_scale1;
 uniform float floor_offset1;
+uniform float floor_center1;
 
 uniform sampler2D color_image;
+
+uniform vec4 magma[kNumMagma];  // xyz: position, w: active (!=0) or not (0)
 
 
 const float EPSILON = 0.01;
@@ -635,9 +640,9 @@ float compute_scene( in vec3 p, out mtl_t mtl )
     
     
     float floor_y = 0.0;
-    floor_y += tex2d(floor_image0, p.xz * floor_scale0).r * floor_height0 - floor_offset0;
-    floor_y += tex2d(floor_image1, p.xz * floor_scale1).r * floor_height1 - floor_offset1;
-    float terr = sdf_xz_plane(p, floor_y);
+    floor_y += (tex2d(floor_image0, p.xz * floor_scale0).r - floor_center0) * floor_height0 - floor_offset0;
+    floor_y += (tex2d(floor_image1, p.xz * floor_scale1).r - floor_center1) * floor_height1 - floor_offset1;
+        float terr = sdf_xz_plane(p, floor_y);
     d = sdf_union(terr,dome);
     
     if(terr<dome)

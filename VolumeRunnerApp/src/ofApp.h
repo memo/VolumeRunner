@@ -9,7 +9,8 @@
 #include "Camera.h"
 #include "Volume.h"
 #include "RenderManager.h"
-#include "Floor.h"
+#include "FloorManager.h"
+#include "MagmaManager.h"
 
 class ofApp : public ofBaseApp{
 public:
@@ -24,8 +25,10 @@ public:
     Dude dude;
     Camera camera;
     Volume volume;
-    vector<shared_ptr<Floor> > floor;
     RenderManager renderManager;
+    FloorManager floorManager;
+    MagmaManager magmaManager;
+    
     
     ofImage lutImage;
     
@@ -34,6 +37,8 @@ public:
     void loadShaders();
     void allocateFbo();
 
+    void reset();
+    
     void setup();
     void update();
     void draw();

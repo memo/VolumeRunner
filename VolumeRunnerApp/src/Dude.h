@@ -46,6 +46,8 @@ public:
     
     Vec3 getLowestLimbPosition() const;
     
+    Vec3 getJointPosition( const std::string & name ) const;
+    
     void playAnimation( const std::string & name );
     
     void run() { animSys.play("run"); }

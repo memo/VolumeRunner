@@ -23,12 +23,8 @@ void ofApp::setup(){
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
     volume.init();
-    
-    floor.resize(2);
-    string floorPaths[] = { "images/noise_512.png", "images/noise_4096.png" };
-    for(int i=0; i<floor.size(); i++) {
-        floor[i] = shared_ptr<Floor>(new Floor(i, floorPaths[i]));
-    }
+    floorManager.init();//{ "images/noise_1024.png", "images/noise_4096.png" });
+    magmaManager.init();
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
@@ -69,8 +65,8 @@ void ofApp::setup(){
     
     dude.addParams(params);
     volume.addParams(params);
-    
-    for(int i=0; i<floor.size(); i++) floor[i]->addParams(params);
+    floorManager.addParams(params);
+    magmaManager.addParams(params);
     
     params.loadXmlValues();
     
@@ -88,6 +84,14 @@ void ofApp::setup(){
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
     //    cam = new ofCamera();
+}
+
+
+//--------------------------------------------------------------
+void ofApp::reset() {
+    magmaManager.reset();
+    dude.position(0, 0, 0);
+    camera.target(Vec3(0, 0, 0));
 }
 
 //--------------------------------------------------------------
@@ -116,14 +120,13 @@ void ofApp::update(){
         // Using the position is not precise but for the moment it works fine.
         // Need to fix the lowest limb pos.
         Vec3 dudeLowest = dude.position;//dude.getLowestLimbPosition();
-        floorPos.set(dudeLowest.x, 0, dudeLowest.z);
+        dude.floorHeight = floorManager.getHeight(dudeLowest.x, dudeLowest.z);
         
-        for(int i=0; i<floor.size(); i++) floorPos.y += floor[i]->getHeight(dudeLowest.x, dudeLowest.z);
-        
-        dude.floorHeight = floorPos.y;
+        floorPos.set(dudeLowest.x, dude.floorHeight, dudeLowest.z);
         dude.update();
-        
     }
+    
+    magmaManager.update(floorManager);
     
     if(ofGetKeyPressed(OF_KEY_UP) || ofGetKeyPressed('w')) {
         dude.walkingAnim->speed += ((float)params["Dude.speed"] - dude.walkingAnim->speed) * 0.1;
@@ -185,13 +188,14 @@ void ofApp::draw(){
         
         dude.updateRenderer(*shaderRayTracer);
         camera.updateRenderer(*shaderRayTracer);
-        
-        for(int i=0; i<floor.size(); i++) floor[i]->updateRenderer(*shaderRayTracer);
+        floorManager.updateRenderer(*shaderRayTracer);
         
         drawUVQuad();
         shaderRayTracer->end();
         
         camera.apply();
+        
+        magmaManager.debugDraw();
 
         // draw floor sphere
 //        {
@@ -250,7 +254,11 @@ void ofApp::keyPressed(int key){
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
-        case 'r': dude.position(0, 0, 0); camera.target(Vec3(0, 0, 0)); break;
+        case 'r': reset(); break;
+        case 'a': {
+            dude.getJointPosition("Head");
+            magmaManager.fire(ofVec3f(dude.position.x, dude.position.y, dude.position.z)); break;  // TODO: get head position and orientation
+        }
             
 //        case OF_KEY_LEFT:
 //            dude.heading += (rotspeed);

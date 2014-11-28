@@ -232,6 +232,14 @@ Vec3 Dude::getLowestLimbPosition() const
     return lowest;
 }
 
+Vec3 Dude::getJointPosition( const std::string & name ) const
+{
+    int ij = animSys.getSkeleton()->getJointIndex(name);
+    if(ij<0)
+        return Vec3(0,0,0);
+    return animSys.getSkeleton()->getJoint(ij)->getPosition()+position;
+}
+
 void Dude::playAnimation( const std::string & name )
 {
     currentAnimation = name;

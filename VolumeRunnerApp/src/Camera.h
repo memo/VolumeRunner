@@ -31,9 +31,9 @@ public:
     {
         double msecs = ofGetLastFrameTime()*1000;
         // ease on target
-        groundAngle.update(msecs,2.0);
-        slowRotY.update(roty,msecs,1.0);
-        slowRotX.update(rotx+groundAngle,msecs,1.0);
+        groundAngle.update(msecs,8.0);
+        slowRotY.update(roty,msecs,2.0);
+        slowRotX.update(std::min(rotx+groundAngle,90.0f),msecs,1.0);
 
         target.update(lookat,msecs,2.0);
         heading.update(heading_,msecs,0.5);

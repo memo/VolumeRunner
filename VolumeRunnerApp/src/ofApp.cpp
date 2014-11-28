@@ -90,6 +90,8 @@ void ofApp::setup(){
     
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
+    
+    ofResetElapsedTimeCounter();
     //    cam = new ofCamera();
 }
 
@@ -125,8 +127,8 @@ void ofApp::computeCameraCollision()
     float dh = h-refh;
     if(dh<0.0)
         dh = 0.0;
-    //    cm::debugPrint("%g\n",dh);
-    camera.groundAngle = -dh*200.0;//degrees(angleBetween(normalize(da),normalize(db)) )*40.0;
+//    cm::debugPrint("%g\n",dh);
+    camera.groundAngle = -dh*100.0;//degrees(angleBetween(normalize(da),normalize(db)) )*40.0;
     if((float)camera.groundAngle > 0)
         camera.groundAngle = 0;
     if((float)camera.groundAngle < -70)
@@ -364,7 +366,7 @@ void ofApp::mouseMoved(int x, int y ){
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-    camera.roty = camera.roty - (x - ofGetPreviousMouseX()) * 2.0;//ofGetLastFrameTime() * 10.0;;
+    camera.roty = camera.roty - (x - ofGetPreviousMouseX()) * 1.0;//ofGetLastFrameTime() * 10.0;;
     camera.rotx = clamp(camera.rotx - (y - ofGetPreviousMouseY()) * 2.0,-90.0,5.0);//ofGetLastFrameTime() * 10.0;
 }
 

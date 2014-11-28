@@ -38,6 +38,10 @@ void ofApp::setup(){
         params.addBool("Sea").set(true);
         params.addBool("fbo").trackVariable(&renderManager.bUseFbo);
         params.addFloat("fbo size").setRange(0, 1).setSnap(true).set(0.5);
+        params.startGroup("Splashscreen"); {
+            params.addFloat("Hold time").setRange(0, 5).set(3);
+            params.addFloat("Fade time").setRange(0, 5).set(1);
+        } params.endGroup();
     } params.endGroup();
     
     
@@ -81,6 +85,8 @@ void ofApp::setup(){
     loadShaders();
     
     lutImage.load("images/color_lut.png");
+    splashImage.load("images/splashscreen.png");
+    splashImage.setAnchorPercent(0.5, 0.5);
     
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
@@ -93,6 +99,7 @@ void ofApp::reset() {
     magmaManager.reset();
     dude.position(0, 0, 0);
     camera.target(Vec3(0, 0, 0));
+    ofResetElapsedTimeCounter();
 }
 
 //--------------------------------------------------------------
@@ -118,13 +125,13 @@ void ofApp::computeCameraCollision()
     float dh = h-refh;
     if(dh<0.0)
         dh = 0.0;
-//    cm::debugPrint("%g\n",dh);
+    //    cm::debugPrint("%g\n",dh);
     camera.groundAngle = -dh*200.0;//degrees(angleBetween(normalize(da),normalize(db)) )*40.0;
     if((float)camera.groundAngle > 0)
         camera.groundAngle = 0;
     if((float)camera.groundAngle < -70)
         camera.groundAngle = -70;
-//    cm::debugPrint("%g\n",(float)camera.groundAngle);
+    //    cm::debugPrint("%g\n",(float)camera.groundAngle);
 }
 
 //--------------------------------------------------------------
@@ -150,14 +157,14 @@ void ofApp::update(){
     } else {
         dude.walkingAnim->speed *= 0.9;
     }
-
+    
     float rotspeed = params["Dude.Rot speed"];
     if(ofGetKeyPressed(OF_KEY_LEFT) || ofGetKeyPressed('a')) dude.heading += rotspeed * ofGetLastFrameTime();
     if(ofGetKeyPressed(OF_KEY_RIGHT) || ofGetKeyPressed('d')) dude.heading -= rotspeed * ofGetLastFrameTime();
-
+    
     
     camera.distance = params["Shader.View.distance"];
-
+    
     Vec3 pos = dude.position;
     float theta = radians(dude.heading);
     Vec3 forward = Vec3(sin(theta),0.0,cos(theta));
@@ -217,24 +224,24 @@ void ofApp::draw(){
         
         magmaManager.debugDraw();
         /*
-        gfx::pushMatrix();
-        Vec3 z = camera.worldMatrix.z();
-        Vec3 pos = camera.worldMatrix.trans();
-        gfx::translate(pos-z*20.0);
-        ofSetColor(255, 0, 0);
-                    sphere.draw();
-        gfx::popMatrix();*/
+         gfx::pushMatrix();
+         Vec3 z = camera.worldMatrix.z();
+         Vec3 pos = camera.worldMatrix.trans();
+         gfx::translate(pos-z*20.0);
+         ofSetColor(255, 0, 0);
+         sphere.draw();
+         gfx::popMatrix();*/
         
         // draw floor sphere
-//        {
-//            ofPushMatrix();
-//            ofPushStyle();
-//            ofTranslate(floorPos);
-//            ofSetColor(255, 0, 0);
-//            sphere.draw();
-//            ofPopStyle();
-//            ofPopMatrix();
-//        }
+        //        {
+        //            ofPushMatrix();
+        //            ofPushStyle();
+        //            ofTranslate(floorPos);
+        //            ofSetColor(255, 0, 0);
+        //            sphere.draw();
+        //            ofPopStyle();
+        //            ofPopMatrix();
+        //        }
         
         if(params["Display.Debug skeleton"]) {
             dude.debugDraw();
@@ -261,6 +268,22 @@ void ofApp::draw(){
     
     ofSetupScreen();
     renderManager.draw(0, ofGetHeight(), ofGetWidth(), -ofGetHeight());
+    
+    
+    
+    // splash screen
+    {
+        float holdTime = params["Display.Splashscreen.Hold time"];
+        float fadeTime = params["Display.Splashscreen.Fade time"];
+        float nowTime = ofGetElapsedTimef();
+        if(nowTime < holdTime + fadeTime) {
+            float alpha = ofMap(ofGetElapsedTimef(), holdTime, holdTime + fadeTime, 255, 0, true);
+            ofSetColor(255, alpha);
+            splashImage.draw(ofGetWidth()/2, ofGetHeight()/2);
+        }
+    }
+
+    
     ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
     ofDrawBitmapString(ofToString(camera.groundAngle), ofGetWidth() - 100, 50);
@@ -288,30 +311,30 @@ void ofApp::keyPressed(int key){
             magmaManager.fire(dude.getJointPosition("Head"), dude.heading); break;  // TODO: get head position and orientation
         }
             
-//        case OF_KEY_LEFT:
-//            dude.heading += (rotspeed);
-//            break;    // steer left
-//            
-//        case OF_KEY_RIGHT:
-//            dude.heading -= (rotspeed);
-//            break;   // steer right
-//            
-//        case OF_KEY_UP:
-//            params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
-//            break;
-//            
-//        case OF_KEY_DOWN:
-//            params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
-//            break;
-//
+            //        case OF_KEY_LEFT:
+            //            dude.heading += (rotspeed);
+            //            break;    // steer left
+            //
+            //        case OF_KEY_RIGHT:
+            //            dude.heading -= (rotspeed);
+            //            break;   // steer right
+            //
+            //        case OF_KEY_UP:
+            //            params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
+            //            break;
+            //
+            //        case OF_KEY_DOWN:
+            //            params["Dude.speed"] =  (float)params["Dude.speed"] - 1.0;
+            //            break;
+            //
         case '1':
             dude.playAnimation("run");
             break;
-
+            
         case '2':
             dude.playAnimation("box");
             break;
-        
+            
         case '3':
             dude.playAnimation("skip");
             break;

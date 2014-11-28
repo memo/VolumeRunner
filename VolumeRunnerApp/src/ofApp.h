@@ -29,8 +29,8 @@ public:
     FloorManager floorManager;
     MagmaManager magmaManager;
     
-    
     ofImage lutImage;
+    ofImage splashImage;
     
     void loadShaders();
     void allocateFbo();

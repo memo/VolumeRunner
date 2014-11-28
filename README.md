@@ -75,4 +75,8 @@ We were able to build the renderer in a short amount of time thanks to the many 
 The motion capture data is from the Carnegie Mellon motion database, available in BVH format at [https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/cmu-bvh-conversion](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/cmu-bvh-conversion).
 
 
+License
+================
+This software is released under the GNU GPL v3. See included LICENSE file for details.
 
+Additional supplied libraries are under their own licenses. Again see LICENSE file in relevant folders. 

@@ -139,7 +139,7 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     float maxspeed = params["Dude.speed"];
     float bk = params["Dude.blend k"];
     float pv = clamp(-position.y/20.0,0.0,1.0);
-    blend_k = bk*0.5+pv*bk*2.0+(maxspeed-walkingAnim->speed)*bk*0.05;
+    blend_k = bk*0.7+pv*bk*2.0+(maxspeed-walkingAnim->speed)*bk*0.05;
 }
 
 void Dude::update()

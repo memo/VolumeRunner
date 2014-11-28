@@ -173,6 +173,7 @@ void ofApp::update(){
         dude.walkingAnim->speed *= 0.9;
         
         if(dude.isRunning() && dude.walkingAnim->speed < EPSILON)
+        {
             if(percent(50))
             {
                 dude.playAnimation("skip");
@@ -181,6 +182,7 @@ void ofApp::update(){
             {
                 dude.playAnimation("box");
             }
+        }
     }
     
     

@@ -61,6 +61,7 @@ const vec3 light1  = normalize(vec3(0.7,1.0,0.9));
 // Modify these functions
 float compute_scene( in vec3 p, out mtl_t mtl );
 vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItCount );
+vec4 compute_color_old( in vec3 p, in float distance, in mtl_t mtl, in float normItCount );
 
 
 
@@ -574,6 +575,7 @@ float rounded_squares_texture(in vec3 p)
 }
 
 const vec4 fog_clr = vec4(0.8, 0.9, 1.0, 1.0);//0.5,0.9,1.0, 1.0);
+//const vec4 fog_clr = vec4(0.4, 0.7, 1.0, 1.0);//0.5,0.9,1.0, 1.0);
 const vec4 floor_color = vec4(1.0, 1.0, 0.9, 1.0); //vec3(0.8,0.9,1.0);
 const vec4 man_color = vec4(0.8, 0.95, 1.2, 1.0);
 
@@ -601,6 +603,43 @@ vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItC
     
     return clr;
 }
+
+
+vec4 compute_color_old( in vec3 p, in float distance, in int mtl, in float normItCount )
+{
+    
+    vec3 n = calc_normal(p);
+    //return normal_color(n); // use this to debug normals
+    
+    //
+    //    vec3 light = normalize(light1);//invViewMatrix[3].xyz+vec3(30.0,100.0,0)-p); //light1);
+    vec3 light = normalize(light1);
+    
+    // diffuse lighting
+    float l = max(0.2, dot(n, light));
+    
+    l *= luminosity(normal_color(n))*1.4;   // daniel lighting
+    //    l *= max(0.1, soft_shadow(p, light, 0.4, 200.0, 12));
+    //    l *= max(0.2, hard_shadow(p, light, 0.4, 200.0));
+    
+    
+    float ao_startweight = mtl == 0 ? 0.1 : 0.8;
+    float ao_weightdiminish = mtl == 0 ? 0.3 : 0.6;
+    l *= ambient_occlusion1(p,n, ao_startweight, ao_weightdiminish);
+    
+    vec4 clr = vec4(1.0);
+    //vec4 clr = mtl == 0 ? floor_color : man_color;
+    clr.xyz *= l;
+    
+    //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
+    float fog = attenuation(max(0.0,distance-100.0),0.0001);
+    clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
+    clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
+    //clr = mix(it_clr, clr, 0.5);
+    
+    return clr;
+}
+
 
 
 
@@ -697,7 +736,7 @@ float compute_scene( in vec3 p, out mtl_t mtl )
 {
     mtl = 0.0;
     float d = 10000.0;
-    float dome =  -sdf_sphere(sdf_translate(p, centerPos), 3000.0);
+    float dome = -sdf_sphere(sdf_translate(p, centerPos), 330.0);
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
     //    d = sdf_union(d, sdf_xz_plane(p,  0));

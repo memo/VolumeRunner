@@ -29,6 +29,10 @@ public:
     void play( double * output );
     void stop();
     
+    void addParams(msa::controlfreak::ParameterGroup &parentparams) {
+        parentparams.add(&this->params);
+    }
+    
     // call me each frame
     void update();
     
@@ -36,6 +40,8 @@ public:
     void playNote( int note );
     
     float stepPhase;
+    float resonance;
+    float cutoff;
     msa::controlfreak::ParameterGroup params;
     
     TPtrList<DelayedNote> delayedNotes;

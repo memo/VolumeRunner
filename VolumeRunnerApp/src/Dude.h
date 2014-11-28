@@ -48,6 +48,9 @@ public:
     
     void playAnimation( const std::string & name );
     
+    void run() { animSys.play("run"); }
+    bool isRunning() const { return currentAnimation == "run"; }
+    
     void debugDraw();
     
     float blend_k;
@@ -72,4 +75,5 @@ public:
     SineTrigger step2;
     
     float animSpeed;
+    std::string currentAnimation;
 };

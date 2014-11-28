@@ -234,6 +234,7 @@ Vec3 Dude::getLowestLimbPosition() const
 
 void Dude::playAnimation( const std::string & name )
 {
+    currentAnimation = name;
     if(name=="run")
         animSpeed = 1.0;
     else

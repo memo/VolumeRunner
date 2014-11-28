@@ -1,8 +1,9 @@
-This code was written in under one week, in an extreme rush. Use with caution
+
+This code was written in under one week, in an extreme rush. It is messy with lots of irrelevant / out-dated code / experiments / tests lying around, commented out, or just not being used. Use with caution. 
 
 Memo Akten, Daniel Berio © 2014
 
-(A lot of GLSL code borrowed from Inigo Quilez, [http://www.iquilezles.org/](http://www.iquilezles.org/) )
+
 
 Dependencies 
 ============
@@ -33,6 +34,19 @@ Compilation instructions
 		______VolumeRunnerApp
 		etc.
 		
+
+Keys
+============
+* w or UP........: move forward
+* a or LEFT......: turn left
+* d or RIGHT.....: turn right
+* r..............: spew constructive magma
+* f..............: spew destructive magma
+* SPACE..........: toggle GUI (use with caution)
+* l..............: load default settings (if you've messed with the GUI too much)
+* F..............: toggle fullscreen (will be slow unless you have a good GPU)
+* R..............: reset state
+
 		
     
 Contents
@@ -40,6 +54,11 @@ Contents
 
 **addons**: Libraries and additional C++ code needed for the projects. These are included in the xcode projects as needed.
 **VolumeRunnerApp**: Main app.
+
+
+Acknowledgements
+============
+A lot of GLSL code borrowed from Inigo Quilez, [http://www.iquilezles.org/](http://www.iquilezles.org/)
 
 
 

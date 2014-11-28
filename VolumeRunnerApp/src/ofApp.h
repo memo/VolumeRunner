@@ -37,6 +37,8 @@ public:
     void loadShaders();
     void allocateFbo();
 
+    void reset();
+    
     void setup();
     void update();
     void draw();

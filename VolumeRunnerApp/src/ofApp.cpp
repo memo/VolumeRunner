@@ -24,6 +24,7 @@ void ofApp::setup(){
     dude.init();
     volume.init();
     floorManager.init();//{ "images/noise_1024.png", "images/noise_4096.png" });
+    magmaManager.init();
     
     params.addFloat("FPS").setRange(0, 60).setClamp(false);
     params.startGroup("Update"); {
@@ -65,6 +66,7 @@ void ofApp::setup(){
     dude.addParams(params);
     volume.addParams(params);
     floorManager.addParams(params);
+    magmaManager.addParams(params);
     
     params.loadXmlValues();
     
@@ -82,6 +84,14 @@ void ofApp::setup(){
     ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
     ofSetWindowPosition(0, 0);
     //    cam = new ofCamera();
+}
+
+
+//--------------------------------------------------------------
+void ofApp::reset() {
+    magmaManager.reset();
+    dude.position(0, 0, 0);
+    camera.target(0, 0, 0);
 }
 
 //--------------------------------------------------------------
@@ -116,7 +126,7 @@ void ofApp::update(){
         dude.update();
     }
     
-//    magmaManager.update(<#ofImage &floorImage#>);
+    magmaManager.update(floorManager);
     
     if(ofGetKeyPressed(OF_KEY_UP)) {
         dude.walkingAnim->speed += ((float)params["Dude.speed"] - dude.walkingAnim->speed) * 0.1;
@@ -247,7 +257,7 @@ void ofApp::keyPressed(int key){
         case 'l': params.loadXmlValues(); break;
         case 'f': ofToggleFullscreen(); break;
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
-        case 'r': dude.position(0, 0, 0); camera.target(0, 0, 0); break;
+        case 'r': reset(); break;
         case 'a': magmaManager.fire(ofVec3f(dude.position.x, dude.position.y - 10, dude.position.z)); break;  // TODO: get head position and orientation
             
 //        case OF_KEY_LEFT:

@@ -26,7 +26,15 @@ namespace cm
 template <class T>
 struct  TVec3
 {
-		
+    TVec3(const ofVec3f & v)
+    :
+    x(v.x),
+    y(v.y),
+    z(v.z)
+    {
+        
+    }
+    
 	TVec3(T x, T y, T z) 
 	: 
 	x(x),y(y),z(z)
@@ -300,6 +308,8 @@ struct  TVec3
 	inline  const T &operator[] (int i) const {
 		return ((T*)this)[i];
 	}
+    
+    operator const ofVec3f & () const { return ofVec3f(x,y,z); }
 	
 	operator T* () { return (T*)this; }
 	operator const T* () const { return (const T*)this; }

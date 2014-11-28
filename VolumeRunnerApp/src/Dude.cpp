@@ -13,7 +13,8 @@ Dude::Dude()
 :
 blend_k(1.0),
 heading(0.0),
-stepSoundPhase(0.0)
+stepSoundPhase(0.0),
+animSpeed(1.0)
 {
 
 }
@@ -241,6 +242,12 @@ Vec3 Dude::getJointPosition( const std::string & name ) const
 
 void Dude::playAnimation( const std::string & name )
 {
+    if(name=="run")
+        animSpeed = 1.0;
+    else
+        // Hack, we slow down the mocap animation a bit
+        animSpeed = 0.7;
+    
     animSys.play(name);
 }
 

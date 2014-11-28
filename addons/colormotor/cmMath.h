@@ -12,7 +12,6 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
 #include "math/CMVector.h"
 #include "math/CMQuat.h"
 #include "math/CMPlane.h"
@@ -27,3 +26,4 @@
 #include "math/CMAABox.h"
 #include "math/cmFrustum.h"
 #include "math/cmHomography.h"
+

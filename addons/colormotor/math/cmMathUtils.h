@@ -399,81 +399,56 @@ namespace cm
 						  }
 
 
-	struct SlowVec3
-	{
-		SlowVec3( float x = 0 , float y = 0 , float z = 0   )
-		:
-		val(x,y,z),
-		cur(x,y,z),
-		speed(2),
-		epsilon(0.001)
-		{
-		}
-		
-		SlowVec3 & operator ()( float x, float y , float z ) { val(x,y,z); return *this; }
-		
-		void update( double msecs )
-		{
-			msecs*=0.001*speed;
-			cur += (val-cur)*msecs;
-				
-			if( cm::distance( cur,val ) < epsilon )
-			{
-				cur = val;
-				arrived = true;
-			}
-			else	
-				arrived = false;
-		}
-		
-		const Vec3 &operator = ( const Vec3 &v ) { val = v; return val; }
-		
-		operator const Vec3 &() const { return cur; }
-		
-		bool arrived;
-		float epsilon;
-		Vec3 val;
-		Vec3 cur;
-		float speed;
-	};
-
-	struct SlowFloat
-	{
-		SlowFloat( float val = 0.0f )
-		:
-		val(val),
-		cur(val),
-		speed(1),
-		epsilon(0.001)
-		{
-		}
-		
-		
-		void update( double msecs )
-		{
-			msecs*=0.001*speed;
-			cur += (val-cur)*msecs;
-				
-			if( fabs( cur-val ) < epsilon )
-			{
-				cur = val;
-				arrived = true;
-			}
-			else	
-				arrived = false;
-		}
-		
-		float operator = ( float v ) { val = v; return val; }
-		
-		operator float() const { return cur; }
-		
-		bool arrived;
-		float epsilon;
-		float val;
-		float cur;
-		float speed;
-	};
-
+    template <class T>
+    struct SlowVal
+    {
+        SlowVal( const T & val )
+        :
+        val(val),
+        cur(val),
+        epsilon(EPSILON)
+        {
+        }
+        
+        SlowVal<T> & operator ()( const T & val ) { this->val=val; return *this; }
+        
+        const T & update( const T & v, double msecs, float speed )
+        {
+            val = v;
+            update(msecs,speed);
+            return cur;
+        }
+        
+        void update( double msecs, float speed )
+        {
+            float dt=clamp01(msecs*0.001*speed);
+            
+            cur += (val-cur)*dt;
+            
+            if( cm::distance( cur,val ) < epsilon )
+            {
+                cur = val;
+                arrived = true;
+            }
+            else
+                arrived = false;
+        }
+        
+        const T &operator = ( const T &v ) { val = v; return val; }
+        
+        operator const T &() const { return cur; }
+        
+        bool arrived;
+        float epsilon;
+        T val;
+        T cur;
+    };
+    
+    typedef SlowVal<Vec2> SlowVec2;
+    typedef SlowVal<Vec3> SlowVec3;
+    typedef SlowVal<Vec4> SlowVec4;
+    typedef SlowVal<float> SlowFloat;
+    
 	
 	#define P1 	632500000
 	#define P2	1032650041

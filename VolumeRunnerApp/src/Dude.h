@@ -72,4 +72,6 @@ public:
     
     SineTrigger step1;
     SineTrigger step2;
+    
+    float animSpeed;
 };

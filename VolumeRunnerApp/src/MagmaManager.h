@@ -12,6 +12,10 @@ public:
         params.addFloat("Side speed").setRange(0, 10);
         params.addFloat("Up speed").setRange(-10, 10);
         params.addFloat("Gravity").setRange(-5, 5);
+        params.startGroup("Display"); {
+            params.addBool("Debug");
+            params.addFloat("size").setRange(0, 20);
+        } params.endGroup();
     }
     
     void addParams(msa::controlfreak::ParameterGroup &parentparams) {
@@ -41,6 +45,16 @@ public:
     }
     
     void updateRenderer(ofShader & shader) {
+        float size = params["Display.size"];
+        
+        shader.setUniform4fv("magma_pos", (float*)pos, 4 * kNumMagma);
+        shader.setUniform1f("magma_size", size);
+
+//        for(int i=0; i<kNumMagma; i++) {
+//            ofVec4f &p = pos[i];
+//            shader.setUniform4f(<#const string &name#>, <#float v1#>, <#float v2#>, <#float v3#>, <#float v4#>)
+//        }
+
     }
     
     void update(FloorManager &floorManager) {
@@ -61,9 +75,12 @@ public:
     }
     
     void debugDraw() {
-        for(int i=0; i<kNumMagma; i++) {
-            ofVec4f &p = pos[i];
-            if(p.w != 0) ofDrawBox(p.x, p.y, p.z, 3);
+        if(params["Display.Debug"]) {
+            float size = params["Display.size"];
+            for(int i=0; i<kNumMagma; i++) {
+                ofVec4f &p = pos[i];
+                if(p.w != 0) ofDrawBox(p.x, p.y, p.z, size);
+            }
         }
     }
     

@@ -9,6 +9,9 @@ public:
     fov(60),
     rotx(0),
     roty(180),
+    slowRotX(rotx),
+    slowRotY(roty),
+    groundAngle(0.0),
     distance(100.0),
     target(Vec3(0,0,0)),
     heading(0.0)
@@ -28,8 +31,9 @@ public:
     {
         double msecs = ofGetLastFrameTime()*1000;
         // ease on target
-        rotx.update(msecs,1.0);
-        roty.update(msecs,1.0);
+        groundAngle.update(msecs,2.0);
+        slowRotY.update(roty,msecs,1.0);
+        slowRotX.update(rotx+groundAngle,msecs,1.0);
 
         target.update(lookat,msecs,2.0);
         heading.update(heading_,msecs,0.5);
@@ -37,8 +41,8 @@ public:
         worldMatrix.identity();
         worldMatrix.translate(target);
         //worldMatrix.rotateY(radians(heading));
-        worldMatrix.rotateY(radians(roty)+radians(heading));
-        worldMatrix.rotateX(radians(rotx));
+        worldMatrix.rotateY(radians(slowRotY)+radians(heading));
+        worldMatrix.rotateX(radians(slowRotX));
         worldMatrix.translate(0,0,distance);//(float)(params["Shader.View.z"]));//-10.0);//getf('y'),-getf('z'))
         
         viewMatrix = worldMatrix.inverse();
@@ -58,11 +62,15 @@ public:
         gfx::setModelViewMatrix(viewMatrix);
     }
     
+    
     float fov;
-    SlowFloat rotx;
-    SlowFloat roty;
+    float rotx;
+    float roty;
     float distance;
     
+    SlowFloat groundAngle;
+    SlowFloat slowRotX;
+    SlowFloat slowRotY;
     SlowFloat heading;
     SlowVec3 target;
     

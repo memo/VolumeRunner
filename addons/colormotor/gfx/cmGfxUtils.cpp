@@ -908,6 +908,11 @@ CM_GLCONTEXT
 	glLoadIdentity();
 }
 
+void	translate( const Vec3 & v )
+{
+    translate(v.x,v.y,v.z);
+}
+
 void	translate( float x, float y , float z  )
 {
 CM_GLCONTEXT

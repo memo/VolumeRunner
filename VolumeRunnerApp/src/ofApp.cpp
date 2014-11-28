@@ -57,6 +57,7 @@ void ofApp::setup(){
         
         params.startGroup("View"); {
             params.addFloat("distance").setRange(0, 100).setIncrement(1.0);
+            params.addFloat("forward offset").setRange(0,4.0).setIncrement(1.0).set(0.0);
             //params.addFloat("rotx").setRange(-90, 5).setIncrement(1.0);
             //params.addFloat("roty").setRange(-720, 720).setIncrement(1.0);
         } params.endGroup();
@@ -110,6 +111,22 @@ void ofApp::allocateFbo() {
     renderManager.allocate(ofGetWidth() * (float)params["Display.fbo size"], ofGetHeight() * (float)params["Display.fbo size"]);
 }
 
+void ofApp::computeCameraCollision()
+{
+    float refh = dude.position.y;//camera.worldMatrix.trans();
+    float h = 0.0;//floorManager.getHeight(camPos.x,camPos.z);
+    float dh = h-refh;
+    if(dh<0.0)
+        dh = 0.0;
+//    cm::debugPrint("%g\n",dh);
+    camera.groundAngle = -dh*200.0;//degrees(angleBetween(normalize(da),normalize(db)) )*40.0;
+    if((float)camera.groundAngle > 0)
+        camera.groundAngle = 0;
+    if((float)camera.groundAngle < -70)
+        camera.groundAngle = -70;
+//    cm::debugPrint("%g\n",(float)camera.groundAngle);
+}
+
 //--------------------------------------------------------------
 void ofApp::update(){
     if(params["Update.Pause"]) return;
@@ -130,9 +147,7 @@ void ofApp::update(){
     
     if(ofGetKeyPressed(OF_KEY_UP) || ofGetKeyPressed('w')) {
         dude.walkingAnim->speed += ((float)params["Dude.speed"] - dude.walkingAnim->speed) * 0.1;
-//        params["Dude.speed"] = (float)params["Dude.speed"] + 1.0;
     } else {
-//        params["Dude.speed"] = (float) params["Dude.speed"] * 0.9;
         dude.walkingAnim->speed *= 0.9;
     }
 
@@ -144,7 +159,11 @@ void ofApp::update(){
     camera.distance = params["Shader.View.distance"];
 
     Vec3 pos = dude.position;
-
+    float theta = radians(dude.heading);
+    Vec3 forward = Vec3(sin(theta),0.0,cos(theta));
+    pos += forward*dude.walkingAnim->speed*(float)params["Shader.View.forward offset"];
+    
+    computeCameraCollision();
     camera.update(pos, dude.heading, renderManager.getWidth(), renderManager.getHeight(), 0.1);//Vec3(0,0,0));
     
     //
@@ -196,7 +215,15 @@ void ofApp::draw(){
         camera.apply();
         
         magmaManager.debugDraw();
-
+        /*
+        gfx::pushMatrix();
+        Vec3 z = camera.worldMatrix.z();
+        Vec3 pos = camera.worldMatrix.trans();
+        gfx::translate(pos-z*20.0);
+        ofSetColor(255, 0, 0);
+                    sphere.draw();
+        gfx::popMatrix();*/
+        
         // draw floor sphere
 //        {
 //            ofPushMatrix();
@@ -235,6 +262,7 @@ void ofApp::draw(){
     renderManager.draw(0, ofGetHeight(), ofGetWidth(), -ofGetHeight());
     ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
+    ofDrawBitmapString(ofToString(camera.groundAngle), ofGetWidth() - 100, 50);
 }
 
 //--------------------------------------------------------------

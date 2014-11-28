@@ -9,7 +9,8 @@ class MagmaManager {
 public:
     void init() {
         params.setName("MagmaManager");
-        params.addFloat("Speed").setRange(0, 10);
+        params.addFloat("Side speed").setRange(0, 10);
+        params.addFloat("Up speed").setRange(-10, 10);
         params.addFloat("Gravity").setRange(-5, 5);
     }
     
@@ -21,12 +22,18 @@ public:
         for(int i=0; i<kNumMagma; i++) pos[i].w = 0;
     }
     
-    bool fire(ofVec3f p, ofVec3f dir = ofVec3f(0, 0, 1)) {
+    bool fire(ofVec3f p, float heading) {
+        ofVec3f dir(0, (float)params["Up speed"], (float)params["Side speed"]);
+        dir.rotate(heading, ofVec3f(0, 1, 0));
+        
+        ofVec4f v(dir);
+        v.w = 0;
+        
         // find first available magma
         for(int i=0; i<kNumMagma; i++) {
             if(pos[i].w == 0) {
                 pos[i].set(p.x, p.y, p.z, 1.0f);
-                vel[i] = dir * (float)params["Speed"];
+                vel[i] = v;
                 return true;
             }
         }
@@ -41,10 +48,14 @@ public:
         
         for(int i=0; i<kNumMagma; i++) {
             ofVec4f &p = pos[i];
+            
+            // if magma is active
             if(p.w != 0) {
-                ofVec3f &v = vel[i];
+                ofVec4f &v = vel[i];
                 p += v;
-                p.y += gravity;
+                v.y += gravity;
+                
+                if(p.y < floorManager.getHeight(p.x, p.z)) p.w = 0;
             }
         }
     }
@@ -59,6 +70,6 @@ public:
 private:
     msa::controlfreak::ParameterGroup params;
     
-    ofVec4f pos[kNumMagma];
-    ofVec3f vel[kNumMagma];
+    ofVec4f pos[kNumMagma];  // xyz: position, w: active (!=0) or not (0)
+    ofVec4f vel[kNumMagma];  // vec4 to make maths easier with pos
 };

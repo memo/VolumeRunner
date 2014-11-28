@@ -89,7 +89,8 @@ void ofApp::setup(){
     splashImage.load("images/splashscreen.png");
     splashImage.setAnchorPercent(0.5, 0.5);
     
-    ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
+//    ofSetWindowShape(ofGetScreenWidth() * 0.5, ofGetScreenWidth() * 0.5);
+    ofSetWindowShape(800, 600);
     ofSetWindowPosition(0, 0);
     
     am = AudioManager::getInstance();
@@ -306,7 +307,7 @@ void ofApp::draw(){
         if(nowTime < holdTime + fadeTime) {
             float alpha = ofMap(ofGetElapsedTimef(), holdTime, holdTime + fadeTime, 255, 0, true);
             ofSetColor(255, alpha);
-            splashImage.draw(ofGetWidth()/2, ofGetHeight()/2);
+            splashImage.draw(ofGetWidth()/2, ofGetHeight()/2, splashImage.getWidth() * 0.6, splashImage.getHeight() * 0.6);
         }
     }
     

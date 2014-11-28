@@ -77,7 +77,7 @@ void ofApp::setup(){
     
     gui.addPage(params);
     gui.setDefaultKeys(true);
-    gui.show();
+    gui.hide();
     
     shaderFolderWatcher = new cm::FileWatcher(ofToDataPath("shaders"),500);
     shaderFolderWatcher->startThread();
@@ -99,6 +99,7 @@ void ofApp::setup(){
 //--------------------------------------------------------------
 void ofApp::reset() {
     magmaManager.reset();
+    floorManager.reset();
     dude.position(0, 0, 0);
     camera.target(Vec3(0, 0, 0));
     ofResetElapsedTimeCounter();
@@ -127,7 +128,7 @@ void ofApp::computeCameraCollision()
     float dh = h-refh;
     if(dh<0.0)
         dh = 0.0;
-//    cm::debugPrint("%g\n",dh);
+    //    cm::debugPrint("%g\n",dh);
     camera.groundAngle = -dh*100.0;//degrees(angleBetween(normalize(da),normalize(db)) )*40.0;
     if((float)camera.groundAngle > 0)
         camera.groundAngle = 0;
@@ -208,7 +209,7 @@ void ofApp::draw(){
         shaderRayTracer->begin();
         shaderRayTracer->setUniform2f("resolution", renderManager.getWidth(), renderManager.getHeight());
         shaderRayTracer->setUniform1f("time", ofGetElapsedTimef());
-        shaderRayTracer->setUniformTexture("color_image", lutImage, 2);
+        shaderRayTracer->setUniformTexture("color_image", lutImage, 5);
         shaderRayTracer->setUniform3f("centerPos",ofVec3f(dude.position.x,0.0,dude.position.z));//const string &name, const ofVec3f &v)
         //    shaderRayTracer->setUniform3f("box_pos", params["Shader.Test box.posx"], params["Shader.Test box.posy"], params["Shader.Test box.posz"]);
         //    shaderRayTracer->setUniform3f("box_rot", ofDegToRad(params["Shader.Test box.rotx"]), ofDegToRad(params["Shader.Test box.roty"]), ofDegToRad(params["Shader.Test box.rotz"]));
@@ -284,7 +285,13 @@ void ofApp::draw(){
             splashImage.draw(ofGetWidth()/2, ofGetHeight()/2);
         }
     }
-
+    
+    {
+        ofSetColor(255);
+        int s = 256;
+        floorManager.dynamicFloor().getImage().draw(ofGetWidth() - s, 0, s, s);
+    }
+    
     
     ofSetColor(255, 0, 0);
     ofDrawBitmapString(ofToString(ofGetFrameRate()), ofGetWidth() - 100, 20);
@@ -309,9 +316,8 @@ void ofApp::keyPressed(int key){
         case 'F': ofToggleFullscreen(); break;
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
         case 'R': reset(); break;
-        case 'f': {
-            magmaManager.fire(dude.getJointPosition("Head"), dude.heading); break;  // TODO: get head position and orientation
-        }
+        case 'r': magmaManager.fire(dude.getJointPosition("Head"), dude.heading, 1); break;
+        case 'f': magmaManager.fire(dude.getJointPosition("Head"), dude.heading, -1); break;
             
             //        case OF_KEY_LEFT:
             //            dude.heading += (rotspeed);
@@ -391,6 +397,6 @@ void ofApp::gotMessage(ofMessage msg){
 }
 
 //--------------------------------------------------------------
-void ofApp::dragEvent(ofDragInfo dragInfo){ 
+void ofApp::dragEvent(ofDragInfo dragInfo){
     
 }

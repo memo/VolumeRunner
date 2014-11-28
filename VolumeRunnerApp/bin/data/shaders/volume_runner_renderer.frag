@@ -37,6 +37,14 @@ uniform float floor_scale1;
 uniform float floor_offset1;
 uniform float floor_center1;
 
+uniform sampler2D floor_image2;
+uniform float floor_height2;
+uniform float floor_scale2;
+uniform float floor_offset2;
+uniform float floor_center2;
+
+
+
 uniform sampler2D color_image;
 
 uniform vec4 magma[kNumMagma];  // xyz: pos, w: size (if 0, not active)
@@ -565,13 +573,6 @@ float rounded_squares_texture(in vec3 p)
     return max(0.9,v);
 }
 
-float texture_test(in vec3 p)
-{
-    vec2 uv = mod(p.xz*0.01,vec2(1.0));
-    return texture2D(floor_image0,uv).x;
-}
-
-
 const vec4 fog_clr = vec4(0.8, 0.9, 1.0, 1.0);//0.5,0.9,1.0, 1.0);
 const vec4 floor_color = vec4(1.0, 1.0, 0.9, 1.0); //vec3(0.8,0.9,1.0);
 const vec4 man_color = vec4(0.8, 0.95, 1.2, 1.0);
@@ -616,8 +617,7 @@ vec3 guy_transform_inner( in vec3 p )
 
 vec3 guy_transform_outer( in vec3 p )
 {
-    //    float o = texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset;//sdf_repeat(p,vec3(23.0,0.0,53.0));
-    return p;//+vec3(0,o,0);
+    return p;
 }
 
 float guy_primitive( in vec3 p )
@@ -706,6 +706,7 @@ float compute_scene( in vec3 p, out mtl_t mtl )
     float floor_y = 0.0;
     floor_y += (tex2d(floor_image0, p.xz * floor_scale0).r - floor_center0) * floor_height0 - floor_offset0;
     floor_y += (tex2d(floor_image1, p.xz * floor_scale1).r - floor_center1) * floor_height1 - floor_offset1;
+    floor_y += (tex2d(floor_image2, p.xz * floor_scale2).r - floor_center2) * floor_height2 - floor_offset2;
     float terr = sdf_xz_plane(p, floor_y);
     d = sdf_union(terr, dome);
     

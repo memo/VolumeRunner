@@ -1,7 +1,8 @@
 This the result of an intensive week of exploring real-time ray marching distance fields, procedural content and animation.
+The whole scene is parametrically defined as distance functions and rendered in one single fragment-shader (no polygons involved).
 
 A rock like figure can explore and modify a procedurally generated world.
-His gait is generated procedurally complemented with motion capture data is used for additional animations.
+Its gait is generated procedurally and complemented with motion capture data for additional animations. It can spew constructive or destrucive magma which creates or destroys the terrain.
 
 This code was written in under one week, in an extreme rush. It is messy with lots of irrelevant / out-dated code / experiments / tests lying around, commented out, or just not being used. Use with caution. 
 
@@ -41,15 +42,15 @@ Compilation instructions
 
 Keys
 ============
-* w or UP........: move forward
-* a or LEFT......: turn left
-* d or RIGHT.....: turn right
-* r..............: spew constructive magma
-* f..............: spew destructive magma
-* SPACE..........: toggle GUI (use with caution)
-* l..............: load default settings (if you've messed with the GUI too much)
-* F..............: toggle fullscreen (will be slow unless you have a good GPU)
-* R..............: reset state
+* w or UP: move forward
+* a or LEFT: turn left
+* d or RIGHT: turn right
+* r: spew constructive magma
+* f: spew destructive magma
+* SPACE: toggle GUI (use with caution)
+* l: load default settings (if you've messed with the GUI too much)
+* F: toggle fullscreen (will be slow unless you have a good GPU)
+* R: reset state
 
 		
     

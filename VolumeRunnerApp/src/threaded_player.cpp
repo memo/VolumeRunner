@@ -1,11 +1,6 @@
-/*
- *  player.cpp
- *  rtaudiotest
- *
- *  Created by Chris on 23/08/2011.
- *  Copyright 2011 Goldsmiths Creative Computing. All rights reserved.
- *
- */
+/// A modified Maximilian player running in a thread 
+/// Daniel Berio 2014
+
 
 #include "threaded_player.h"
 #include "maximilian.h"

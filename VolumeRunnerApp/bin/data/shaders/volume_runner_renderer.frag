@@ -39,7 +39,7 @@ uniform float floor_center1;
 
 uniform sampler2D color_image;
 
-uniform mat4 magma_mat_inv[kNumMagma];  // inverse matrix for all magma
+uniform vec4 magma[kNumMagma];  // xyz: pos, w: size (if 0, not active)
 
 
 const float EPSILON = 0.01;
@@ -230,7 +230,7 @@ float sdf_cone( in vec3 p, in vec3 c )
     float d1 = -p.y-c.z;
     float d2 = max( dot(q,c.xy), p.y);
     return length(max(vec2(d1,d2),0.0)) + min(max(d1,d2), 0.);
-#endif    
+#endif
 }
 
 
@@ -470,8 +470,8 @@ vec4 trace_ray(in vec3 p, in vec3 w, in vec4 bg_clr, inout float distance)
         {
             distance = t;
             // use this to debug number of ray casts
-//            return vec4(vec3(float(i)/128.0), 1.0);
-//            return mtl == 0 ? vec4(vec3(float(i)/128.0), 1.0) : compute_color(rp,t,mtl);
+            //            return vec4(vec3(float(i)/128.0), 1.0);
+            //            return mtl == 0 ? vec4(vec3(float(i)/128.0), 1.0) : compute_color(rp,t,mtl);
             return compute_color(rp, t, mtl, float(i) * 1.0/float(maxIterations));//+vec3(float(i)/128.0);
         }
         else if(t > distance)
@@ -527,7 +527,7 @@ vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItC
     {
         y = clamp((y-limit)/30.0,0.0,1.0);
         v = mix(0.5,1.0,y);
-//        lum = y;
+        //        lum = y;
     }
     
     clr.xyz = texture2D(color_image, vec2(lum, v)).xyz*vec3(1.0,0.97,0.82);
@@ -552,7 +552,7 @@ vec3 guy_transform_inner( in vec3 p )
 
 vec3 guy_transform_outer( in vec3 p )
 {
-//    float o = texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset;//sdf_repeat(p,vec3(23.0,0.0,53.0));
+    //    float o = texture2D(floor_image, p.xz * floor_scale).r * floor_height - floor_offset;//sdf_repeat(p,vec3(23.0,0.0,53.0));
     return p;//+vec3(0,o,0);
 }
 
@@ -576,7 +576,7 @@ float sdf_guy( in vec3 p )
     for(int i=0; i<kNumJoints; i++) {
         pt = p;
         
-//        pt = guy_transform_outer(pt);
+        //        pt = guy_transform_outer(pt);
         pt = guy_transform_inner(pt);
         pt = sdf_transform(pt,box_mats[i]);
         pt = sdf_translate(pt,vec3(0.0,0.0,0.5));
@@ -612,20 +612,20 @@ vec4 texture2DGood( sampler2D sam, vec2 uv, float bias )
 vec4 tex2d( sampler2D sam, vec2 uv )
 {
     return texture2D(sam,uv);
-//    return smoothstep(0.01,0.99,texture2D(sam,uv));
+    //    return smoothstep(0.01,0.99,texture2D(sam,uv));
     //return texture2DGood(sam,uv,-100);
 }
 
 float blend_mtl( in float a, in float b, in float mtl1, in float mtl2, float k )
 {
-//    float h = smoothstep(0,1,clamp((b-a)/k,0.0,1.0));
-//    float h = smoothstep(0,1,clamp((b-a)/k,0.0,1.0));
+    //    float h = smoothstep(0,1,clamp((b-a)/k,0.0,1.0));
+    //    float h = smoothstep(0,1,clamp((b-a)/k,0.0,1.0));
     float h = clamp((b-a)/4.0,0.0,1.0);
- //   h = smoothstep(0.0,0.9,h);
-//    h = smoothstep(0.0,0.9,h);
+    //   h = smoothstep(0.0,0.9,h);
+    //    h = smoothstep(0.0,0.9,h);
     return mix(mtl2,mtl1,h);//log(h*30.0));
-//    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
-//    return mix( mtl2, mtl1, h ) - (k*h*(1.0-h))*(mtl1-mtl2);
+    //    float h = clamp( 0.5+0.5*(b-a)/k, 0.0, 1.0 );
+    //    return mix( mtl2, mtl1, h ) - (k*h*(1.0-h))*(mtl1-mtl2);
 }
 
 //float blend_mtl( float d1, float d2, )
@@ -633,10 +633,10 @@ float compute_scene( in vec3 p, out mtl_t mtl )
 {
     mtl = 0.0;
     float d = 10000.0;
-    float dome =  -sdf_sphere(sdf_translate(p, centerPos), 300.0);
+    float dome =  -sdf_sphere(sdf_translate(p, centerPos), 3000.0);
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
-//    d = sdf_union(d, sdf_xz_plane(p,  0));
+    //    d = sdf_union(d, sdf_xz_plane(p,  0));
     
     // floor
     float floor_y = 0.0;
@@ -656,31 +656,31 @@ float compute_scene( in vec3 p, out mtl_t mtl )
     
     // do magma
     for(int i=0; i<kNumMagma; i++) {
-//        if(magma_pos[i].w > 0) {
-            float d_magma = sdf_box( sdf_transform(p, magma_mat_inv[i]), vec3(1.0));
+        if(magma[i].w > 0) {
+            float d_magma = sdf_sphere( sdf_translate(p, magma[i].xyz), magma[i].w);
             d = blending(d, d_magma, blend_k);
-//        }
+        }
     }
-        
-
     
-//    mtl = clamp(blend_mtl(dome,terr,1.0,0.5,4.0),0.0,0.5);
+    
+    
+    //    mtl = clamp(blend_mtl(dome,terr,1.0,0.5,4.0),0.0,0.5);
     mtl = clamp(blend_mtl(d, dguy, 0.5, 0.0, 18.0), 0.0, 1.0);
-
     
-//    mtl = blend_mtl_poly(dguy,terr,0.5,0.0,blend_k*2.0);
-//    mtl =
+    
+    //    mtl = blend_mtl_poly(dguy,terr,0.5,0.0,blend_k*2.0);
+    //    mtl =
     
     
     
     /*
-    float floorlow = sdf_xz_plane(p,-10.0);
-    
-    if(floorlow<d)
-    {
-        //d = floorlow;
-        mtl = 2.0;
-    }*/
+     float floorlow = sdf_xz_plane(p,-10.0);
+     
+     if(floorlow<d)
+     {
+     //d = floorlow;
+     mtl = 2.0;
+     }*/
     
     
     

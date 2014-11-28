@@ -189,6 +189,7 @@ void ofApp::draw(){
         dude.updateRenderer(*shaderRayTracer);
         camera.updateRenderer(*shaderRayTracer);
         floorManager.updateRenderer(*shaderRayTracer);
+        magmaManager.updateRenderer(*shaderRayTracer);
         
         drawUVQuad();
         shaderRayTracer->end();

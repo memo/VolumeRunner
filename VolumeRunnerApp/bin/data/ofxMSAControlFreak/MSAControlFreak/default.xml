@@ -1,6 +1,6 @@
 <ofxMSAControlFreak version="1.000000000" bFullSchema="0">
     <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MSAControlFreak">
-        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="27.681699753"></Parameter>
+        <Parameter type="N3msa12controlfreak14ParameterFloatE" name="FPS" value="23.068103790"></Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Update">
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Pause" value="0"></Parameter>
             <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Dude" value="1"></Parameter>
@@ -69,12 +69,14 @@
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="center" value="0.000000000"></Parameter>
         </Parameter>
         <Parameter type="N3msa12controlfreak14ParameterGroupE" name="MagmaManager">
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Side speed" value="1.473214388"></Parameter>
-            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Up speed" value="1.071428299"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Side speed" value="1.517857194"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Up speed" value="1.160715103"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Speed lerp speed" value="0.129464284"></Parameter>
+            <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Grow speed" value="0.058035713"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterFloatE" name="Gravity" value="-0.178571224"></Parameter>
             <Parameter type="N3msa12controlfreak14ParameterGroupE" name="Display">
-                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Debug" value="1"></Parameter>
-                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="size" value="3.750000000"></Parameter>
+                <Parameter type="N3msa12controlfreak13ParameterBoolE" name="Debug" value="0"></Parameter>
+                <Parameter type="N3msa12controlfreak14ParameterFloatE" name="size" value="6.517857552"></Parameter>
             </Parameter>
         </Parameter>
     </Parameter>

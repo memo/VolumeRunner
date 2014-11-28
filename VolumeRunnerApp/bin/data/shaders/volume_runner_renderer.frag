@@ -39,8 +39,7 @@ uniform float floor_center1;
 
 uniform sampler2D color_image;
 
-uniform vec4 magma_pos[kNumMagma];  // xyz: position, w: active (!=0) or not (0)
-uniform float magma_size;
+uniform mat4 magma_mat_inv[kNumMagma];  // inverse matrix for all magma
 
 
 const float EPSILON = 0.01;
@@ -634,12 +633,12 @@ float compute_scene( in vec3 p, out mtl_t mtl )
 {
     mtl = 0.0;
     float d = 10000.0;
-    float dome =  -sdf_sphere(sdf_translate(p,centerPos),300.0);
+    float dome =  -sdf_sphere(sdf_translate(p, centerPos), 300.0);
     
     //d = sdf_union(d, sdf_xz_plane(p, sin(p.x*0.3)*sin(p.z*0.1)));//noise(p.xz) * 5.0) );
 //    d = sdf_union(d, sdf_xz_plane(p,  0));
     
-    
+    // floor
     float floor_y = 0.0;
     floor_y += (tex2d(floor_image0, p.xz * floor_scale0).r - floor_center0) * floor_height0 - floor_offset0;
     floor_y += (tex2d(floor_image1, p.xz * floor_scale1).r - floor_center1) * floor_height1 - floor_offset1;
@@ -651,22 +650,28 @@ float compute_scene( in vec3 p, out mtl_t mtl )
         mtl = 1.0;
     }
     
-//    float dguy = 100000.0;
-//    for(int i=0; i<kNumJoints; i++)
-//    {
-//        dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix)));
-//    }
-//    
+    // guy
     float dguy = sdf_guy(sdf_transform(p, steerMatrix));
+    d = blending(d, dguy, blend_k);
+    
+    // do magma
+    for(int i=0; i<kNumMagma; i++) {
+//        if(magma_pos[i].w > 0) {
+            float d_magma = sdf_box( sdf_transform(p, magma_mat_inv[i]), vec3(1.0));
+            d = blending(d, d_magma, blend_k);
+//        }
+    }
+        
+
     
 //    mtl = clamp(blend_mtl(dome,terr,1.0,0.5,4.0),0.0,0.5);
-    mtl = clamp(blend_mtl(d,dguy,0.5,0.0,18.0),0.0,1.0);
+    mtl = clamp(blend_mtl(d, dguy, 0.5, 0.0, 18.0), 0.0, 1.0);
 
     
 //    mtl = blend_mtl_poly(dguy,terr,0.5,0.0,blend_k*2.0);
 //    mtl =
     
-    d = blending(d, dguy, blend_k);
+    
     
     /*
     float floorlow = sdf_xz_plane(p,-10.0);

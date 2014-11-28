@@ -2,6 +2,7 @@
 
 #include "ofMain.h"
 #include "FloorManager.h"
+#include "colormotor.h"
 
 #define kNumMagma   5
 
@@ -30,13 +31,21 @@ public:
         ofVec3f vel(0, (float)params["Up speed"], (float)params["Side speed"]);
         vel.rotate(heading, ofVec3f(0, 1, 0));
         
+        float size = params["Display.size"];
+        
         // find first available magma
         for(int i=0; i<kNumMagma; i++) {
             Magma &m = magma[i];
             if(!m.active) {
                 m.active = true;
-                m.pos.set(pos.x, pos.y, pos.z);
+                m.mat.makeIdentityMatrix();
+                m.mat.translate(pos);
+//                m.mat.rotate(ofRandomf() * 360, ofRandomf(), ofRandomf(), ofRandomf());
+//                m.mat.scale(size, size, size);
+                
                 m.vel = vel;
+//                m.pos.set(pos.x, pos.y, pos.z);
+//                m.rot.set(ofRandomf() * 360, ofRandomf() * 360, ofRandomf() * 360);
                 return true;
             }
         }
@@ -46,11 +55,7 @@ public:
     void updateRenderer(ofShader & shader) {
         float size = params["Display.size"];
         
-        for(int i=0; i<kNumMagma; i++) {
-        }
-        
-        
-//        shader.setUniform4fv("magma_mat_inv", (float*)pos, 4 * kNumMagma);
+        shader.setUniformMatrix4f("magma_mat_inv", mat_inv[0], kNumMagma);
 //        shader.setUniform1f("magma_size", size);
 
 //        for(int i=0; i<kNumMagma; i++) {
@@ -68,19 +73,29 @@ public:
             
             // if magma is active
             if(m.active) {
-                m.pos += m.vel;
+                m.mat.translate(m.vel);
                 m.vel.y += gravity;
-                if(m.pos.y < floorManager.getHeight(m.pos.x, m.pos.z)) m.active = false;
+
+                ofVec3f pos = m.mat.getRowAsVec3f(3);
+                if(pos.y < floorManager.getHeight(pos.x, pos.z)) m.active = false;
+                else {
+                    mat_inv[i] = m.mat.getInverse();
+                }
             }
         }
     }
     
     void debugDraw() {
         if(params["Display.Debug"]) {
-            float size = params["Display.size"];
             for(int i=0; i<kNumMagma; i++) {
                 Magma &m = magma[i];
-                if(m.active) ofDrawBox(m.pos, size);
+                if(m.active) {
+                    ofPushMatrix();
+                    ofMultMatrix(m.mat);
+                    ofDrawBox(ofVec3f(), 1);
+                    ofPopMatrix();
+                    
+                }
             }
         }
     }
@@ -90,9 +105,10 @@ private:
 
     struct Magma {
         bool active;
-        ofVec3f pos;
         ofVec3f vel;
+        ofVec3f rotSpeed;
+        ofMatrix4x4 mat;
     } magma[kNumMagma];
     
-    ofMatrix4x4 mat[kNumMagma]; // doing this separate so I can send to shader in one go
+    ofMatrix4x4 mat_inv[kNumMagma]; // doing this separate so I can send to shader in one go
 };

@@ -3,12 +3,35 @@
 #include "AnimSys.h"
 #include "RunningSkeleton.h"
 
+struct SineTrigger
+{
+    SineTrigger()
+    :
+    old(1.0)
+    {
+        
+    }
+    
+    bool update( float t )
+    {
+        float v = sin(t);
+        bool res = false;
+        if( v < 0.0 && old >= 0.0 )
+            res = true;
+        old = v;
+        return res;
+    };
+    
+    float old;
+};
 
 class Dude : public Thing
 {
 public:
     Dude();
     virtual ~Dude();
+    
+    float floorHeight;
     
     bool init();
     void addParams( msa::controlfreak::ParameterGroup &params );
@@ -19,13 +42,22 @@ public:
     void updateRenderer( ofShader & shader );
     
     /// Returns the offset of the dude, based on the position of the lowest (Y) joint.
-    Vec3 getOffset() const;
+    Vec3 getOffset();
+    
+    Vec3 getLowestLimbPosition() const;
+    
+    Vec3 getJointPosition( const std::string & name ) const;
     
     void playAnimation( const std::string & name );
+    
+    void run() { playAnimation("run"); }
+    bool isRunning() const { return currentAnimation == "run"; }
     
     void debugDraw();
     
     float blend_k;
+    
+    Trigger<int> lowestIndex;
     
     M44 renderSteerMatrix;
     M44 steerMatrix;
@@ -37,6 +69,13 @@ public:
     SkeletonAnimSystem animSys;
     SkeletonWalkAnimSource * walkingAnim;
     
+    float stepSoundPhase;
+    
     std::vector<M44> renderMats;
     
+    SineTrigger step1;
+    SineTrigger step2;
+    
+    float animSpeed;
+    std::string currentAnimation;
 };

@@ -206,6 +206,8 @@ TVec3<T>	normalize( const TVec3<T> & v );
 template <typename T>	
 TVec4<T>	normalize( const TVec4<T> & v );
 
+/// Distance between two floats (abs)
+CM_INLINE float distance(float a, float b);
 /// Distance between two points
 template <typename T>	
 T	distance(const TVec2<T> & a,const TVec2<T> & b);
@@ -765,6 +767,11 @@ TVec4<T>	normalize( const TVec4<T> & v )
 	return v/sqrtf (v.x * v.x + v.y * v.y + v.z * v.z + v.w * v.w);
 }
 
+CM_INLINE float distance(float a, float b)
+{
+    return fabs(b-a);
+}
+    
 template <typename T>
 T	distance(const TVec2<T> & a,const TVec2<T> & b)
 {

@@ -7,11 +7,14 @@
 //
 
 #include "Dude.h"
+#include "AudioManager.h"
 
 Dude::Dude()
 :
 blend_k(1.0),
-heading(0.0)
+heading(0.0),
+stepSoundPhase(0.0),
+animSpeed(1.0)
 {
 
 }
@@ -31,7 +34,8 @@ bool Dude::init()
     // Walking
     walkingAnim = new SkeletonWalkAnimSource(animSys.getSkeleton(),"run");
     animSys.addAnimSource("run", walkingAnim );
-    animSys.play("run");
+
+    playAnimation("skip");
     
     
     // Left leg
@@ -82,7 +86,7 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
     
     params.startGroup("Dude"); {
         params.addFloat("speed").setRange(0.0,30.0).set(walkingAnim->speed);
-        params.addFloat("Rot speed").setRange(0, 10).set(4);
+        params.addFloat("Rot speed").setRange(0, 100).set(4);
         params.addFloat("hip rotation").setRange(-40,40).set(walkingAnim->rothip);
         params.addFloat("backAngle").setRange(-45,45).set(walkingAnim->backAngle);
         
@@ -103,13 +107,16 @@ void Dude::addParams( msa::controlfreak::ParameterGroup &params )
             params.addFloat("armAngle").setRange(10,90).set(walkingAnim->armAngle);
         } params.endGroup();
         
+        params.startGroup("Audio"); {
+            params.addFloat("Step Phase").setRange(-TWOPI,TWOPI).set(stepSoundPhase);
+        } params.endGroup();
         
     } params.endGroup();
 }
 
 void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
 {
-    walkingAnim->speed = params["Dude.speed"];
+//    walkingAnim->speed = params["Dude.speed"];
     walkingAnim->rothip = params["Dude.hip rotation"];
     
     walkingAnim->startAngHigh = params["Dude.Legs.startAngHigh"];
@@ -126,13 +133,22 @@ void Dude::updateParams( msa::controlfreak::ParameterGroup &params )
     
     
     walkingAnim->backAngle = params["Dude.backAngle"];
-    blend_k = params["Dude.blend k"];
+    
+    stepSoundPhase = params["Dude.Audio.Step Phase"];
+    
+    float maxspeed = params["Dude.speed"];
+    float bk = params["Dude.blend k"];
+    float pv = clamp(-position.y/20.0,0.0,1.0);
+    blend_k = bk*0.5+pv*bk*2.0+(maxspeed-walkingAnim->speed)*bk*0.05;
 }
 
 void Dude::update()
 {
+    if(lowestIndex.isTriggered())
+        AudioManager::getInstance()->playNote(random(2,15));
+    
     // update the animation
-    animSys.update(ofGetLastFrameTime()*1000);
+    animSys.update(animSpeed*ofGetLastFrameTime()*1000);
     
     // update dude position based on movement
     Vec3 o = getOffset();
@@ -151,7 +167,9 @@ void Dude::update()
     position.z += v.z;//o.z*sin(heading); //+vel.z*skippy*0.5;
     
     // offset the dude to touch the ground
-    position.y = -o.y;
+    position.y = floorHeight-o.y;
+    
+    
 }
 
 void Dude::updateRenderer( ofShader & shader )
@@ -179,10 +197,11 @@ void Dude::updateRenderer( ofShader & shader )
     shader.setUniformMatrix4f("box_mats", (ofMatrix4x4&) renderMats[0], renderMats.size());//
 }
 
-Vec3 Dude::getOffset() const
+Vec3 Dude::getOffset()
 {
     Vec3 vel(0,0,0);
     float low = 10000.0;
+    int li = 0;
     for( int i = 0; i < animSys.getNumBones(); i++ )
     {
         SkeletonAnimSystem::Bone * b = animSys.getBone(i);
@@ -193,13 +212,47 @@ Vec3 Dude::getOffset() const
             vel.z=b->b->velocity.z;
             low = p.y;
             vel.y = low;
+            li = i;
         }
     }
+    
+    lowestIndex.val = li;
+    
     return vel;
+}
+
+Vec3 Dude::getLowestLimbPosition() const
+{
+    assert(0);
+    // Need to fix this
+    
+    Vec3 lowest(0,100000,0);
+    for( int i = 0; i < animSys.getNumBones(); i++ )
+    {
+        const Vec3 &p = animSys.getBone(i)->getEndPos();
+        if(p.y < lowest.y)
+            lowest = p;
+    }
+    return lowest;
+}
+
+Vec3 Dude::getJointPosition( const std::string & name ) const
+{
+    int ij = animSys.getSkeleton()->getJointIndex(name);
+    if(ij<0)
+        return Vec3(0,0,0);
+    return animSys.getSkeleton()->getJoint(ij)->getPosition()+position;
 }
 
 void Dude::playAnimation( const std::string & name )
 {
+    currentAnimation = name;
+    if(name=="run")
+        animSpeed = 1.0;
+    else
+        // Hack, we slow down the mocap animation a bit
+        animSpeed = 0.7;
+    
     animSys.play(name);
 }
 

@@ -72,7 +72,7 @@ public:
     Joint * getJoint(int index);
     int getNumJoints() const;
     
-    Skeleton * getSkeleton() { return skel; }
+    Skeleton * getSkeleton() const { return skel; }
 private:
     std::vector<Bone*> bones;
     

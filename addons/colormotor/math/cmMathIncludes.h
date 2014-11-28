@@ -12,7 +12,7 @@
 //////////////////////////////////////////////////////////////////////////
 
 #pragma once
-
+#include "ofMain.h"
 #include "CM.h"
 #include "core/CMUtils.h"
 #include "math/CMMathDefs.h"

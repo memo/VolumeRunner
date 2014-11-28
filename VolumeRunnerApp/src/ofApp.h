@@ -9,7 +9,8 @@
 #include "Camera.h"
 #include "Volume.h"
 #include "RenderManager.h"
-
+#include "FloorManager.h"
+#include "MagmaManager.h"
 
 class ofApp : public ofBaseApp{
 public:
@@ -25,14 +26,23 @@ public:
     Camera camera;
     Volume volume;
     RenderManager renderManager;
+    FloorManager floorManager;
+    MagmaManager magmaManager;
+    
+    ofImage lutImage;
+    ofImage splashImage;
     
     void loadShaders();
     void allocateFbo();
 
+    void reset();
+    
     void setup();
     void update();
     void draw();
     void exit();
+    
+    void computeCameraCollision();
     
     void keyPressed(int key);
     void keyReleased(int key);

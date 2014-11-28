@@ -253,10 +253,10 @@ void ofApp::keyPressed(int key){
     switch(key) {
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
-        case 'f': ofToggleFullscreen(); break;
+        case 'F': ofToggleFullscreen(); break;
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
-        case 'r': reset(); break;
-        case 'a': {
+        case 'R': reset(); break;
+        case 'f': {
             magmaManager.fire(dude.getJointPosition("Head"), dude.heading); break;  // TODO: get head position and orientation
         }
             

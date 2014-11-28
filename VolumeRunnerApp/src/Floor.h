@@ -27,18 +27,25 @@ public:
     }
     
     
+    // return image coordinates for world coordinates
+    ofVec2f worldToImage(float x, float z) {
+        float scale = (float)params["scale"] * (float)params["scale"];
+        ofVec2f p(x, z);
+        p *= scale;
+        p.x = mod((float)(p.x*image.getWidth()), (float)image.getWidth());
+        p.y = mod((float)(p.y*image.getHeight()), (float)image.getHeight());
+        
+        return p;
+    }
+    
+    
+    // return height at world coordinates
     float getHeight(float x, float z) {
         if((bool)params["enabled"]) {
-            float scale = (float)params["scale"] * (float)params["scale"];
+            ofVec2f p(worldToImage(x, z));
             float height = params["height"];
             float offset = params["offset"];
             float center = params["center"];
-
-            ofVec2f p(x, z);
-
-            p *= scale;
-            p.x = mod((float)(p.x*image.getWidth()), (float)image.getWidth());
-            p.y = mod((float)(p.y*image.getHeight()), (float)image.getHeight());
             float h = height * (DIV255 * image.getColor(p.x,p.y).r - center) + offset;
             return h;
         }

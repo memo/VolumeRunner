@@ -256,8 +256,7 @@ void ofApp::keyPressed(int key){
         case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
         case 'r': reset(); break;
         case 'a': {
-            dude.getJointPosition("Head");
-            magmaManager.fire(ofVec3f(dude.position.x, dude.position.y, dude.position.z)); break;  // TODO: get head position and orientation
+            magmaManager.fire(dude.getJointPosition("Head"), dude.heading); break;  // TODO: get head position and orientation
         }
             
 //        case OF_KEY_LEFT:

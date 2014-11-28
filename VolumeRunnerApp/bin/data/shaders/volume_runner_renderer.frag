@@ -39,7 +39,8 @@ uniform float floor_center1;
 
 uniform sampler2D color_image;
 
-uniform vec4 magma[kNumMagma];  // xyz: position, w: active (!=0) or not (0)
+uniform vec4 magma_pos[kNumMagma];  // xyz: position, w: active (!=0) or not (0)
+uniform float magma_size;
 
 
 const float EPSILON = 0.01;
@@ -706,20 +707,21 @@ float compute_scene( in vec3 p, out mtl_t mtl )
     float floor_y = 0.0;
     floor_y += (tex2d(floor_image0, p.xz * floor_scale0).r - floor_center0) * floor_height0 - floor_offset0;
     floor_y += (tex2d(floor_image1, p.xz * floor_scale1).r - floor_center1) * floor_height1 - floor_offset1;
-        float terr = sdf_xz_plane(p, floor_y);
-    d = sdf_union(terr,dome);
+    float terr = sdf_xz_plane(p, floor_y);
+    d = sdf_union(terr, dome);
     
     if(terr<dome)
     {
         mtl = 1.0;
     }
     
-    float dguy = 100000.0;
-    for(int i=0; i<kNumJoints; i++)
-    {
-        dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix)));
-    }
-    
+//    float dguy = 100000.0;
+//    for(int i=0; i<kNumJoints; i++)
+//    {
+//        dguy = sdf_union(dguy, sdf_guy(sdf_transform(p,steerMatrix)));
+//    }
+//    
+    float dguy = sdf_guy(sdf_transform(p, steerMatrix));
     
 //    mtl = clamp(blend_mtl(dome,terr,1.0,0.5,4.0),0.0,0.5);
     mtl = clamp(blend_mtl(d,dguy,0.5,0.0,18.0),0.0,1.0);

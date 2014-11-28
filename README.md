@@ -1,7 +1,11 @@
+This the result of an intensive week of exploring real-time ray marching distance fields, procedural content and animation.
+
+A rock like figure can explore and modify a procedurally generated world.
+His gait is generated procedurally complemented with motion capture data is used for additional animations.
 
 This code was written in under one week, in an extreme rush. It is messy with lots of irrelevant / out-dated code / experiments / tests lying around, commented out, or just not being used. Use with caution. 
 
-Memo Akten, Daniel Berio © 2014
+Memo Akten [http://www.memo.tv](http://www.memo.tv), Daniel Berio [http://www.enist.org/](http://www.enist.org/) © 2014
 
 
 
@@ -58,11 +62,15 @@ Contents
 
 Acknowledgements
 ============
-A lot of GLSL code borrowed from Inigo Quilez, [http://www.iquilezles.org/](http://www.iquilezles.org/)
 
+We were able to build the renderer in a short amount of time thanks to the many useful resources and code available online:
 
+* http://iquilezles.org/www/
+* https://www.shadertoy.com
+* http://www.mazapan.se/news/2010/07/15/gpu-ray-marching-with-distance-fields/
+* http://graphics.cs.williams.edu/courses/cs371/f14/reading/implicit.pdf
 
-
+The motion capture data is from the Carnegie Mellon motion database, available in BVH format at [https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/cmu-bvh-conversion](https://sites.google.com/a/cgspeed.com/cgspeed/motion-capture/cmu-bvh-conversion).
 
 
 

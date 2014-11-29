@@ -74,7 +74,7 @@ namespace msa {
 			ParameterBool& addBang(string name);
 			ParameterNamedIndex& addNamedIndex(string name);
             Parameter& addVec2(string name);
-            ParameterVec3f& addVec3f(string name);
+            //ParameterVec3f& addVec3f(string name);
             Parameter& addVec4(string name);
             Parameter& addColoru8(string name);
             Parameter& addColorf32(string name);

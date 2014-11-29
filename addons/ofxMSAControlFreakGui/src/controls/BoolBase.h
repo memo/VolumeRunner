@@ -67,7 +67,7 @@ namespace msa {
                 
                 //--------------------------------------------------------------
                 void checkBang() {
-                    if(paramT->getMode() == ParameterBool::kBang && getParameter().value()) getParameter().set(false);
+                    if(paramT->getMode() == ParameterBool::kBang && (bool)getParameter().value()) getParameter().set(false);
                 }
                 
             protected:

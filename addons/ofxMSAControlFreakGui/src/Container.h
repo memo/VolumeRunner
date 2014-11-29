@@ -34,10 +34,14 @@ namespace msa {
             class FPSCounter;
             class QuadWarp;
             class Slider2d;
-            class SliderInt;
-            class SliderFloat;
+            //class SliderInt;
+            //class SliderFloat;
 
-            
+			template <typename T> class SliderT;
+			typedef SliderT<float> SliderFloat;
+			typedef SliderT<int> SliderInt;
+
+
             class Container : public Control {
             public:
                 
@@ -58,14 +62,14 @@ namespace msa {
                 // adding
                 Panel           &addPanel(ParameterGroup& p);
                 BoolButton		&addButton(ParameterBool& p);
-                ColorPicker		&addColorPicker(Parameter& p);
+                //ColorPicker		&addColorPicker(Parameter& p);
                 OptionsDropdownList&   addDropdownList(ParameterNamedIndex& p);
                 OptionsList&           addList(ParameterNamedIndex& p);
                 OptionsBoxes&        addOptions(ParameterNamedIndex& p);
                 Content			&addContent(Parameter& p, ofBaseDraws &content, float fixwidth = -1);
                 FPSCounter		&addFPSCounter();
-                QuadWarp		&addQuadWarper(Parameter& p);
-                Slider2d		&addSlider2d(Parameter& p);
+                //QuadWarp		&addQuadWarper(Parameter& p);
+                //Slider2d		&addSlider2d(Parameter& p);
                 SliderInt		&addSliderInt(ParameterInt& p);
                 SliderFloat		&addSliderFloat(ParameterFloat& p);
                 BoolToggle		&addToggle(ParameterBool& p);

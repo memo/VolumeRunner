@@ -28,6 +28,7 @@
 #include "ofxMSAControlFreak/src/Parameter.h"
 //#include "ofxMSAControlFreak/src/ParameterValueI.h"
 
+#include <cmath>
 
 namespace msa {
 	namespace controlfreak {
@@ -396,7 +397,8 @@ namespace msa {
         template<typename T>
         void ParameterNumberValueT<T>::snap() {
             //            float inv = 1.0f / _inc;
-            int ival = round((*_pvalue - _min) / _inc);
+            //int ival = roundf((*_pvalue - _min) / _inc);	// no round in VS2012!?!?
+			int ival = static_cast<int>(((*_pvalue - _min) / _inc) + 0.5);
             _setValue(_min + (ival * _inc) );
         }
         

@@ -109,7 +109,7 @@ namespace msa {
                     collapseAllButton->getParameter().setTooltip("Expand all panel");
                 }
                 
-                if(collapseAllButton->getParameter().value()) showPanel(!titleButton->getParameter(), true);
+                if(collapseAllButton->getParameter().value()) showPanel(!(bool)titleButton->getParameter(), true);
                 
                 
                 // Preset save load
@@ -171,25 +171,25 @@ namespace msa {
             //--------------------------------------------------------------
             bool Panel::saveXMLSchema( string filename )
             {
-                paramT->saveXmlSchema( filename );
+                return paramT->saveXmlSchema( filename );
             }
             
             //--------------------------------------------------------------
             bool Panel::loadXMLSchema( string filename )
             {
-                paramT->loadXmlSchema( filename );
+                return paramT->loadXmlSchema( filename );
             }
             
             //--------------------------------------------------------------
             bool Panel::saveXMLSchema( int slot )
             {
-                paramT->saveXmlSchema( slot );
+                return paramT->saveXmlSchema( slot );
             }
             
             //--------------------------------------------------------------
             bool Panel::loadXMLSchema( int slot )
             {
-                paramT->loadXmlSchema( slot );
+                return paramT->loadXmlSchema( slot );
             }
             
         }

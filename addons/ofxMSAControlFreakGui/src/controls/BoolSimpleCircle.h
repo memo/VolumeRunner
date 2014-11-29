@@ -29,7 +29,7 @@ namespace msa {
                 
                 //--------------------------------------------------------------
                 void draw() {
-                    if(isMousePressed() || getParameter().value()) setColor(ofColor(255, 100));
+                    if(isMousePressed() || (bool)getParameter().value()) setColor(ofColor(255, 100));
                     else setColor(ofColor(0, 100));
                     ofPushMatrix();
                     ofScale(width, height);

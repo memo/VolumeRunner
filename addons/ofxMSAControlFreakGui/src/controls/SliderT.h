@@ -21,7 +21,11 @@
 namespace msa {
     namespace controlfreak {
         namespace gui {
-            
+
+			//template <typename T> class SliderT;
+			//typedef SliderT<float> SliderFloat;
+			//typedef SliderT<int> SliderInt;
+
             template <typename T>
             class SliderT : public Container {
             public:

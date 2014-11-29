@@ -39,7 +39,7 @@ void  debugPrint(const char *pFormat,... )
 	else
 	{
 	#ifdef WIN32
-	OutputDebugStr(debugText);
+//	OutputDebugStr(debugText);
 	#else
 	printf("%s",debugText);
 	#endif

@@ -309,7 +309,7 @@ struct  TVec3
 		return ((T*)this)[i];
 	}
     
-    operator const ofVec3f & () const { return ofVec3f(x,y,z); }
+    operator const ofVec3f () const { return ofVec3f(x,y,z); }
 	
 	operator T* () { return (T*)this; }
 	operator const T* () const { return (const T*)this; }

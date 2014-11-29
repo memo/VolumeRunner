@@ -29,7 +29,7 @@
 #include <string>
 #include <sstream>  //for ostringsream
 #include <iomanip>  //for setprecision
-#include <ext/hash_map>
+//#include <ext/hash_map>
 #include <errno.h>
 
 #if (defined (_WIN32) || defined (_WIN64))

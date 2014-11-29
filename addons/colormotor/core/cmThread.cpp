@@ -49,17 +49,18 @@ CriticalSection::~CriticalSection()
 
 void CriticalSection::lock()
 {
-	return mutex->lock();
+	//return mutex->lock();
 }
 
 bool CriticalSection::tryLock()
 {
-	return mutex->tryLock();
+	//return mutex->tryLock();
+	return false;
 }
 
 void CriticalSection::unlock()
 {
-	mutex->unlock();
+	//mutex->unlock();
 }
 
 ///////////////////////////////////////////////////

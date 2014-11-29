@@ -14,16 +14,16 @@
 #pragma once
 
 #include "cmCore.h"
-#include <unistd.h>
+//#include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <fcntl.h>
 #include <sys/types.h>
-#include <sys/event.h>
-#include <sys/time.h>
+//#include <sys/event.h>
+//#include <sys/time.h>
 #include <errno.h>
 #include <string.h>
-#include <inttypes.h>
+//#include <inttypes.h>
 
 namespace cm
 {

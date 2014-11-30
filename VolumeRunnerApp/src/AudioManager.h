@@ -2,7 +2,7 @@
 #include "colormotor.h"
 #include "maximilian.h"
 #include "threaded_player.h"
-#include "ofxMSAControlFreak.h"
+#include "ofxMSAControlFreak/src/ofxMSAControlFreak.h"
 #include "TPtrList.h"
 
 struct DelayedNote

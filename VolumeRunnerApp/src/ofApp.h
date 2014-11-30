@@ -3,8 +3,8 @@
 #include "ofMain.h"
 
 
-#include "ofxMSAControlFreak.h"
-#include "ofxMSAControlFreakGui.h"
+#include "ofxMSAControlFreak/src/ofxMSAControlFreak.h"
+#include "ofxMSAControlFreakGui/src/ofxMSAControlFreakGui.h"
 #include "Dude.h"
 #include "Camera.h"
 //#include "Volume.h"
@@ -20,7 +20,7 @@ public:
     
     shared_ptr<ofShader> shaderRayTracer;
     shared_ptr<ofShader> shaderSea;
-    cm::FileWatcher *shaderFolderWatcher;
+//    cm::FileWatcher *shaderFolderWatcher;
     
     Dude dude;
     Camera camera;

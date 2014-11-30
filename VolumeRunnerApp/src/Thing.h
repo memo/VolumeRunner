@@ -1,6 +1,6 @@
 #pragma once
 #include "ofMain.h"
-#include "ofxMSAControlFreak.h"
+#include "ofxMSAControlFreak/src/ofxMSAControlFreak.h"
 #include "colormotor.h"
 
 class Thing

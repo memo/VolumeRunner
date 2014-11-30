@@ -80,8 +80,8 @@ void ofApp::setup(){
     gui.setDefaultKeys(true);
     gui.hide();
     
-    shaderFolderWatcher = new cm::FileWatcher(ofToDataPath("shaders"),500);
-    shaderFolderWatcher->startThread();
+//    shaderFolderWatcher = new cm::FileWatcher(ofToDataPath("shaders"),500);
+ //   shaderFolderWatcher->startThread();
     
     loadShaders();
     
@@ -211,13 +211,13 @@ void ofApp::update(){
 void ofApp::draw(){
     params["FPS"] = ofGetFrameRate();
     
-    if( shaderFolderWatcher->hasFileChanged() ) {
-        loadShaders();
-    }
+//    if( shaderFolderWatcher->hasFileChanged() ) {
+//        loadShaders();
+//    }
     
     if(params["Display.fbo size"].hasChanged()) allocateFbo();
     
-    if(!params["Update.Pause"]) {
+    if(!(bool)params["Update.Pause"]) {
         renderManager.begin();
         
         gfx::enableDepthBuffer(false);
@@ -328,8 +328,8 @@ void ofApp::draw(){
 //--------------------------------------------------------------
 void ofApp::exit(){
     //    params.saveXmlValues();
-    shaderFolderWatcher->stopThread();
-    delete shaderFolderWatcher;
+//    shaderFolderWatcher->stopThread();
+//    delete shaderFolderWatcher;
     
     am->stop();
 }
@@ -341,7 +341,7 @@ void ofApp::keyPressed(int key){
         case 's': params.saveXmlValues(); break;
         case 'l': params.loadXmlValues(); break;
         case 'F': ofToggleFullscreen(); break;
-        case 'p': params["Update.Pause"] = ! params["Update.Pause"]; break;
+        case 'p': params["Update.Pause"] = ! (bool)params["Update.Pause"]; break;
         case 'R': reset(); break;
         case 'r': magmaManager.fire(dude.getJointPosition("Head"), dude.heading, 1); break;
         case 'f': magmaManager.fire(dude.getJointPosition("Head"), dude.heading, -1); break;

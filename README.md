@@ -22,6 +22,8 @@ Compatibility
 =============
 Developed and tested on OSX (10.9.5). Only XCode projects are provided, but it should compile and run on Windows and Linux too provided the projects are setup correctly with dependency header search paths. 
 
+UPDATE: There is an experimental Windows / VS2012 project in the memo-VS2012-experimental branch.
+
 Requires a good graphics card! (Developed and tested on Macbook Pro Retina with Geforce 650M)
 
 

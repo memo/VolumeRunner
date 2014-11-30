@@ -1,0 +1,582 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.cpp">
+      <Filter>addons\ofxXmlSettings\src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.cpp">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlerror.cpp">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlparser.cpp">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClCompile>
+    <ClCompile Include="src\AudioManager.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Camera.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Dude.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\ofApp.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\RunningSkeleton.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\threaded_player.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\maxi\maximilian.cpp">
+      <Filter>src\maxi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animSys\BVHParser.cpp">
+      <Filter>src\AnimSys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animSys\Skeleton.cpp">
+      <Filter>src\AnimSys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animSys\SkeletonAnimator.cpp">
+      <Filter>src\AnimSys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animSys\SkeletonAnimInstance.cpp">
+      <Filter>src\AnimSys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animSys\SkeletonAnimSource.cpp">
+      <Filter>src\AnimSys</Filter>
+    </ClCompile>
+    <ClCompile Include="src\animSys\SkeletonAnimSystem.cpp">
+      <Filter>src\AnimSys</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmBuffer.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmFileUtils.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmResource.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmRTTI.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmThread.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmTime.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\core\cmUtils.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\gfx\cmGfxUtils.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\CMArcBall.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\cmFrustum.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\cmHomography.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\cmMathUtils.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\CMPerlin.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\CMRay.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\colormotor\math\CMTransform.cpp">
+      <Filter>addons\colormotor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ControllerBase.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\Master.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ofxMSAControlFreak.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\Parameter.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ParameterGroup.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ParameterNamedIndex.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ParameterVec3f.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\Utils.cpp">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Config.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Container.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Control.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\ControlProperties.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\ColorPicker.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\Content.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\QuadWarp.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\Slider2d.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Gui.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\GuiControls.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\LayoutManager.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Page.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Panel.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Renderer.cpp">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSACore\src\MSACoreGL.cpp">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\addons\ofxMSAInteractiveObject\src\ofxMSAInteractiveObject.cpp">
+      <Filter>addons\ofxMSAInteractiveObject</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{d8376475-7454-4a24-b08a-aac121d3ad6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons">
+      <UniqueIdentifier>{71834F65-F3A9-211E-73B8-DC85}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxXmlSettings">
+      <UniqueIdentifier>{877F005D-13E6-0592-1D97-F2E3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxXmlSettings\src">
+      <UniqueIdentifier>{CCB2AC63-49D2-977C-CFE8-AEAD}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxXmlSettings\libs">
+      <UniqueIdentifier>{687714A8-1662-FA1C-261F-50F0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\maxi">
+      <UniqueIdentifier>{7bb028d4-67ef-4f24-a17d-cee8ffa968c4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\AnimSys">
+      <UniqueIdentifier>{8343e583-a405-4a95-9600-7b0b2ccbb3d6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\colormotor">
+      <UniqueIdentifier>{da9a89ed-f181-4902-a1ff-a4a56747da10}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSAControlFreak">
+      <UniqueIdentifier>{aad1d9d9-e5e9-4959-94c9-caf072aea8ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSAControlFreakGui">
+      <UniqueIdentifier>{7d087591-c225-47f5-9b9a-263d110931e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSAInteractiveObject">
+      <UniqueIdentifier>{e57b0e3f-ba26-46c1-a3b1-8e78bbfcc900}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSACore">
+      <UniqueIdentifier>{b347f354-00cb-4280-a84f-5f91bc476400}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="addons\ofxMSAOrderedPointerMap">
+      <UniqueIdentifier>{8e9ecdb3-4a27-44f5-bf75-65409454a543}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.h">
+      <Filter>addons\ofxXmlSettings\src</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.h">
+      <Filter>addons\ofxXmlSettings\libs</Filter>
+    </ClInclude>
+    <ClInclude Include="src\AudioManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Camera.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Dude.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Floor.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\FloorManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\MagmaManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\ofApp.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RenderManager.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\RunningSkeleton.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Thing.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\threaded_player.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\maxi\maximilian.h">
+      <Filter>src\maxi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\AnimSys.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\BVHParser.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\Skeleton.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\SkeletonAnimator.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\SkeletonAnimInstance.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\SkeletonAnimSource.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\SkeletonAnimSystem.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="src\animSys\Timeline.h">
+      <Filter>src\AnimSys</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\Array2D.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmBuffer.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmCoreIncludes.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmFileUtils.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmRefPtr.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmResource.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmRTTI.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmSingleton.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmThread.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmTime.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\cmUtils.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\HashMap.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\platform\osx\CMOSXThread.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\platform\win32\CMWin32Thread.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\core\TPtrList.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\gfx\CMGfxUtils.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMAABox.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMArcBall.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMColor.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmFrustum.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmHomography.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmMathDefs.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmMathIncludes.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmMathUtils.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmMatrix3x3.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmMatrix4x4.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMPerlin.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMPlane.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMQuat.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMRay.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMRect.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMRect3D.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMTransform.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\CMTriangle2D.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmVec2.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmVec3.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmVec4.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\math\cmVector.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\cm.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\cmConfig.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\cmCore.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\cmGfx.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\cmMath.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\colormotor\colormotor.h">
+      <Filter>addons\colormotor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\AnyValue.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ControllerBase.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\Master.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ofxMSAControlFreak.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\Parameter.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterBool.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterFloat.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterGroup.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterInt.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterNamedIndex.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterNumberValueT.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterValueI.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterValueT.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterVec3f.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\Utils.h">
+      <Filter>addons\ofxMSAControlFreak</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Config.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Container.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Control.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\ControlProperties.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolBase.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolButton.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolSimpleBox.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolSimpleCircle.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolTitle.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolToggle.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\ColorPicker.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\Content.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\FPSCounter.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsBase.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsBoxes.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsDropdownList.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsList.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\QuadWarp.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\ScrollBar.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\Slider2d.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\SliderRawT.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\SliderT.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Gui.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\GuiControls.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\LayoutManager.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\LayoutSettings.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\ofxMSAControlFreakGui.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Page.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Panel.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\PanelPresetManager.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Renderer.h">
+      <Filter>addons\ofxMSAControlFreakGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACore-Cinder.h">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACore-OF.h">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACore.h">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACoreCommon.h">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACoreGL.h">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACoreMath.h">
+      <Filter>addons\ofxMSACore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAInteractiveObject\src\ofxMSAInteractiveObject.h">
+      <Filter>addons\ofxMSAInteractiveObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\addons\ofxMSAOrderedPointerMap\src\ofxMSAOrderedPointerMap.h">
+      <Filter>addons\ofxMSAOrderedPointerMap</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,284 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <ProjectGuid>{7FD42DF7-442E-479A-BA76-D0022F99702A}</ProjectGuid>
+    <Keyword>Win32Proj</Keyword>
+    <RootNamespace>VolumeRunnerApp</RootNamespace>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <CharacterSet>Unicode</CharacterSet>
+    <WholeProgramOptimization>true</WholeProgramOptimization>
+    <PlatformToolset>v110</PlatformToolset>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksRelease.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="..\..\..\libs\openFrameworksCompiled\project\vs\openFrameworksDebug.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <TargetName>$(ProjectName)_debug</TargetName>
+    <LinkIncremental>true</LinkIncremental>
+    <GenerateManifest>true</GenerateManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>bin\</OutDir>
+    <IntDir>obj\$(Configuration)\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <MinimalRebuild>true</MinimalRebuild>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\addons;..\addons\colormotor;..\addons\colormotor\core;..\addons\colormotor\core\platform\win32;..\addons\colormotor\gfx;..\addons\colormotor\math;src\animSys;src\maxi</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <WholeProgramOptimization>false</WholeProgramOptimization>
+      <PreprocessorDefinitions>%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <WarningLevel>Level3</WarningLevel>
+      <AdditionalIncludeDirectories>%(AdditionalIncludeDirectories);..\..\..\addons\ofxXmlSettings\libs;..\..\..\addons\ofxXmlSettings\src;..\addons;..\addons\colormotor;..\addons\colormotor\core;..\addons\colormotor\core\platform\win32;..\addons\colormotor\gfx;..\addons\colormotor\math;src\animSys;src\maxi</AdditionalIncludeDirectories>
+      <CompileAs>CompileAsCpp</CompileAs>
+    </ClCompile>
+    <Link>
+      <IgnoreAllDefaultLibraries>false</IgnoreAllDefaultLibraries>
+      <GenerateDebugInformation>false</GenerateDebugInformation>
+      <SubSystem>Console</SubSystem>
+      <OptimizeReferences>true</OptimizeReferences>
+      <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <RandomizedBaseAddress>false</RandomizedBaseAddress>
+      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlerror.cpp" />
+    <ClCompile Include="..\..\..\addons\ofxXmlSettings\libs\tinyxmlparser.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmBuffer.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmFileUtils.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmResource.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmRTTI.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmThread.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmTime.cpp" />
+    <ClCompile Include="..\addons\colormotor\core\cmUtils.cpp" />
+    <ClCompile Include="..\addons\colormotor\gfx\cmGfxUtils.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\CMArcBall.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\cmFrustum.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\cmHomography.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\cmMathUtils.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\CMPerlin.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\CMRay.cpp" />
+    <ClCompile Include="..\addons\colormotor\math\CMTransform.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Config.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Container.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Control.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\ControlProperties.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\ColorPicker.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\Content.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\QuadWarp.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\controls\Slider2d.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Gui.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\GuiControls.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\LayoutManager.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Page.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Panel.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreakGui\src\Renderer.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ControllerBase.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\Master.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ofxMSAControlFreak.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\Parameter.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ParameterGroup.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ParameterNamedIndex.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\ParameterVec3f.cpp" />
+    <ClCompile Include="..\addons\ofxMSAControlFreak\src\Utils.cpp" />
+    <ClCompile Include="..\addons\ofxMSACore\src\MSACoreGL.cpp" />
+    <ClCompile Include="..\addons\ofxMSAInteractiveObject\src\ofxMSAInteractiveObject.cpp" />
+    <ClCompile Include="src\animSys\BVHParser.cpp" />
+    <ClCompile Include="src\animSys\Skeleton.cpp" />
+    <ClCompile Include="src\animSys\SkeletonAnimator.cpp" />
+    <ClCompile Include="src\animSys\SkeletonAnimInstance.cpp" />
+    <ClCompile Include="src\animSys\SkeletonAnimSource.cpp" />
+    <ClCompile Include="src\animSys\SkeletonAnimSystem.cpp" />
+    <ClCompile Include="src\AudioManager.cpp" />
+    <ClCompile Include="src\Camera.cpp" />
+    <ClCompile Include="src\Dude.cpp" />
+    <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\maxi\maximilian.cpp" />
+    <ClCompile Include="src\ofApp.cpp" />
+    <ClCompile Include="src\RunningSkeleton.cpp" />
+    <ClCompile Include="src\threaded_player.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\..\..\addons\ofxXmlSettings\src\ofxXmlSettings.h" />
+    <ClInclude Include="..\..\..\addons\ofxXmlSettings\libs\tinyxml.h" />
+    <ClInclude Include="..\addons\colormotor\cm.h" />
+    <ClInclude Include="..\addons\colormotor\cmConfig.h" />
+    <ClInclude Include="..\addons\colormotor\cmCore.h" />
+    <ClInclude Include="..\addons\colormotor\cmGfx.h" />
+    <ClInclude Include="..\addons\colormotor\cmMath.h" />
+    <ClInclude Include="..\addons\colormotor\colormotor.h" />
+    <ClInclude Include="..\addons\colormotor\core\Array2D.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmBuffer.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmCoreIncludes.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmFileUtils.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmRefPtr.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmResource.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmRTTI.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmSingleton.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmThread.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmTime.h" />
+    <ClInclude Include="..\addons\colormotor\core\cmUtils.h" />
+    <ClInclude Include="..\addons\colormotor\core\HashMap.h" />
+    <ClInclude Include="..\addons\colormotor\core\platform\osx\CMOSXThread.h" />
+    <ClInclude Include="..\addons\colormotor\core\platform\win32\CMWin32Thread.h" />
+    <ClInclude Include="..\addons\colormotor\core\TPtrList.h" />
+    <ClInclude Include="..\addons\colormotor\gfx\CMGfxUtils.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMAABox.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMArcBall.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMColor.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmFrustum.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmHomography.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmMathDefs.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmMathIncludes.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmMathUtils.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmMatrix3x3.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmMatrix4x4.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMPerlin.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMPlane.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMQuat.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMRay.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMRect.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMRect3D.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMTransform.h" />
+    <ClInclude Include="..\addons\colormotor\math\CMTriangle2D.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmVec2.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmVec3.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmVec4.h" />
+    <ClInclude Include="..\addons\colormotor\math\cmVector.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Config.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Container.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Control.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\ControlProperties.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolBase.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolButton.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolSimpleBox.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolSimpleCircle.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolTitle.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\BoolToggle.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\ColorPicker.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\Content.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\FPSCounter.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsBase.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsBoxes.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsDropdownList.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\OptionsList.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\QuadWarp.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\ScrollBar.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\Slider2d.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\SliderRawT.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\controls\SliderT.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Gui.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\GuiControls.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\LayoutManager.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\LayoutSettings.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\ofxMSAControlFreakGui.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Page.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Panel.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\PanelPresetManager.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreakGui\src\Renderer.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\AnyValue.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ControllerBase.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\Master.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ofxMSAControlFreak.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\Parameter.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterBool.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterFloat.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterGroup.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterInt.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterNamedIndex.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterNumberValueT.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterValueI.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterValueT.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\ParameterVec3f.h" />
+    <ClInclude Include="..\addons\ofxMSAControlFreak\src\Utils.h" />
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACore-Cinder.h" />
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACore-OF.h" />
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACore.h" />
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACoreCommon.h" />
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACoreGL.h" />
+    <ClInclude Include="..\addons\ofxMSACore\src\MSACoreMath.h" />
+    <ClInclude Include="..\addons\ofxMSAInteractiveObject\src\ofxMSAInteractiveObject.h" />
+    <ClInclude Include="..\addons\ofxMSAOrderedPointerMap\src\ofxMSAOrderedPointerMap.h" />
+    <ClInclude Include="src\animSys\AnimSys.h" />
+    <ClInclude Include="src\animSys\BVHParser.h" />
+    <ClInclude Include="src\animSys\Skeleton.h" />
+    <ClInclude Include="src\animSys\SkeletonAnimator.h" />
+    <ClInclude Include="src\animSys\SkeletonAnimInstance.h" />
+    <ClInclude Include="src\animSys\SkeletonAnimSource.h" />
+    <ClInclude Include="src\animSys\SkeletonAnimSystem.h" />
+    <ClInclude Include="src\animSys\Timeline.h" />
+    <ClInclude Include="src\AudioManager.h" />
+    <ClInclude Include="src\Camera.h" />
+    <ClInclude Include="src\Dude.h" />
+    <ClInclude Include="src\Floor.h" />
+    <ClInclude Include="src\FloorManager.h" />
+    <ClInclude Include="src\MagmaManager.h" />
+    <ClInclude Include="src\maxi\maximilian.h" />
+    <ClInclude Include="src\ofApp.h" />
+    <ClInclude Include="src\RenderManager.h" />
+    <ClInclude Include="src\RunningSkeleton.h" />
+    <ClInclude Include="src\Thing.h" />
+    <ClInclude Include="src\threaded_player.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\libs\openFrameworksCompiled\project\vs\openframeworksLib.vcxproj">
+      <Project>{5837595d-aca9-485c-8e76-729040ce4b0b}</Project>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="icon.rc">
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">/D_DEBUG %(AdditionalOptions)</AdditionalOptions>
+    </ResourceCompile>
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+</Project>

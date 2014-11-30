@@ -582,7 +582,8 @@ const vec4 man_color = vec4(0.8, 0.95, 1.2, 1.0);
 
 vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItCount )
 {
-    //return vec4(vec3(mtl),1.0);
+
+ #if 0   // color based on iterations
     vec4 clr = vec4(vec3(normItCount), 1.0) * 2.0;
     clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
     
@@ -600,7 +601,30 @@ vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItC
     clr.xyz = texture2D(color_image, vec2(lum, v)).xyz;//*vec3(1.0,0.97,0.82);
     float fog = attenuation(max(0.0,distance-100.0),0.000021);
     clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
+ 
+ #else  // light properly
+    vec3 n = calc_normal(p);
+    vec3 light = normalize(light1);
     
+    // diffuse lighting
+    float l = max(0.2, dot(n, light));
+    
+    l *= luminosity(normal_color(n))*1.4;   // daniel lighting
+    l *= max(0.3, soft_shadow(p, light, 0.4, 200.0, 12));
+    //l *= max(0.3, hard_shadow(p, light, 0.4, 200.0));
+    
+    float ao_startweight = mtl == 0 ? 0.1 : 0.8;
+    float ao_weightdiminish = mtl == 0 ? 0.3 : 0.6;
+    l *= ambient_occlusion1(p,n, ao_startweight, ao_weightdiminish);
+
+    vec4 clr = man_color;//mtl == 0 ? floor_color : man_color;
+    clr.xyz *= l;
+    
+    //float fog = exp(min(-distance+80,0.0)*0.01);// attenuation(distance,0.0002); //exp(-distance,b);//
+    float fog = attenuation(max(0.0,distance-100.0),0.0001);
+    clr.xyz = mix(clr.xyz,fog_clr.xyz,(1.0-fog));
+ #endif
+
     return clr;
 }
 

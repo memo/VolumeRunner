@@ -107,6 +107,7 @@ void ofApp::reset() {
     dude.position(0, 0, 0);
     camera.target(Vec3(0, 0, 0));
     ofResetElapsedTimeCounter();
+	loadShaders();
 }
 
 //--------------------------------------------------------------

@@ -17,7 +17,8 @@ void ofApp::setup(){
     
     ofBackground(0, 0, 0);
     ofSetLogLevel(OF_LOG_VERBOSE);
-    
+    ofSetVerticalSync(false);
+
     // initialize the dude before hand because of the parameters in the walking animation
     dude.init();
 //    volume.init();

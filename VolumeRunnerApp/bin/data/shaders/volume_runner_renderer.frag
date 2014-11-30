@@ -583,7 +583,7 @@ const vec4 man_color = vec4(0.8, 0.95, 1.2, 1.0);
 vec4 compute_color( in vec3 p, in float distance, in mtl_t mtl, in float normItCount )
 {
 
- #if 0   // color based on iterations
+ #if 1   // color based on iterations
     vec4 clr = vec4(vec3(normItCount), 1.0) * 2.0;
     clr.xyz = pow( clr.xyz, vec3(1.0/2.2)); // gamma correction.
     
